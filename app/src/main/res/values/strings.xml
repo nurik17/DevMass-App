@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">DrevMass App</string>
+
+    <string name="navigation_item_course_main">Курсы</string>
+    <string name="navigation_item_catalog">Каталог</string>
+    <string name="navigation_item_basket">Корзина</string>
+    <string name="navigation_item_profile">Профиль</string>
+    <string name="title_first">Избавьтесь от боли в спине раз и навсегда!</string>
+    <string name="title_second">Наша цель</string>
+    <string name="title_third">Спина требует  ежедневного ухода!</string>
+    <string name="description_first">Здоровье спины – это один из основных показателей комфорта жизни</string>
+    <string name="description_second">Здоровье спины – это один из основных показателей комфорта жизни</string>
+    <string name="description_third">Здоровье спины – это один из основных показателей комфорта жизни.</string>
+    <string name="enter">Вход</string>
+    <string name="registration">Регистрация</string>
+    <string name="registration_description">Мы с вами научимся заниматься\nна тренажере-массажере для спины\nДревмасс.</string>
+    <string name="your_name">Ваше имя</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Номер телефона</string>
+    <string name="new_password">Придумайте пароль</string>
+    <string name="continue1">Продолжить</string>
+    <string name="already_have_account">Уже есть аккаунт?</string>
+    <string name="login">Войти</string>
+    <string name="come_back">С возвращением!</string>
+    <string name="forgot_password">Забыли пароль?</string>
+    <string name="still_dont_have_account">Еще нет аккаунта?</string>
 </resources>
