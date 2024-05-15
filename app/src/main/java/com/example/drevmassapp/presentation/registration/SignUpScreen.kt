@@ -74,8 +74,8 @@ fun SignUpScreen(
     val systemUiController = rememberSystemUiController()
 
 
-    val isLoading by remember { mutableStateOf(false) }
-    var isError by remember { mutableStateOf(false) }
+    val isLoading by rememberSaveable { mutableStateOf(false) }
+    var isError by rememberSaveable { mutableStateOf(false) }
 
     var name by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -91,12 +91,11 @@ fun SignUpScreen(
     LaunchedEffect(key1 = isError) {
         if (isError) {
             systemUiController.setStatusBarColor(ErrorStateColor)
-            delay(4000)
+            delay(10000)
             systemUiController.setStatusBarColor(Color.White)
             isError = false
         }
     }
-
 
     Scaffold(
         topBar = {
@@ -161,7 +160,7 @@ fun SignUpScreen(
                 coroutineScope.launch {
                     snackState.showSnackbar(
                         "CustomSnackbar",
-                        duration = SnackbarDuration.Short
+                        duration = SnackbarDuration.Long
                     )
                 }
                 viewModel.changeState()

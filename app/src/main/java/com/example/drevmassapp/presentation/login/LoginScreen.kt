@@ -1,9 +1,11 @@
 package com.example.drevmassapp.presentation.login
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +19,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -25,6 +29,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,31 +41,53 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.drevmassapp.R
 import com.example.drevmassapp.common.CustomButton
 import com.example.drevmassapp.common.MyTextField
 import com.example.drevmassapp.common.PasswordTextField
+import com.example.drevmassapp.common.SnackbarBlock
 import com.example.drevmassapp.common.rememberImeState
 import com.example.drevmassapp.ui.theme.Brand900
+import com.example.drevmassapp.ui.theme.ErrorStateColor
 import com.example.drevmassapp.ui.theme.typography
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     navigateToRegistration: () -> Unit,
     navigateBack: () -> Unit,
+    viewModel: LoginViewModel
 ) {
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
+    val loginState by viewModel.loginState.collectAsStateWithLifecycle()
+    val snackState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     val imeState = rememberImeState()
     val scrollState = rememberScrollState()
+    val systemUiController = rememberSystemUiController()
 
-    LaunchedEffect(key1 = imeState){
-        if(imeState.value){
+    val isLoading by rememberSaveable { mutableStateOf(false) }
+    var isError by rememberSaveable { mutableStateOf(false) }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(key1 = imeState) {
+        if (imeState.value) {
             scrollState.scrollTo(scrollState.maxValue)
+        }
+    }
+
+    LaunchedEffect(key1 = isError) {
+        if (isError) {
+            systemUiController.setStatusBarColor(ErrorStateColor)
+            delay(10000)
+            systemUiController.setStatusBarColor(Color.White)
+            isError = false
         }
     }
 
@@ -80,94 +108,178 @@ fun LoginScreen(
                     containerColor = Color.White
                 )
             )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(paddingValues)
-                .padding(top = 12.dp, start = 32.dp, end = 32.dp)
-                .verticalScroll(scrollState)
-        ) {
-            Text(
-                text = stringResource(id = R.string.come_back),
-                style = typography.l28sfD700
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(id = R.string.registration_description),
-                style = typography.l17sfT400,
-                fontSize = 15.sp
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            MyTextField(
-                modifier = Modifier.padding(bottom = 12.dp),
-                onValueChanged = { newValue ->
-                    email = newValue
-                },
-                hint = stringResource(id = R.string.email),
-                leadingIcon = R.drawable.ic_message,
-                value = email
-            )
-            PasswordTextField(
-                modifier = Modifier.padding(bottom = 12.dp),
-                onValueChanged = { newValue ->
-                    password = newValue
-                },
-                leadingIcon = R.drawable.ic_lock,
-                hint = stringResource(id = R.string.new_password),
-                value = password
-            )
-
-            Text(
-                text = stringResource(id = R.string.forgot_password),
-                style = typography.l15sfT600,
-                color = Brand900
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-            CustomButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .imePadding(),
-                text = stringResource(id = R.string.continue1),
-                onClick = { },
-                backgroundColor = if (email.isNotEmpty() && password.isNotEmpty()) {
-                    Brand900
-                } else {
-                    Color(0xFFD3C8B3)
-                },
-                borderColor = Color.Transparent
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(id = R.string.still_dont_have_account),
-                    style = typography.l15sfT600
-                )
-                Text(
-                    modifier = Modifier.clickable {
-                        navigateToRegistration()
-                    },
-                    text = buildAnnotatedString {
-                        pushStyle(SpanStyle(color = Brand900))
-                        append(" ${stringResource(id = R.string.registration)}")
-                        pop()
-                    },
-                    fontSize = 14.sp,
-                    style = typography.l15sfT600,
+        },
+        snackbarHost = {
+            if (isError) {
+                SnackbarBlock(
+                    snackState = snackState,
+                    text = "Неверный логин или пароль",
+                    iconId = R.drawable.ic_info,
+                    backgroundColor = ErrorStateColor
                 )
             }
-            Spacer(modifier = Modifier.height(25.dp))
         }
+    ) { paddingValues ->
+        when (loginState) {
+            is LoginState.Loading -> {
+                LoginScreenContent(
+                    viewModel = viewModel,
+                    navigateToRegistration = navigateToRegistration,
+                    paddingValues = paddingValues,
+                    scrollState = scrollState,
+                    email = email,
+                    password = password,
+                    onEmailValueChanged = {
+                        email = it
+                    },
+                    onPasswordValueChanged = {
+                        password = it
+                    },
+                    isLoading = true,
+                    isError = isError
+                )
+            }
+
+            is LoginState.Success -> {
+                navigateToRegistration() // navigateHome
+            }
+
+            is LoginState.Failure -> {
+                isError = true
+                coroutineScope.launch {
+                    snackState.showSnackbar(
+                        "CustomSnackbar",
+                        duration = SnackbarDuration.Long
+                    )
+                }
+                viewModel.changeState()
+            }
+
+            is LoginState.Initial -> {
+                LoginScreenContent(
+                    viewModel = viewModel,
+                    navigateToRegistration = navigateToRegistration,
+                    paddingValues = paddingValues,
+                    scrollState = scrollState,
+                    email = email,
+                    password = password,
+                    onEmailValueChanged = {
+                        email = it
+                    },
+                    onPasswordValueChanged = {
+                        password = it
+                    },
+                    isLoading = isLoading,
+                    isError = isError
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun LoginScreenContent(
+    navigateToRegistration: () -> Unit,
+    paddingValues: PaddingValues,
+    scrollState: ScrollState,
+    email: String,
+    password: String,
+    onEmailValueChanged: (String) -> Unit,
+    onPasswordValueChanged: (String) -> Unit,
+    isLoading: Boolean,
+    isError: Boolean,
+    viewModel: LoginViewModel
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(paddingValues)
+            .padding(top = 12.dp, start = 32.dp, end = 32.dp)
+            .verticalScroll(scrollState)
+    ) {
+        Text(
+            text = stringResource(id = R.string.come_back),
+            style = typography.l28sfD700
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = stringResource(id = R.string.registration_description),
+            style = typography.l17sfT400,
+            fontSize = 15.sp
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        MyTextField(
+            modifier = Modifier.padding(bottom = 12.dp),
+            onValueChanged = {
+                onEmailValueChanged(it)
+            },
+            hint = stringResource(id = R.string.email),
+            leadingIcon = R.drawable.ic_message,
+            value = email,
+            isError = isError
+        )
+        PasswordTextField(
+            modifier = Modifier.padding(bottom = 12.dp),
+            onValueChanged = {
+                onPasswordValueChanged(it)
+            },
+            leadingIcon = R.drawable.ic_lock,
+            hint = stringResource(id = R.string.password),
+            value = password,
+            isError = isError
+        )
+
+        Text(
+            text = stringResource(id = R.string.forgot_password),
+            style = typography.l15sfT600,
+            color = Brand900
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+        CustomButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .imePadding(),
+            isLoading = isLoading,
+            text = stringResource(id = R.string.continue1),
+            onClick = {
+                viewModel.login("string", email, password)
+            },
+            backgroundColor = if (email.isNotEmpty() && password.isNotEmpty()) {
+                Brand900
+            } else {
+                Color(0xFFD3C8B3)
+            },
+            borderColor = Color.Transparent
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 24.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(id = R.string.still_dont_have_account),
+                style = typography.l15sfT600
+            )
+            Text(
+                modifier = Modifier.clickable {
+                    navigateToRegistration()
+                },
+                text = buildAnnotatedString {
+                    pushStyle(SpanStyle(color = Brand900))
+                    append(" ${stringResource(id = R.string.registration)}")
+                    pop()
+                },
+                fontSize = 14.sp,
+                style = typography.l15sfT600,
+            )
+        }
+        Spacer(modifier = Modifier.height(25.dp))
     }
 }

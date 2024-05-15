@@ -1,4 +1,4 @@
-package com.example.drevmassapp.domain.useCases.registration
+package com.example.drevmassapp.domain.useCase.registration
 
 import com.example.drevmassapp.data.model.SignUpResponseDto
 import retrofit2.Response

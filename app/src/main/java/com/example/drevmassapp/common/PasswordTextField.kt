@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.drevmassapp.R
 import com.example.drevmassapp.ui.theme.Brand900
+import com.example.drevmassapp.ui.theme.Coral1000
 import com.example.drevmassapp.ui.theme.Dark1000
 import com.example.drevmassapp.ui.theme.Dark900
 import com.example.drevmassapp.ui.theme.Gray600
@@ -47,6 +48,7 @@ fun PasswordTextField(
     leadingIcon: Int,
     hint: String,
     value: String,
+    isError: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     var isFocused by remember { mutableStateOf(false) }
@@ -60,7 +62,8 @@ fun PasswordTextField(
         unfocusedContainerColor = White,
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = if (isFocused) Brand900 else Gray600,
-        cursorColor = Dark900
+        cursorColor = Dark900,
+        errorIndicatorColor = Coral1000
     )
 
     BasicTextField(
@@ -68,7 +71,7 @@ fun PasswordTextField(
             .fillMaxWidth()
             .indicatorLine(
                 enabled = true,
-                isError = false,
+                isError = isError,
                 colors = colors,
                 interactionSource = interactionSource,
                 focusedIndicatorLineThickness = 3.dp,
@@ -128,7 +131,7 @@ fun PasswordTextField(
                     Icon(
                         painter = painterResource(id = leadingIcon),
                         contentDescription = "",
-                        tint = Brand900
+                        tint = if(isError) Coral1000 else Brand900
                     )
                 },
                 contentPadding = PaddingValues(0.dp),

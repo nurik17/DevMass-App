@@ -1,8 +1,7 @@
-package com.example.drevmassapp.domain.useCases.registration
+package com.example.drevmassapp.domain.useCase.registration
 
 import com.example.drevmassapp.data.model.SignUpResponseDto
 import com.example.drevmassapp.domain.repository.RegistrationRepository
-import retrofit2.Response
 import javax.inject.Inject
 
 class SignUpUseCaseImpl @Inject constructor(

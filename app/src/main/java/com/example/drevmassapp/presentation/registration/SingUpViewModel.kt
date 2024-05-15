@@ -3,7 +3,7 @@ package com.example.drevmassapp.presentation.registration
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.drevmassapp.domain.useCases.registration.SingUpUseCase
+import com.example.drevmassapp.domain.useCase.registration.SingUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

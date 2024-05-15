@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.drevmassapp.presentation.login.LoginScreen
+import com.example.drevmassapp.presentation.login.LoginViewModel
 import com.example.drevmassapp.presentation.splash.SplashScreen
 import com.example.drevmassapp.presentation.onboarding.OnBoardingScreen
 import com.example.drevmassapp.presentation.registration.SignUpScreen
@@ -46,15 +47,17 @@ fun MainNavGraph(
         composable(route = MainDestinations.RegistrationScreen_route) {
             val viewModel: SingUpViewModel = hiltViewModel()
             SignUpScreen(
+                viewModel = viewModel,
                 navigateToLogin = { navController.navigate(MainDestinations.LoginScreen_route) },
                 navigateBack = { navController.popBackStack() },
-                viewModel = viewModel
             )
         }
         composable(route = MainDestinations.LoginScreen_route) {
+            val viewModel: LoginViewModel = hiltViewModel()
             LoginScreen(
+                viewModel = viewModel,
                 navigateToRegistration = { navController.navigate(MainDestinations.RegistrationScreen_route) },
-                navigateBack = { navController.popBackStack() }
+                navigateBack = { navController.popBackStack() },
             )
         }
 

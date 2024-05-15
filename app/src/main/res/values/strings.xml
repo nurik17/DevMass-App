@@ -24,4 +24,5 @@
     <string name="come_back">С возвращением!</string>
     <string name="forgot_password">Забыли пароль?</string>
     <string name="still_dont_have_account">Еще нет аккаунта?</string>
+    <string name="password">Пароль</string>
 </resources>

@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -46,10 +47,8 @@ fun MyTextField(
     hint: String,
     value: String,
     keyboardType: KeyboardType = KeyboardType.Text,
-/*
-    errorIndicatorColor: Color = Coral1000,
-*/
     modifier: Modifier = Modifier,
+    isError: Boolean = false
 ) {
 
     var isFocused by remember { mutableStateOf(false) }
@@ -71,7 +70,7 @@ fun MyTextField(
             .fillMaxWidth()
             .indicatorLine(
                 enabled = true,
-                isError = false,
+                isError = isError,
                 colors = colors,
                 interactionSource = interactionSource,
                 focusedIndicatorLineThickness = 2.dp,
@@ -124,7 +123,7 @@ fun MyTextField(
                     Icon(
                         painter = painterResource(id = leadingIcon),
                         contentDescription = "",
-                        tint = Brand900
+                        tint = if(isError) Coral1000 else Brand900
                     )
                 },
                 contentPadding = PaddingValues(0.dp),

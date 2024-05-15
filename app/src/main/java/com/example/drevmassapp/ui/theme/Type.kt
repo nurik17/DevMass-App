@@ -17,19 +17,16 @@ val typography = Typographies(
     l28sfD700 = TextStyle(
         fontFamily = FontFamily(Font(R.font.sf_pro_display_bold)),
         fontSize = 28.sp,
-        fontWeight = FontWeight.Bold,
         color = Dark1000
     ),
     l17sfT400 = TextStyle(
         fontFamily = FontFamily(Font(R.font.sf_protext_regular)),
         fontSize = 17.sp,
-        fontWeight = FontWeight.Normal,
         color = Gray800
     ),
     l15sfT600 = TextStyle(
         fontFamily = FontFamily(Font(R.font.sf_protext_semibold)),
         fontSize = 15.sp,
-        fontWeight = FontWeight.SemiBold,
         color = Dark900
     )
 )
