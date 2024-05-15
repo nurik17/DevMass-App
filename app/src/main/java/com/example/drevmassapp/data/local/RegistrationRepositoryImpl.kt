@@ -1,11 +1,13 @@
 package com.example.drevmassapp.data.local
 
-import com.example.drevmassapp.data.model.SignUpResponseDto
+import com.example.drevmassapp.data.model.ForgotPasswordDto
 import com.example.drevmassapp.data.model.SignInResponseDto
+import com.example.drevmassapp.data.model.SignUpResponseDto
 import com.example.drevmassapp.data.remote.DevMassApi
 import com.example.drevmassapp.domain.entity.SignInBody
 import com.example.drevmassapp.domain.entity.SignUpBody
 import com.example.drevmassapp.domain.repository.RegistrationRepository
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class RegistrationRepositoryImpl @Inject constructor(
@@ -28,8 +30,13 @@ class RegistrationRepositoryImpl @Inject constructor(
         email: String,
         password: String
     ): SignInResponseDto {
+        delay(5000)
         val body = SignInBody(deviceToken, email, password)
         return api.login(body)
     }
 
+    override suspend fun forgotPassword(email: String): ForgotPasswordDto {
+        delay(5000)
+        return api.forgotPassword(email)
+    }
 }

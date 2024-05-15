@@ -2,6 +2,7 @@ package com.example.drevmassapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val Dark650 = Color(0xFF302C28)
 val Dark900 = Color(0xFF302C28)
 val Dark1000 = Color(0xFF181715)
 

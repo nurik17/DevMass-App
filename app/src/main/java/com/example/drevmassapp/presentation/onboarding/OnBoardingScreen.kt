@@ -172,9 +172,10 @@ fun OnBoardingScreen(
                         .width(165.dp)
                         .height(56.dp),
                     text = stringResource(id = R.string.enter),
-                    onClick = {
+                    onButtonClick = {
                         navigateToLogin()
-                    }
+                    },
+                    borderColor = Color.Transparent
                 )
 
                 CustomButton(
@@ -183,13 +184,13 @@ fun OnBoardingScreen(
                         .height(56.dp),
                     text = stringResource(id = R.string.registration),
                     textColor = Brand900,
-                    backgroundColor = Color.White,
-                    onClick = {
+                    onButtonClick = {
                         navigateToRegistration()
                         val nextStep = min(stepCount - 1, currentStep.value + 1)
                         currentStep.value = nextStep
                         isPaused.value = false
-                    }
+                    },
+                    backgroundColor = Color.White
                 )
             }
         }

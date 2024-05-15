@@ -25,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -77,10 +76,10 @@ fun SignUpScreen(
     val isLoading by rememberSaveable { mutableStateOf(false) }
     var isError by rememberSaveable { mutableStateOf(false) }
 
-    var name by rememberSaveable { mutableStateOf("") }
-    var email by rememberSaveable { mutableStateOf("") }
-    var phoneNumber by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     LaunchedEffect(key1 = imeState) {
         if (imeState.value) {
@@ -275,7 +274,8 @@ fun InitialBlock(
                 .height(56.dp),
             isLoading = isLoading,
             text = stringResource(id = R.string.continue1),
-            onClick = { viewModel.signUp("string", email, name, password, phoneNumber) },
+            enabled = (name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && phoneNumber.isNotEmpty()),
+            onButtonClick = { viewModel.signUp("string", email, name, password, phoneNumber) },
             backgroundColor = if (name.isNotEmpty() && email.isNotEmpty() && phoneNumber.isNotEmpty() && password.isNotEmpty()) {
                 Brand900
             } else {
@@ -313,62 +313,3 @@ fun InitialBlock(
         Log.d("SignUpScreen", "name :$name")
     }
 }
-
-
-/*
-when (signUpState) {
-    is SignUpState.Loading -> {
-        InitialBlock(
-            navigateToLogin = navigateToLogin,
-            viewModel = viewModel,
-            isLoading = true,
-            onNameValueChanged = { newValue ->
-                name = newValue
-            },
-            onEmailValueChanged = {
-                email = it
-            },
-            onPhoneNumberValueChanged = {
-                phoneNumber = it
-            },
-            onPasswordValueChanged = {
-                password = it
-            },
-            name, email, phoneNumber, password
-        )
-        Log.d("SignUpScreen", "Loading")
-    }
-
-    is SignUpState.Success -> {
-        navigateToLogin()
-        Log.d("SignUpScreen", "Success")
-    }
-
-    is SignUpState.Failure -> {
-        viewModel.changeState()
-        Log.d("SignUpScreen", "Failure")
-    }
-
-    is SignUpState.Initial -> {
-        InitialBlock(
-            navigateToLogin = navigateToLogin,
-            viewModel = viewModel,
-            isLoading = isLoading,
-            onNameValueChanged = { newValue ->
-                name = newValue
-            },
-            onEmailValueChanged = {
-                email = it
-            },
-            onPhoneNumberValueChanged = {
-                phoneNumber = it
-            },
-            onPasswordValueChanged = {
-                password = it
-            },
-            name, email, phoneNumber, password
-        )
-        Log.d("SignUpScreen", "Initial")
-    }
-}
-*/

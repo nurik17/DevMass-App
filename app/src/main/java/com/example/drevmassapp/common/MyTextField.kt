@@ -20,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -42,13 +41,14 @@ import com.example.drevmassapp.ui.theme.typography
 @Composable
 fun MyTextField(
     onValueChanged: (String) -> Unit,
-    leadingIcon: Int,
+    leadingIcon: Int = 0,
     showTrailingIcon: Boolean = false,
-    hint: String,
+    hint: String = "",
     value: String,
     keyboardType: KeyboardType = KeyboardType.Text,
+    isError: Boolean = false,
+    showIcon: Boolean = true,
     modifier: Modifier = Modifier,
-    isError: Boolean = false
 ) {
 
     var isFocused by remember { mutableStateOf(false) }
@@ -61,7 +61,7 @@ fun MyTextField(
         focusedContainerColor = White,
         unfocusedContainerColor = White,
         focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = if(isFocused) Brand900 else Gray600,
+        unfocusedIndicatorColor = if (isFocused) Brand900 else Gray600,
         errorIndicatorColor = Coral1000
     )
 
@@ -78,7 +78,7 @@ fun MyTextField(
             )
             .onFocusChanged { isFocused = it.isFocused },
         value = value,
-        onValueChange = {newValue->
+        onValueChange = { newValue ->
             onValueChanged(newValue)
         },
         keyboardOptions = KeyboardOptions(
@@ -109,7 +109,7 @@ fun MyTextField(
                 visualTransformation = VisualTransformation.None,
                 interactionSource = interactionSource,
                 trailingIcon = {
-                    if (showTrailingIcon && isFocused) {
+                    if (showTrailingIcon && isFocused && value.isNotEmpty()) {
                         Image(
                             modifier = Modifier.clickable {
                                 onValueChanged("")
@@ -120,11 +120,13 @@ fun MyTextField(
                     }
                 },
                 leadingIcon = {
-                    Icon(
-                        painter = painterResource(id = leadingIcon),
-                        contentDescription = "",
-                        tint = if(isError) Coral1000 else Brand900
-                    )
+                    if (showIcon) {
+                        Icon(
+                            painter = painterResource(id = leadingIcon),
+                            contentDescription = "",
+                            tint = if (isError) Coral1000 else Brand900
+                        )
+                    }
                 },
                 contentPadding = PaddingValues(0.dp),
                 colors = colors,

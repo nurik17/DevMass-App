@@ -1,5 +1,6 @@
 package com.example.drevmassapp.domain.repository
 
+import com.example.drevmassapp.data.model.ForgotPasswordDto
 import com.example.drevmassapp.data.model.SignUpResponseDto
 import com.example.drevmassapp.data.model.SignInResponseDto
 
@@ -13,4 +14,6 @@ interface RegistrationRepository {
     ): SignUpResponseDto
 
     suspend fun login(deviceToken: String, email: String, password: String): SignInResponseDto
+
+    suspend fun forgotPassword(email: String): ForgotPasswordDto
 }
