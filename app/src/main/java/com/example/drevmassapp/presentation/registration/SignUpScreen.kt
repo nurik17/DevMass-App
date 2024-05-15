@@ -1,10 +1,12 @@
 package com.example.drevmassapp.presentation.registration
 
 import android.util.Log
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,14 +19,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,9 +48,14 @@ import com.example.drevmassapp.R
 import com.example.drevmassapp.common.CustomButton
 import com.example.drevmassapp.common.MyTextField
 import com.example.drevmassapp.common.PasswordTextField
+import com.example.drevmassapp.common.SnackbarBlock
 import com.example.drevmassapp.common.rememberImeState
 import com.example.drevmassapp.ui.theme.Brand900
+import com.example.drevmassapp.ui.theme.ErrorStateColor
 import com.example.drevmassapp.ui.theme.typography
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,18 +65,35 @@ fun SignUpScreen(
     viewModel: SingUpViewModel
 ) {
 
-    val signUpState by viewModel.signUpState.collectAsStateWithLifecycle(initialValue = SignUpState.Initial)
+    val signUpState by viewModel.signUpState.collectAsStateWithLifecycle()
+    val snackState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     val imeState = rememberImeState()
     val scrollState = rememberScrollState()
+    val systemUiController = rememberSystemUiController()
 
-    var isLoading by remember { mutableStateOf(false) }
+
+    val isLoading by remember { mutableStateOf(false) }
+    var isError by remember { mutableStateOf(false) }
 
     var name by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var phoneNumber by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
 
     LaunchedEffect(key1 = imeState) {
         if (imeState.value) {
             scrollState.scrollTo(scrollState.maxValue)
+        }
+    }
+
+    LaunchedEffect(key1 = isError) {
+        if (isError) {
+            systemUiController.setStatusBarColor(ErrorStateColor)
+            delay(4000)
+            systemUiController.setStatusBarColor(Color.White)
+            isError = false
         }
     }
 
@@ -87,52 +115,79 @@ fun SignUpScreen(
                     containerColor = Color.White
                 )
             )
-        }
+        },
+        snackbarHost = {
+            if (isError) {
+                SnackbarBlock(
+                    snackState = snackState,
+                    text = "Неверные данные проверте еще раз",
+                    iconId = R.drawable.ic_info,
+                    backgroundColor = ErrorStateColor
+                )
+            }
+        },
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(paddingValues)
-                .padding(top = 12.dp, start = 32.dp, end = 32.dp)
-                .verticalScroll(scrollState)
-        ) {
-            when (signUpState) {
-                is SignUpState.Loading -> {
-                    InitialBlock(
-                        navigateToLogin = navigateToLogin,
-                        viewModel = viewModel,
-                        isLoading = true,
-                        onNameValueChanged = { newValue ->
-                            name = newValue
-                        },
-                        name = name
+        when (signUpState) {
+            is SignUpState.Loading -> {
+                InitialBlock(
+                    navigateToLogin = navigateToLogin,
+                    viewModel = viewModel,
+                    isLoading = true,
+                    onNameValueChanged = { newValue ->
+                        name = newValue
+                    },
+                    onEmailValueChanged = {
+                        email = it
+                    },
+                    onPhoneNumberValueChanged = {
+                        phoneNumber = it
+                    },
+                    onPasswordValueChanged = {
+                        password = it
+                    },
+                    name, email, phoneNumber, password,
+                    paddingValues, scrollState
+                )
+                Log.d("SignUpScreen", "Loading")
+            }
+
+            is SignUpState.Success -> {
+                navigateToLogin()
+                Log.d("SignUpScreen", "Success")
+            }
+
+            is SignUpState.Failure -> {
+                isError = true
+                coroutineScope.launch {
+                    snackState.showSnackbar(
+                        "CustomSnackbar",
+                        duration = SnackbarDuration.Short
                     )
-                    Log.d("SignUpScreen", "Loading")
                 }
+                viewModel.changeState()
+                Log.d("SignUpScreen", "Failure")
+            }
 
-                is SignUpState.Success -> {
-                    navigateToLogin()
-                    Log.d("SignUpScreen", "Success")
-                }
-
-                is SignUpState.Failure -> {
-                    viewModel.changeState()
-                    Log.d("SignUpScreen", "Failure")
-                }
-
-                is SignUpState.Initial -> {
-                    InitialBlock(
-                        navigateToLogin = navigateToLogin,
-                        viewModel = viewModel,
-                        isLoading = isLoading,
-                        onNameValueChanged = {newValue->
-                            name = newValue
-                        },
-                        name = name
-                    )
-                    Log.d("SignUpScreen", "Initial")
-                }
+            is SignUpState.Initial -> {
+                InitialBlock(
+                    navigateToLogin = navigateToLogin,
+                    viewModel = viewModel,
+                    isLoading = isLoading,
+                    onNameValueChanged = { newValue ->
+                        name = newValue
+                    },
+                    onEmailValueChanged = {
+                        email = it
+                    },
+                    onPhoneNumberValueChanged = {
+                        phoneNumber = it
+                    },
+                    onPasswordValueChanged = {
+                        password = it
+                    },
+                    name, email, phoneNumber, password, paddingValues, scrollState
+                )
+                Log.d("SignUpScreen", "Initial")
             }
         }
     }
@@ -143,16 +198,25 @@ fun InitialBlock(
     navigateToLogin: () -> Unit,
     viewModel: SingUpViewModel,
     isLoading: Boolean,
+    onNameValueChanged: (String) -> Unit,
+    onEmailValueChanged: (String) -> Unit,
+    onPhoneNumberValueChanged: (String) -> Unit,
+    onPasswordValueChanged: (String) -> Unit,
     name: String,
-    onNameValueChanged: (String) -> Unit
+    email: String,
+    phoneNumber: String,
+    password: String,
+    paddingValues: PaddingValues,
+    scrollState: ScrollState
 ) {
-
-    var email by rememberSaveable { mutableStateOf("") }
-    var phoneNumber by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-
-    Column() {
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(paddingValues)
+            .padding(top = 12.dp, start = 32.dp, end = 32.dp)
+            .verticalScroll(scrollState)
+    ) {
         Text(
             text = stringResource(id = R.string.registration),
             style = typography.l28sfD700
@@ -172,32 +236,36 @@ fun InitialBlock(
             },
             hint = stringResource(id = R.string.your_name),
             leadingIcon = R.drawable.ic_profile,
-            showTrailingIcon = true
+            showTrailingIcon = true,
+            value = name
         )
         MyTextField(
             modifier = Modifier.padding(bottom = 12.dp),
             onValueChanged = { newValue ->
-                email = newValue
+                onEmailValueChanged(newValue)
             },
             hint = stringResource(id = R.string.email),
-            leadingIcon = R.drawable.ic_message
+            leadingIcon = R.drawable.ic_message,
+            value = email
         )
         MyTextField(
             modifier = Modifier.padding(bottom = 12.dp),
             onValueChanged = { newValue ->
-                phoneNumber = newValue
+                onPhoneNumberValueChanged(newValue)
             },
             hint = stringResource(id = R.string.phone_number),
             leadingIcon = R.drawable.ic_phone,
-            keyboardType = KeyboardType.Number
+            keyboardType = KeyboardType.Number,
+            value = phoneNumber
         )
         PasswordTextField(
             modifier = Modifier.padding(bottom = 12.dp),
             onValueChanged = { newValue ->
-                password = newValue
+                onPasswordValueChanged(newValue)
             },
             leadingIcon = R.drawable.ic_lock,
             hint = stringResource(id = R.string.new_password),
+            value = password
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -245,6 +313,63 @@ fun InitialBlock(
 
         Log.d("SignUpScreen", "name :$name")
     }
-
 }
 
+
+/*
+when (signUpState) {
+    is SignUpState.Loading -> {
+        InitialBlock(
+            navigateToLogin = navigateToLogin,
+            viewModel = viewModel,
+            isLoading = true,
+            onNameValueChanged = { newValue ->
+                name = newValue
+            },
+            onEmailValueChanged = {
+                email = it
+            },
+            onPhoneNumberValueChanged = {
+                phoneNumber = it
+            },
+            onPasswordValueChanged = {
+                password = it
+            },
+            name, email, phoneNumber, password
+        )
+        Log.d("SignUpScreen", "Loading")
+    }
+
+    is SignUpState.Success -> {
+        navigateToLogin()
+        Log.d("SignUpScreen", "Success")
+    }
+
+    is SignUpState.Failure -> {
+        viewModel.changeState()
+        Log.d("SignUpScreen", "Failure")
+    }
+
+    is SignUpState.Initial -> {
+        InitialBlock(
+            navigateToLogin = navigateToLogin,
+            viewModel = viewModel,
+            isLoading = isLoading,
+            onNameValueChanged = { newValue ->
+                name = newValue
+            },
+            onEmailValueChanged = {
+                email = it
+            },
+            onPhoneNumberValueChanged = {
+                phoneNumber = it
+            },
+            onPasswordValueChanged = {
+                password = it
+            },
+            name, email, phoneNumber, password
+        )
+        Log.d("SignUpScreen", "Initial")
+    }
+}
+*/

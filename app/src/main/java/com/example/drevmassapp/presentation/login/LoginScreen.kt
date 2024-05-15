@@ -108,7 +108,8 @@ fun LoginScreen(
                     email = newValue
                 },
                 hint = stringResource(id = R.string.email),
-                leadingIcon = R.drawable.ic_message
+                leadingIcon = R.drawable.ic_message,
+                value = email
             )
             PasswordTextField(
                 modifier = Modifier.padding(bottom = 12.dp),
@@ -117,7 +118,9 @@ fun LoginScreen(
                 },
                 leadingIcon = R.drawable.ic_lock,
                 hint = stringResource(id = R.string.new_password),
+                value = password
             )
+
             Text(
                 text = stringResource(id = R.string.forgot_password),
                 style = typography.l15sfT600,

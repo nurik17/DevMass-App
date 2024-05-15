@@ -19,7 +19,6 @@ class RegistrationRepositoryImpl @Inject constructor(
         password: String,
         phoneNumber: String
     ): SignUpResponseDto {
-        delay(10000)
         val body = SignUpBody(deviceToken,email,name,password,phoneNumber)
         return api.singUp(body)
     }

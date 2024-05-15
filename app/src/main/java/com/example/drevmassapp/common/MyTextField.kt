@@ -23,14 +23,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.drevmassapp.R
 import com.example.drevmassapp.ui.theme.Brand900
 import com.example.drevmassapp.ui.theme.Coral1000
+import com.example.drevmassapp.ui.theme.Dark1000
 import com.example.drevmassapp.ui.theme.Gray600
 import com.example.drevmassapp.ui.theme.typography
 
@@ -41,14 +44,15 @@ fun MyTextField(
     leadingIcon: Int,
     showTrailingIcon: Boolean = false,
     hint: String,
+    value: String,
     keyboardType: KeyboardType = KeyboardType.Text,
+/*
     errorIndicatorColor: Color = Coral1000,
+*/
     modifier: Modifier = Modifier,
 ) {
 
     var isFocused by remember { mutableStateOf(false) }
-
-    var value by remember { mutableStateOf("") }
 
     val interactionSource = remember {
         MutableInteractionSource()
@@ -59,7 +63,7 @@ fun MyTextField(
         unfocusedContainerColor = White,
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = if(isFocused) Brand900 else Gray600,
-        errorIndicatorColor = errorIndicatorColor
+        errorIndicatorColor = Coral1000
     )
 
     BasicTextField(
@@ -75,14 +79,18 @@ fun MyTextField(
             )
             .onFocusChanged { isFocused = it.isFocused },
         value = value,
-        onValueChange = {
-            value = it
-            onValueChanged(it)
+        onValueChange = {newValue->
+            onValueChanged(newValue)
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType
         ),
-        textStyle = typography.l17sfT400,
+        textStyle = TextStyle(
+            fontFamily = FontFamily(Font(R.font.sf_protext_semibold)),
+            fontSize = 17.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Dark1000
+        ),
         decorationBox = { innerTextField ->
             TextFieldDefaults.DecorationBox(
                 value = value,
@@ -105,7 +113,7 @@ fun MyTextField(
                     if (showTrailingIcon && isFocused) {
                         Image(
                             modifier = Modifier.clickable {
-                                value = ""
+                                onValueChanged("")
                             },
                             painter = painterResource(id = R.drawable.ic_arounded_close),
                             contentDescription = "",

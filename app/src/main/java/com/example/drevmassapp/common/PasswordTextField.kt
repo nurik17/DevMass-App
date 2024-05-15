@@ -23,14 +23,19 @@ import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.drevmassapp.R
 import com.example.drevmassapp.ui.theme.Brand900
+import com.example.drevmassapp.ui.theme.Dark1000
 import com.example.drevmassapp.ui.theme.Dark900
 import com.example.drevmassapp.ui.theme.Gray600
 import com.example.drevmassapp.ui.theme.typography
@@ -41,6 +46,7 @@ fun PasswordTextField(
     onValueChanged: (String) -> Unit,
     leadingIcon: Int,
     hint: String,
+    value: String,
     modifier: Modifier = Modifier,
 ) {
     var isFocused by remember { mutableStateOf(false) }
@@ -48,9 +54,6 @@ fun PasswordTextField(
         MutableInteractionSource()
     }
     var showPasswordValue by remember { mutableStateOf(value = false) }
-
-    var value by remember { mutableStateOf(TextFieldValue("")) }
-
 
     val colors = TextFieldDefaults.colors(
         focusedContainerColor = White,
@@ -74,17 +77,22 @@ fun PasswordTextField(
             .onFocusChanged { isFocused = it.isFocused },
         value = value,
         onValueChange = {
-            value = it
-            onValueChanged(it.text)
+            onValueChanged(it)
         },
         visualTransformation = if (showPasswordValue) {
             VisualTransformation.None
         } else {
             PasswordVisualTransformation()
         },
+        textStyle = TextStyle(
+            fontFamily = FontFamily(Font(R.font.sf_protext_semibold)),
+            fontSize = 17.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Dark1000
+        ),
         decorationBox = { innerTextField ->
             TextFieldDefaults.DecorationBox(
-                value = value.text,
+                value = value,
                 placeholder = {
                     Text(
                         text = hint,

@@ -18,7 +18,7 @@ val typography = Typographies(
         fontFamily = FontFamily(Font(R.font.sf_pro_display_bold)),
         fontSize = 28.sp,
         fontWeight = FontWeight.Bold,
-        color = Dark10000
+        color = Dark1000
     ),
     l17sfT400 = TextStyle(
         fontFamily = FontFamily(Font(R.font.sf_protext_regular)),
