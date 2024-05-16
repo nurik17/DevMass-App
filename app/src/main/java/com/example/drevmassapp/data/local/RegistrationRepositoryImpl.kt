@@ -30,13 +30,11 @@ class RegistrationRepositoryImpl @Inject constructor(
         email: String,
         password: String
     ): SignInResponseDto {
-        delay(5000)
         val body = SignInBody(deviceToken, email, password)
         return api.login(body)
     }
 
     override suspend fun forgotPassword(email: String): ForgotPasswordDto {
-        delay(5000)
         return api.forgotPassword(email)
     }
 }

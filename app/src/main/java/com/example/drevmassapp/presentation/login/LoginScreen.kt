@@ -75,6 +75,7 @@ import java.net.URLDecoder
 fun LoginScreen(
     navigateToRegistration: () -> Unit,
     navigateBack: () -> Unit,
+    navigateToMain:() ->Unit,
     viewModel: LoginViewModel
 ) {
 
@@ -163,7 +164,7 @@ fun LoginScreen(
 
             is LoginState.Success -> {
                 isLoading = false
-                navigateToRegistration() // navigateHome
+                navigateToMain() // navigateHome
                 Log.d("LoginScreen", "success")
             }
 

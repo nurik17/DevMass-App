@@ -1,6 +1,7 @@
 package com.example.drevmassapp.navigation
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -14,17 +15,20 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.drevmassapp.R
+import com.example.drevmassapp.common.clickableWithoutRipple
+import com.example.drevmassapp.ui.theme.BottomBarColor
 import com.example.drevmassapp.ui.theme.Dark900
 import com.example.drevmassapp.ui.theme.Gray600
-
 
 @Composable
 fun MainNavBar(
@@ -41,7 +45,7 @@ fun MainNavBar(
     val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.secondary
+        containerColor = BottomBarColor
     ) {
         screens.forEach { screen ->
             AddItem(
@@ -59,9 +63,25 @@ fun RowScope.AddItem(
     currentRoute: String?,
     navController: NavHostController
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     NavigationBarItem(
         icon = {
             Column(
+                modifier = Modifier.clickableWithoutRipple(
+                    interactionSource = interactionSource,
+                    onClick = {
+                        navController.navigate(screen.route) {
+                            navController.graph.startDestinationRoute?.let { route ->
+                                popUpTo(route) {
+                                    saveState = true
+                                }
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
@@ -82,7 +102,7 @@ fun RowScope.AddItem(
             selectedTextColor = Dark900,
             unselectedTextColor = Gray600,
             unselectedIconColor = Gray600,
-            indicatorColor = MaterialTheme.colorScheme.secondary
+            indicatorColor = Color.Transparent
         ),
         selected = currentRoute == screen.route,
 

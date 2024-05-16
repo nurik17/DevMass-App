@@ -4,9 +4,12 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.drevmassapp.presentation.catalog.CatalogScreen
+import com.example.drevmassapp.presentation.catalog.CatalogViewModel
 
 @Composable
 fun BottomBarNavGraph(
@@ -31,7 +34,8 @@ fun BottomBarNavGraph(
         }
 
         composable(route = MainDestinations.CatalogScreen_route) {
-
+            val viewModel = hiltViewModel<CatalogViewModel>()
+            CatalogScreen(viewModel = viewModel)
         }
 
         composable(route = MainDestinations.BasketScreen_route) {
@@ -39,6 +43,5 @@ fun BottomBarNavGraph(
         }
         composable(route = MainDestinations.ProfileScreen_route) {
         }
-
     }
 }

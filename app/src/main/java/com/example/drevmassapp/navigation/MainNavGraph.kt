@@ -11,10 +11,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.drevmassapp.presentation.login.LoginScreen
 import com.example.drevmassapp.presentation.login.LoginViewModel
-import com.example.drevmassapp.presentation.splash.SplashScreen
 import com.example.drevmassapp.presentation.onboarding.OnBoardingScreen
 import com.example.drevmassapp.presentation.registration.SignUpScreen
 import com.example.drevmassapp.presentation.registration.SingUpViewModel
+import com.example.drevmassapp.presentation.splash.SplashScreen
 
 @Composable
 fun MainNavGraph(
@@ -23,7 +23,7 @@ fun MainNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = MainDestinations.SPLASH_ROUTE,
+        startDestination = MainDestinations.MainScreen_route,
         modifier = modifier,
         enterTransition = {
             EnterTransition.None
@@ -58,6 +58,7 @@ fun MainNavGraph(
                 viewModel = viewModel,
                 navigateToRegistration = { navController.navigate(MainDestinations.RegistrationScreen_route) },
                 navigateBack = { navController.popBackStack() },
+                navigateToMain = { navController.navigate(MainDestinations.MainScreen_route) }
             )
         }
 
