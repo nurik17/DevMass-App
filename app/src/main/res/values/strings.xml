@@ -33,4 +33,10 @@
     <string name="sort_popular">По популярности</string>
     <string name="sort_priceUp">По возрастанию цены</string>
     <string name="sort_priceDown">По убыванию цены</string>
+    <string name="to_basket">В корзину</string>
+    <string name="how_to_use">Как использовать?</string>
+    <string name="weight">Рост</string>
+    <string name="size">Размер</string>
+    <string name="description">Описание</string>
+    <string name="buy_with_this">С этим товаром покупают</string>
 </resources>

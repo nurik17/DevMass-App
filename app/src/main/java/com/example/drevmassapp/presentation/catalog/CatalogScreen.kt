@@ -17,14 +17,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
@@ -63,7 +66,8 @@ import com.example.drevmassapp.ui.theme.typography
 
 @Composable
 fun CatalogScreen(
-    viewModel: CatalogViewModel
+    viewModel: CatalogViewModel,
+    navigateToProductDetails: (Int) -> Unit
 ) {
     val catalogState = viewModel.catalogState.collectAsStateWithLifecycle()
     val shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
@@ -82,6 +86,7 @@ fun CatalogScreen(
                 style = typography.l28sfD700
             )
         }
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -101,7 +106,8 @@ fun CatalogScreen(
                     CatalogContent(
                         viewModel = viewModel,
                         list = currentState.products,
-                        filterText = stringResource(id = R.string.sort_popular)
+                        filterText = stringResource(id = R.string.sort_popular),
+                        navigateToProductDetails = navigateToProductDetails
                     )
                 }
 
@@ -109,7 +115,8 @@ fun CatalogScreen(
                     CatalogContent(
                         viewModel = viewModel,
                         list = currentState.famousProducts,
-                        filterText = stringResource(id = R.string.sort_popular)
+                        filterText = stringResource(id = R.string.sort_popular),
+                        navigateToProductDetails
                     )
                 }
 
@@ -117,7 +124,8 @@ fun CatalogScreen(
                     CatalogContent(
                         viewModel = viewModel,
                         list = currentState.productsPriceUp,
-                        filterText = stringResource(id = R.string.sort_priceUp)
+                        filterText = stringResource(id = R.string.sort_priceUp),
+                        navigateToProductDetails = navigateToProductDetails
                     )
                 }
 
@@ -125,7 +133,8 @@ fun CatalogScreen(
                     CatalogContent(
                         viewModel = viewModel,
                         list = currentState.productsPriceDown,
-                        filterText = stringResource(id = R.string.sort_priceDown)
+                        filterText = stringResource(id = R.string.sort_priceDown),
+                        navigateToProductDetails = navigateToProductDetails
                     )
                 }
 
@@ -139,13 +148,16 @@ fun CatalogScreen(
 fun CatalogContent(
     viewModel: CatalogViewModel,
     list: List<Product>,
-    filterText: String
+    filterText: String,
+    navigateToProductDetails: (Int) -> Unit
 ) {
 
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by remember { mutableStateOf(false) }
+    val listType by viewModel.listType.observeAsState(initial = ListType.GRID)
 
     Column(modifier = Modifier.padding(all = 16.dp)) {
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -166,27 +178,37 @@ fun CatalogContent(
             )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
+                modifier = Modifier.clickable {
+                    viewModel.toggleListType()
+                },
                 painter = painterResource(id = R.drawable.ic_tile),
                 contentDescription = "",
                 tint = Gray700
             )
         }
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            items(items = list) { item ->
-                CatalogItem(
-                    height = 100.dp,
-                    width = 167.dp,
-                    fontSize = 15.sp,
-                    item = item
-                )
-            }
+        when (listType) {
+            ListType.GRID -> GridListType(
+                list = list,
+                navigateToProductDetails = navigateToProductDetails
+            )
+
+            ListType.VERTICAL_COLUMN -> VerticalListType(
+                list = list,
+                navigateToProductDetails = navigateToProductDetails
+            )
+
+            ListType.HORIZONTAL_COLUMN -> HorizontalListType(
+                list = list,
+                navigateToProductDetails = navigateToProductDetails
+            )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(
+            modifier = Modifier
+                .background(Color.Red)
+                .height(35.dp)
+        )
 
         if (isSheetOpen) {
             SortBottomSheet(
@@ -199,16 +221,96 @@ fun CatalogContent(
 }
 
 @Composable
-fun CatalogItem(
+fun GridListType(
+    list: List<Product>,
+    navigateToProductDetails: (Int) -> Unit
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        items(items = list) { item ->
+            CatalogItem(
+                height = 100.dp,
+                width = 167.dp,
+                fontSize = 15.sp,
+                item = item,
+                imageExtractor = { it.imageSrc },
+                priceExtractor = { "${it.price} ₽" },
+                titleExtractor = { it.title },
+                onItemClickListener = {
+                    navigateToProductDetails(item.id)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun VerticalListType(
+    list: List<Product>,
+    navigateToProductDetails: (Int) -> Unit
+) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        items(items = list) { item ->
+            CatalogItem(
+                height = 202.dp,
+                width = 343.dp,
+                fontSize = 20.sp,
+                item = item,
+                imageExtractor = { it.imageSrc },
+                priceExtractor = { "${it.price} ₽" },
+                titleExtractor = { it.title },
+                onItemClickListener = {
+                    navigateToProductDetails(item.id)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun HorizontalListType(
+    list: List<Product>,
+    navigateToProductDetails: (Int) -> Unit
+) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        items(items = list) { item ->
+            CatalogHorizontalItem(
+                item = item,
+                onItemClickListener = {
+                    navigateToProductDetails(item.id)
+                }
+            )
+            HorizontalDivider(
+                modifier = Modifier.padding(top = 16.dp),
+                thickness = 1.dp,
+                color = Color(0xFFECEBEB)
+            )
+        }
+    }
+}
+
+@Composable
+fun <T> CatalogItem(
     height: Dp = 0.dp,
     width: Dp = 0.dp,
     fontSize: TextUnit = 0.sp,
-    item: Product
+    item: T,
+    imageExtractor: (T) -> String,
+    priceExtractor: (T) -> String,
+    titleExtractor: (T) -> String,
+    onItemClickListener: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
             .width(width)
             .wrapContentHeight()
+            .clickable { onItemClickListener() }
     ) {
         Box(
             modifier = Modifier
@@ -218,31 +320,84 @@ fun CatalogItem(
         ) {
             SubcomposeAsyncImage(
                 modifier = Modifier.fillMaxSize(),
-                model = item.imageSrc,
+                model = imageExtractor(item),
                 contentScale = ContentScale.Crop,
-                contentDescription = "user history item",
+                contentDescription = "item image",
                 loading = {}
             )
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = item.price.toString() + "₽",
+                    text = priceExtractor(item),
                     style = typography.l15sf700,
                     fontSize = fontSize
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
-                    text = item.title,
+                    text = titleExtractor(item),
                     style = typography.l15sf700,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
             }
             RoundedBoxIcon()
+        }
+    }
+}
+
+@Composable
+fun CatalogHorizontalItem(
+    item: Product,
+    onItemClickListener: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(90.dp)
+            .clickable { onItemClickListener() },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .width(145.dp)
+                .height(90.dp)
+                .clip(RoundedCornerShape(10.dp))
+        ) {
+            SubcomposeAsyncImage(
+                modifier = Modifier
+                    .width(145.dp)
+                    .height(90.dp),
+                model = item.imageSrc,
+                contentScale = ContentScale.Crop,
+                contentDescription = "user history item",
+                loading = {}
+            )
+        }
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column(modifier = Modifier.fillMaxSize()) {
+            Text(
+                text = item.title,
+                style = typography.l17sfT400,
+                fontSize = 15.sp,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = item.price.toString() + "₽",
+                    style = typography.l15sf700
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                RoundedBoxIcon()
+            }
         }
     }
 }

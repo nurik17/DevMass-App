@@ -2,6 +2,8 @@ package com.example.drevmassapp.di
 
 import com.example.drevmassapp.domain.useCase.catalog.GetFamousProductUseCase
 import com.example.drevmassapp.domain.useCase.catalog.GetFamousProductUseCaseImpl
+import com.example.drevmassapp.domain.useCase.catalog.GetProductByIdUseCase
+import com.example.drevmassapp.domain.useCase.catalog.GetProductByIdUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.GetProductsPriceDownUseCase
 import com.example.drevmassapp.domain.useCase.catalog.GetProductsPriceDownUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.GetProductsPriceUpUseCase
@@ -42,4 +44,6 @@ interface UseCaseModule {
     @Binds
     fun provideGetProductsPriceUpUseCase(impl: GetProductsPriceUpUseCaseImpl): GetProductsPriceUpUseCase
 
+    @Binds
+    fun provideGetProductByIdUseCase(impl: GetProductByIdUseCaseImpl): GetProductByIdUseCase
 }

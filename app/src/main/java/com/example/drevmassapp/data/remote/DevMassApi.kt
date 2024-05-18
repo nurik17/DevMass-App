@@ -1,6 +1,7 @@
 package com.example.drevmassapp.data.remote
 
 import com.example.drevmassapp.data.model.ForgotPasswordDto
+import com.example.drevmassapp.data.model.ProductDetailDto
 import com.example.drevmassapp.data.model.ProductX
 import com.example.drevmassapp.data.model.SignInResponseDto
 import com.example.drevmassapp.data.model.SignUpResponseDto
@@ -12,6 +13,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface DevMassApi {
     @POST("api/signup")
@@ -49,4 +51,10 @@ interface DevMassApi {
     suspend fun getProductsPriceUp(
         @Header("Authorization") token: String
     ):ProductX
+
+    @GET("api/products/{product_id}")
+    suspend fun getProductById(
+        @Header("Authorization") token: String,
+        @Path("product_id") id : Int
+    ):ProductDetailDto
 }

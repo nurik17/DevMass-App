@@ -1,5 +1,6 @@
 package com.example.drevmassapp.data.local
 
+import com.example.drevmassapp.data.model.ProductDetailDto
 import com.example.drevmassapp.data.model.ProductX
 import com.example.drevmassapp.data.remote.DevMassApi
 import com.example.drevmassapp.domain.repository.CatalogRepository
@@ -28,6 +29,11 @@ class CatalogRepositoryImpl @Inject constructor(
     override suspend fun getProductsPriceUp(token: String): ProductX {
         val bearerToken = "Bearer $token"
         return api.getProductsPriceUp(bearerToken)
+    }
+
+    override suspend fun getProductById(token: String, product_id: Int): ProductDetailDto {
+        val bearerToken = "Bearer $token"
+        return api.getProductById(bearerToken, product_id)
     }
 
     /*private fun getToken(token: String): String {

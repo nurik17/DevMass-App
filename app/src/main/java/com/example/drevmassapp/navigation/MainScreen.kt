@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
+    navigateToProductDetails: (Int) -> Unit
 ) {
 
     Scaffold(
@@ -26,6 +27,7 @@ fun MainScreen(
         BottomBarNavGraph(
             modifier = Modifier.padding(paddingValues),
             navController = navController,
+            navigateToProductDetails = navigateToProductDetails
         )
     }
 }

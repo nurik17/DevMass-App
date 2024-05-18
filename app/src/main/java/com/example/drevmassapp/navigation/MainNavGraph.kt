@@ -9,6 +9,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.drevmassapp.presentation.catalog.detail.ProductDetailScreen
+import com.example.drevmassapp.presentation.catalog.detail.ProductDetailViewModel
 import com.example.drevmassapp.presentation.login.LoginScreen
 import com.example.drevmassapp.presentation.login.LoginViewModel
 import com.example.drevmassapp.presentation.onboarding.OnBoardingScreen
@@ -34,6 +36,14 @@ fun MainNavGraph(
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None }
     ) {
+        composable(route = MainDestinations.MainScreen_route) {
+            MainScreen(
+                navigateToProductDetails = { id ->
+                    navController.navigate("${MainDestinations.ProductDetailScreen_route}/$id")
+                }
+            )
+        }
+
         composable(route = MainDestinations.SPLASH_ROUTE) {
             SplashScreen(navigateToOnBoardingScreen = { navController.navigate(MainDestinations.OnBoardingScreen_route) })
         }
@@ -62,8 +72,10 @@ fun MainNavGraph(
             )
         }
 
-        composable(route = MainDestinations.MainScreen_route) {
-            MainScreen()
+        composable(route = "${MainDestinations.ProductDetailScreen_route}/{id}") { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("id")
+            val viewModel: ProductDetailViewModel = hiltViewModel()
+            ProductDetailScreen(id = id, viewModel = viewModel)
         }
     }
 }
@@ -80,6 +92,8 @@ private object MainScreens {
     const val BasketScreen = "BasketScreen"
     const val ProfileScreen = "ProfileScreen"
 
+    const val ProductDetailScreen = "ProductDetailScreen"
+
     const val MainScreen = "MainScreen"
 
 }
@@ -95,6 +109,8 @@ object MainDestinations {
     const val CatalogScreen_route = MainScreens.CatalogScreen
     const val BasketScreen_route = MainScreens.BasketScreen
     const val ProfileScreen_route = MainScreens.ProfileScreen
+
+    const val ProductDetailScreen_route = MainScreens.ProductDetailScreen
 
 
     const val MainScreen_route = MainScreens.MainScreen

@@ -45,5 +45,5 @@ val typography = Typographies(
         fontFamily = FontFamily(Font(R.font.sf_pro_display_semibold)),
         fontSize = 20.sp,
         color = Dark900
-        )
+    )
 )

@@ -33,8 +33,16 @@ class CatalogViewModel @Inject constructor(
     private val _selectedOption = MutableLiveData<String>()
     val selectedOption: LiveData<String> = _selectedOption
 
+    private val _listType = MutableLiveData<ListType>()
+    val listType: LiveData<ListType> = _listType
+
     private val bearerToken = sharedPreferences.getString("accessToken", null)
 
+    init {
+        getProducts()
+        loadSelectedOption()
+        _listType.value = ListType.GRID
+    }
     private fun loadSelectedOption() {
         val defaultOption = "По популярности"
         _selectedOption.value = sharedPreferences.getString(PREF_KEY, defaultOption)
@@ -47,10 +55,13 @@ class CatalogViewModel @Inject constructor(
             apply()
         }
     }
-
-    init {
-        getProducts()
-        loadSelectedOption()
+    fun toggleListType() {
+        _listType.value = when (_listType.value) {
+            ListType.GRID -> ListType.VERTICAL_COLUMN
+            ListType.VERTICAL_COLUMN -> ListType.HORIZONTAL_COLUMN
+            ListType.HORIZONTAL_COLUMN -> ListType.GRID
+            else -> ListType.GRID
+        }
     }
 
     fun getProducts() {

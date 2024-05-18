@@ -24,3 +24,5 @@ val ErrorStateColor = Color(0xFFF96666)
 
 
 val GrayDefault = Color(0xFFE0DEDD)
+
+val borderColor = Color(0xFFF3F1F0)

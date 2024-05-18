@@ -236,7 +236,7 @@ fun LoginScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(paddingValues)
+            .padding(paddingValues = paddingValues)
             .padding(top = 12.dp, start = 32.dp, end = 32.dp)
             .verticalScroll(scrollState)
     ) {
