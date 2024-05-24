@@ -5,6 +5,7 @@ package com.example.drevmassapp.presentation.catalog
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -49,20 +51,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.drevmassapp.R
 import com.example.drevmassapp.common.ProgressBlock
+import com.example.drevmassapp.common.clickableWithoutRipple
 import com.example.drevmassapp.data.model.Product
 import com.example.drevmassapp.ui.theme.Brand400
 import com.example.drevmassapp.ui.theme.Brand900
 import com.example.drevmassapp.ui.theme.Gray700
 import com.example.drevmassapp.ui.theme.RadioButtonColor
 import com.example.drevmassapp.ui.theme.typography
+import com.example.drevmassapp.util.Constant.IMAGE_URL
 
 @Composable
 fun CatalogScreen(
@@ -72,6 +74,9 @@ fun CatalogScreen(
     val catalogState = viewModel.catalogState.collectAsStateWithLifecycle()
     val shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
 
+    LaunchedEffect(Unit){
+        viewModel.getProducts()
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -155,9 +160,12 @@ fun CatalogContent(
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by remember { mutableStateOf(false) }
     val listType by viewModel.listType.observeAsState(initial = ListType.GRID)
+    val interactionSource = remember { MutableInteractionSource() }
 
-    Column(modifier = Modifier.padding(all = 16.dp)) {
-
+    Column(
+        modifier = Modifier
+            .padding(start = 16.dp,end = 16.dp,top = 16.dp, bottom = 0.dp)
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -178,10 +186,16 @@ fun CatalogContent(
             )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
-                modifier = Modifier.clickable {
+                modifier = Modifier.clickableWithoutRipple(interactionSource) {
                     viewModel.toggleListType()
                 },
-                painter = painterResource(id = R.drawable.ic_tile),
+                painter = painterResource(
+                    id = when (listType) {
+                        ListType.GRID -> R.drawable.ic_tile
+                        ListType.VERTICAL_COLUMN -> R.drawable.ic_vertical_type
+                        ListType.HORIZONTAL_COLUMN -> R.drawable.ic_horizontal_type
+                    }
+                ),
                 contentDescription = "",
                 tint = Gray700
             )
@@ -204,6 +218,7 @@ fun CatalogContent(
                 navigateToProductDetails = navigateToProductDetails
             )
         }
+
         Spacer(
             modifier = Modifier
                 .background(Color.Red)
@@ -228,6 +243,7 @@ fun GridListType(
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         items(items = list) { item ->
             CatalogItem(
@@ -235,11 +251,14 @@ fun GridListType(
                 width = 167.dp,
                 fontSize = 15.sp,
                 item = item,
-                imageExtractor = { it.imageSrc },
+                imageExtractor = { "$IMAGE_URL${item.imageSrc}" },
                 priceExtractor = { "${it.price} ₽" },
                 titleExtractor = { it.title },
                 onItemClickListener = {
                     navigateToProductDetails(item.id)
+                },
+                isItemInBasket = {
+                    it.basketCount > 0
                 }
             )
         }
@@ -260,11 +279,14 @@ fun VerticalListType(
                 width = 343.dp,
                 fontSize = 20.sp,
                 item = item,
-                imageExtractor = { it.imageSrc },
+                imageExtractor = { "$IMAGE_URL${item.imageSrc}" },
                 priceExtractor = { "${it.price} ₽" },
                 titleExtractor = { it.title },
                 onItemClickListener = {
                     navigateToProductDetails(item.id)
+                },
+                isItemInBasket = {
+                    it.basketCount > 0
                 }
             )
         }
@@ -296,68 +318,17 @@ fun HorizontalListType(
 }
 
 @Composable
-fun <T> CatalogItem(
-    height: Dp = 0.dp,
-    width: Dp = 0.dp,
-    fontSize: TextUnit = 0.sp,
-    item: T,
-    imageExtractor: (T) -> String,
-    priceExtractor: (T) -> String,
-    titleExtractor: (T) -> String,
-    onItemClickListener: () -> Unit = {}
-) {
-    Column(
-        modifier = Modifier
-            .width(width)
-            .wrapContentHeight()
-            .clickable { onItemClickListener() }
-    ) {
-        Box(
-            modifier = Modifier
-                .width(width)
-                .height(height)
-                .clip(RoundedCornerShape(10.dp))
-        ) {
-            SubcomposeAsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                model = imageExtractor(item),
-                contentScale = ContentScale.Crop,
-                contentDescription = "item image",
-                loading = {}
-            )
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = priceExtractor(item),
-                    style = typography.l15sf700,
-                    fontSize = fontSize
-                )
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text = titleExtractor(item),
-                    style = typography.l15sf700,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-            RoundedBoxIcon()
-        }
-    }
-}
-
-@Composable
 fun CatalogHorizontalItem(
     item: Product,
     onItemClickListener: () -> Unit
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(90.dp)
-            .clickable { onItemClickListener() },
+            .clickableWithoutRipple(interactionSource) { onItemClickListener() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -370,11 +341,12 @@ fun CatalogHorizontalItem(
                 modifier = Modifier
                     .width(145.dp)
                     .height(90.dp),
-                model = item.imageSrc,
+                model = "$IMAGE_URL${item.imageSrc}",
                 contentScale = ContentScale.Crop,
                 contentDescription = "user history item",
                 loading = {}
             )
+            Log.d("CatalogHorizontalItem", "$IMAGE_URL${item.imageSrc}")
         }
         Spacer(modifier = Modifier.width(12.dp))
 
@@ -474,22 +446,5 @@ fun SortBottomSheet(
     }
 }
 
-@Composable
-fun RoundedBoxIcon() {
-    Box(
-        modifier = Modifier
-            .size(36.dp)
-            .background(Brand900, CircleShape)
-            .clip(CircleShape),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            modifier = Modifier
-                .size(20.dp),
-            painter = painterResource(id = R.drawable.ic_basket),
-            contentDescription = "icon basket",
-            tint = Color.White
-        )
-    }
-}
+
 

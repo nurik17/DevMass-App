@@ -37,7 +37,7 @@ fun CustomButton(
         ),
         shape = shape,
         enabled = enabled,
-        border = BorderStroke(2.dp,borderColor)
+        border = BorderStroke(2.dp, borderColor)
     ) {
         if (isLoading) {
             CircularProgressIndicator(
@@ -52,6 +52,7 @@ fun CustomButton(
             )
         }
     }
+}
 
     /*Box(
         modifier = modifier
@@ -73,4 +74,3 @@ fun CustomButton(
             )
         }
     }*/
-}

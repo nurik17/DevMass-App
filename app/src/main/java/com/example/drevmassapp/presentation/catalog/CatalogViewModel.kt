@@ -43,6 +43,7 @@ class CatalogViewModel @Inject constructor(
         loadSelectedOption()
         _listType.value = ListType.GRID
     }
+
     private fun loadSelectedOption() {
         val defaultOption = "По популярности"
         _selectedOption.value = sharedPreferences.getString(PREF_KEY, defaultOption)
@@ -55,6 +56,7 @@ class CatalogViewModel @Inject constructor(
             apply()
         }
     }
+
     fun toggleListType() {
         _listType.value = when (_listType.value) {
             ListType.GRID -> ListType.VERTICAL_COLUMN
@@ -69,10 +71,10 @@ class CatalogViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = getProductsUseCase.getProducts(bearerToken!!)
-                _catalogState.value = CatalogState.Products(result)
+                _catalogState.update { CatalogState.Products(result) }
                 Log.d("CatalogViewModel", "getProducts: $result")
             } catch (e: Exception) {
-                _catalogState.value = CatalogState.Failure(e.message.toString())
+                _catalogState.update { CatalogState.Failure(e.message.toString()) }
                 Log.d("CatalogViewModel", "getProducts error ${e.message.toString()}")
             }
         }
@@ -83,10 +85,10 @@ class CatalogViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val result = getFamousProductUseCase.getFamousProducts(bearerToken!!)
-                _catalogState.value = CatalogState.FamousProducts(result)
+                _catalogState.update { CatalogState.FamousProducts(result) }
                 Log.d("CatalogViewModel", "getFamousProducts success")
             } catch (e: Exception) {
-                _catalogState.value = CatalogState.Failure(e.message.toString())
+                _catalogState.update { CatalogState.Failure(e.message.toString()) }
                 Log.d("CatalogViewModel", "getFamousProducts error ${e.message.toString()}")
             }
         }
@@ -97,10 +99,10 @@ class CatalogViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val result = getProductsPriceDownUseCase.getProductsPriceDown(bearerToken!!)
-                _catalogState.value = CatalogState.ProductsPriceDown(result)
+                _catalogState.update { CatalogState.ProductsPriceDown(result) }
                 Log.d("CatalogViewModel", "getProductsPriceDown success")
             } catch (e: Exception) {
-                _catalogState.value = CatalogState.Failure(e.message.toString())
+                _catalogState.update { CatalogState.Failure(e.message.toString()) }
                 Log.d("CatalogViewModel", "getProductsPriceDown error ${e.message.toString()}")
             }
         }
@@ -111,7 +113,7 @@ class CatalogViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val result = getProductsPriceUpUseCase.getProductsPriceUp(bearerToken!!)
-                _catalogState.value = CatalogState.ProductsPriceUp(result)
+                _catalogState.update { CatalogState.ProductsPriceUp(result) }
                 Log.d("CatalogViewModel", "getProductsPriceUp success")
 
             } catch (e: Exception) {

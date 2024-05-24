@@ -8,6 +8,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.drevmassapp.presentation.basket.BasketScreen
+import com.example.drevmassapp.presentation.basket.BasketViewModel
 import com.example.drevmassapp.presentation.catalog.CatalogScreen
 import com.example.drevmassapp.presentation.catalog.CatalogViewModel
 
@@ -44,7 +46,8 @@ fun BottomBarNavGraph(
         }
 
         composable(route = MainDestinations.BasketScreen_route) {
-
+            val viewModel = hiltViewModel<BasketViewModel>()
+            BasketScreen(viewModel = viewModel)
         }
         composable(route = MainDestinations.ProfileScreen_route) {
         }

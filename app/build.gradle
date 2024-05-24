@@ -132,6 +132,7 @@ dependencies {
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.compose.runtime:runtime-livedata:1.6.7'
 
+    implementation "me.onebone:toolbar-compose:2.3.5"
 
 
 }

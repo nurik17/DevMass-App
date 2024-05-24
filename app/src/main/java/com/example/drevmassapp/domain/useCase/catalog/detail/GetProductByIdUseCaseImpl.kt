@@ -1,4 +1,4 @@
-package com.example.drevmassapp.domain.useCase.catalog
+package com.example.drevmassapp.domain.useCase.catalog.detail
 
 import com.example.drevmassapp.data.model.ProductDetailDto
 import com.example.drevmassapp.domain.repository.CatalogRepository

@@ -8,25 +8,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun MainScreen(
-    navController: NavHostController = rememberNavController(),
+    bottomNavController: NavHostController,
     navigateToProductDetails: (Int) -> Unit
 ) {
 
     Scaffold(
         bottomBar = {
             Column {
-                MainNavBar(navController)
+                MainNavBar(bottomNavController)
             }
         },
         contentWindowInsets = WindowInsets.navigationBars
     ) { paddingValues ->
         BottomBarNavGraph(
             modifier = Modifier.padding(paddingValues),
-            navController = navController,
+            navController = bottomNavController,
             navigateToProductDetails = navigateToProductDetails
         )
     }

@@ -22,7 +22,9 @@ import com.example.drevmassapp.presentation.splash.SplashScreen
 fun MainNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    bottomNavController: NavHostController = rememberNavController()
 ) {
+
     NavHost(
         navController = navController,
         startDestination = MainDestinations.MainScreen_route,
@@ -40,7 +42,8 @@ fun MainNavGraph(
             MainScreen(
                 navigateToProductDetails = { id ->
                     navController.navigate("${MainDestinations.ProductDetailScreen_route}/$id")
-                }
+                },
+                bottomNavController = bottomNavController
             )
         }
 
@@ -75,7 +78,15 @@ fun MainNavGraph(
         composable(route = "${MainDestinations.ProductDetailScreen_route}/{id}") { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("id")
             val viewModel: ProductDetailViewModel = hiltViewModel()
-            ProductDetailScreen(id = id, viewModel = viewModel)
+            ProductDetailScreen(
+                id = id,
+                viewModel = viewModel,
+                navigateBack = { navController.popBackStack() },
+                navigateToBasket = {
+                    navController.navigate(MainDestinations.MainScreen_route)
+                    bottomNavController.navigate(MainDestinations.BasketScreen_route)
+                }
+            )
         }
     }
 }

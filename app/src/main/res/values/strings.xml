@@ -39,4 +39,17 @@
     <string name="size">Размер</string>
     <string name="description">Описание</string>
     <string name="buy_with_this">С этим товаром покупают</string>
+    <string name="in_basket">В корзине</string>
+    <string name="empty_basket_title">В корзине пока ничего нет</string>
+    <string name="empty_basket_subTitle">Наполните её товарами из\nкаталога</string>
+    <string name="to_catalog">Перейти в каталог</string>
+    <string name="basket">Корзина</string>
+    <string name="take_bonus">Списать бонусы</string>
+    <string name="take_bonus_subTitle">Баллами можно оплатить до 30% от\nстоимости заказа.</string>
+    <string name="write_promocode">Ввести промокод</string>
+    <string name="pay_with_bonus">Оплата бонусами</string>
+    <string name="itogo">Итого</string>
+    <string name="delete_products">Удаление товаров</string>
+    <string name="confirm_delete">Очистить корзину</string>
+    <string name="dismiss_delete">Отмена</string>
 </resources>
