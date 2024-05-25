@@ -17,7 +17,8 @@ import com.example.drevmassapp.presentation.catalog.CatalogViewModel
 fun BottomBarNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    navigateToProductDetails: (Int) -> Unit
+    navigateToProductDetails: (Int) -> Unit,
+    navigateToMakeOrder:() -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -47,7 +48,7 @@ fun BottomBarNavGraph(
 
         composable(route = MainDestinations.BasketScreen_route) {
             val viewModel = hiltViewModel<BasketViewModel>()
-            BasketScreen(viewModel = viewModel)
+            BasketScreen(viewModel = viewModel, navigateToMakeOrder = navigateToMakeOrder)
         }
         composable(route = MainDestinations.ProfileScreen_route) {
         }

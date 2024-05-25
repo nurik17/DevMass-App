@@ -9,6 +9,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.drevmassapp.presentation.basket.makeOrder.MakeOrderScreen
+import com.example.drevmassapp.presentation.basket.makeOrder.MakeOrderViewModel
 import com.example.drevmassapp.presentation.catalog.detail.ProductDetailScreen
 import com.example.drevmassapp.presentation.catalog.detail.ProductDetailViewModel
 import com.example.drevmassapp.presentation.login.LoginScreen
@@ -27,7 +29,7 @@ fun MainNavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = MainDestinations.MainScreen_route,
+        startDestination = MainDestinations.MakeOrderScreen_route,
         modifier = modifier,
         enterTransition = {
             EnterTransition.None
@@ -43,7 +45,10 @@ fun MainNavGraph(
                 navigateToProductDetails = { id ->
                     navController.navigate("${MainDestinations.ProductDetailScreen_route}/$id")
                 },
-                bottomNavController = bottomNavController
+                bottomNavController = bottomNavController,
+                navigateToMakeOrder = {
+                    navController.navigate(MainDestinations.MakeOrderScreen_route)
+                }
             )
         }
 
@@ -88,6 +93,14 @@ fun MainNavGraph(
                 }
             )
         }
+
+        composable(route = MainDestinations.MakeOrderScreen_route){
+            val viewModel = hiltViewModel<MakeOrderViewModel>()
+            MakeOrderScreen(
+                viewModel = viewModel,
+                navigateBack = {navController.popBackStack()}
+            )
+        }
     }
 }
 
@@ -104,6 +117,7 @@ private object MainScreens {
     const val ProfileScreen = "ProfileScreen"
 
     const val ProductDetailScreen = "ProductDetailScreen"
+    const val MakeOrderScreen = "MakeOrderScreen"
 
     const val MainScreen = "MainScreen"
 
@@ -122,6 +136,7 @@ object MainDestinations {
     const val ProfileScreen_route = MainScreens.ProfileScreen
 
     const val ProductDetailScreen_route = MainScreens.ProductDetailScreen
+    const val MakeOrderScreen_route = MainScreens.MakeOrderScreen
 
 
     const val MainScreen_route = MainScreens.MainScreen

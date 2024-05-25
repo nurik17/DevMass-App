@@ -5,6 +5,8 @@ import com.example.drevmassapp.domain.useCase.basket.DeleteAllBasketItemsUseCase
 import com.example.drevmassapp.domain.useCase.basket.DeleteAllBasketItemsUseCaseImpl
 import com.example.drevmassapp.domain.useCase.basket.GetBasketUseCase
 import com.example.drevmassapp.domain.useCase.basket.GetBasketUseCaseImpl
+import com.example.drevmassapp.domain.useCase.basket.MakeOrderUseCase
+import com.example.drevmassapp.domain.useCase.basket.MakeOrderUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.GetFamousProductUseCase
 import com.example.drevmassapp.domain.useCase.catalog.GetFamousProductUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.detail.GetProductByIdUseCase
@@ -79,4 +81,7 @@ interface UseCaseModule {
 
     @Binds
     fun provideDeleteAllBasketItemsUseCase(impl: DeleteAllBasketItemsUseCaseImpl): DeleteAllBasketItemsUseCase
+
+    @Binds
+    fun provideMakeOrderUseCase(impl: MakeOrderUseCaseImpl): MakeOrderUseCase
 }

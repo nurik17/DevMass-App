@@ -7,6 +7,7 @@ import com.example.drevmassapp.data.model.ProductX
 import com.example.drevmassapp.data.model.SignInResponseDto
 import com.example.drevmassapp.data.model.SignUpResponseDto
 import com.example.drevmassapp.domain.entity.AddToBasketBody
+import com.example.drevmassapp.domain.entity.MakeOrderBody
 import com.example.drevmassapp.domain.entity.SignInBody
 import com.example.drevmassapp.domain.entity.SignUpBody
 import retrofit2.http.Body
@@ -89,5 +90,11 @@ interface DevMassApi {
     @DELETE("basket")
     suspend fun deleteAllBasketItems(
         @Header("Authorization") token: String,
+    ): ForgotPasswordDto
+
+    @POST("order")
+    suspend fun makeOrder(
+        @Header("Authorization") token: String,
+        @Body body: MakeOrderBody,
     ): ForgotPasswordDto
 }

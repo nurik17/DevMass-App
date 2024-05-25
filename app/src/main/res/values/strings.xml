@@ -52,4 +52,10 @@
     <string name="delete_products">Удаление товаров</string>
     <string name="confirm_delete">Очистить корзину</string>
     <string name="dismiss_delete">Отмена</string>
+    <string name="make_order">Оформление заказа</string>
+    <string name="recipient">Получатель</string>
+    <string name="name">Имя</string>
+    <string name="send_order">Отправить заявку</string>
+    <string name="your_order_taked">Ваш заказ принят</string>
+    <string name="order_taked_subTitle">Сейчас на ваш номер должна прийти смс с номера Drevmass. Наши менеджеры свяжутся с Вами в ближайшее время.</string>
 </resources>

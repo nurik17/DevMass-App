@@ -48,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -64,7 +65,6 @@ import com.example.drevmassapp.common.DashedLine
 import com.example.drevmassapp.common.clickableWithoutRipple
 import com.example.drevmassapp.data.model.Basket
 import com.example.drevmassapp.data.model.BasketResponseDto
-import com.example.drevmassapp.data.model.Product
 import com.example.drevmassapp.presentation.catalog.detail.RecommendBlock
 import com.example.drevmassapp.ui.theme.Brand300
 import com.example.drevmassapp.ui.theme.Brand400
@@ -83,11 +83,13 @@ import com.example.drevmassapp.util.Constant
 
 @Composable
 fun BasketScreen(
-    viewModel: BasketViewModel
+    viewModel: BasketViewModel,
+    navigateToMakeOrder: () -> Unit,
 ) {
 
     val basketState = viewModel.basketState.collectAsStateWithLifecycle()
     val isDialogDeleteVisibility by viewModel.isDeleteDialogVisible.collectAsStateWithLifecycle()
+    var isChecked by rememberSaveable { mutableStateOf(false) }
 
     val scrollState = rememberLazyListState()
     val isScrolled by remember {
@@ -97,8 +99,12 @@ fun BasketScreen(
     }
     val currentState = basketState.value
 
-    LaunchedEffect(Unit) {
-        viewModel.getBasket("")
+    LaunchedEffect(isChecked) {
+        if(isChecked){
+            viewModel.getBasket("true")
+        }else{
+            viewModel.getBasket("false")
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -120,8 +126,25 @@ fun BasketScreen(
                     isDialogDeleteVisibility = isDialogDeleteVisibility,
                     modifier = Modifier
                         .offset(y = (-12).dp),
+                    isChecked = isChecked,
+                    onCheckedChange = {
+                        isChecked = it
+                    }
                 )
             }
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+        }
+        if (currentState is BasketState.Success) {
+            if(currentState.basket.basket.isNotEmpty()){
+                StickyButton(
+                    totalPrice = currentState.basket.totalPrice,
+                    navigateToMakeOrder = navigateToMakeOrder
+                )
+            }
+        }else{
+            Box{}
         }
         TransformingTopBar(
             isVisible = isScrolled,
@@ -129,6 +152,119 @@ fun BasketScreen(
         )
     }
 }
+
+@Composable
+fun BasketContent(
+    currentState: BasketState,
+    isDialogDeleteVisibility: Boolean,
+    isChecked: Boolean,
+    onCheckedChange:(Boolean) -> Unit,
+    viewModel: BasketViewModel,
+    modifier: Modifier = Modifier
+) {
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.White, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+            .padding(16.dp)
+    ) {
+        when (currentState) {
+            is BasketState.Success -> {
+                val basketList = currentState.basket.basket
+
+                if (basketList.isNotEmpty()) {
+                    BasketContentSuccess(
+                        basketState = currentState,
+                        isChecked = isChecked,
+                        isDialogDeleteVisibility = isDialogDeleteVisibility,
+                        viewModel = viewModel,
+                        onCheckedChange = onCheckedChange
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        EmptyStateBasket()
+                    }
+                }
+            }
+
+            is BasketState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .padding(top = 80.dp)
+                            .size(40.dp),
+                        color = Brand900
+                    )
+                }
+            }
+
+            is BasketState.Initial -> {
+            }
+
+            is BasketState.Failure -> {
+                // Handle failure state if needed
+            }
+        }
+    }
+}
+
+@Composable
+fun StickyButton(
+    totalPrice: Int,
+    navigateToMakeOrder: () -> Unit,
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Button(
+            onClick = { navigateToMakeOrder() },
+            colors = ButtonColors(
+                containerColor = Brand900,
+                contentColor = Color.White,
+                disabledContainerColor = Brand900,
+                disabledContentColor = Color.White
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .padding(horizontal = 16.dp)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.White,
+                            Color.White.copy(alpha = 0.8f),
+                            Color.White.copy(alpha = 0f)
+                        )
+                    )
+                )
+                .align(Alignment.BottomCenter),
+        ) {
+            Text(
+                text = "Оформить",
+                style = typography.l15sfT600,
+                fontSize = 17.sp,
+                color = Color.White
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = "$totalPrice ₽",
+                style = typography.l15sfT600,
+                fontSize = 17.sp,
+                color = Color.White
+            )
+        }
+    }
+}
+
+
+
 
 @Composable
 fun HeaderScrollingContent(
@@ -165,76 +301,6 @@ fun HeaderScrollingContent(
 
 
 @Composable
-fun BasketContent(
-    currentState: BasketState,
-    isDialogDeleteVisibility: Boolean,
-    viewModel: BasketViewModel,
-    modifier: Modifier = Modifier
-) {
-    var isChecked by rememberSaveable { mutableStateOf(false) }
-
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.White, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            .padding(16.dp)
-    ) {
-        when (currentState) {
-            is BasketState.Success -> {
-                val basketList = currentState.basket.basket
-
-                if (basketList.isNotEmpty()) {
-                    BasketContentSuccess(
-                        basketState = currentState,
-                        isChecked = isChecked,
-                        isDialogDeleteVisibility = isDialogDeleteVisibility,
-                        viewModel = viewModel,
-                        onCheckedChange = { isChecked = it }
-                    )
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        EmptyStateBasket()
-                    }
-                }
-            }
-
-            is BasketState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .padding(top = 80.dp)
-                            .size(40.dp),
-                        color = Brand900
-                    )
-                }
-            }
-
-            is BasketState.Initial -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    EmptyStateBasket()
-                }
-            }
-
-            is BasketState.Failure -> {
-                // Handle failure state if needed
-            }
-        }
-    }
-}
-
-@Composable
 fun BasketContentSuccess(
     basketState: BasketState.Success,
     isChecked: Boolean,
@@ -244,35 +310,35 @@ fun BasketContentSuccess(
 ) {
     val basketList = basketState.basket.basket
 
-    Column {
-        basketList.forEachIndexed { index, item ->
-            var basketCount by rememberSaveable {
-                mutableStateOf(item.count)
-            }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column {
+            basketList.forEachIndexed { index, item ->
+                var basketCount by rememberSaveable {
+                    mutableStateOf(item.count)
+                }
 
-            if (index > 0) {
-                Spacer(modifier = Modifier.height(16.dp))
-                HorizontalDivider(
-                    thickness = 1.5.dp,
-                    color = Gray400
+                if (index > 0) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    HorizontalDivider(
+                        thickness = 1.5.dp,
+                        color = Gray400
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+                BasketItem(
+                    item = item,
+                    onDecreaseClick = {
+                        viewModel.decreaseItem(basketCount, item.productId, 0)
+                        basketCount--
+                    },
+                    onIncreaseClick = {
+                        viewModel.increaseItem(basketCount, item.productId, 0)
+                        basketCount++
+                    },
+                    count = basketCount
                 )
-                Spacer(modifier = Modifier.height(16.dp))
             }
-            BasketItem(
-                item = item,
-                onDecreaseClick = {
-                    viewModel.decreaseItem(basketCount, item.productId, 0)
-                    basketCount--
-                },
-                onIncreaseClick = {
-                    viewModel.increaseItem(basketCount, item.productId, 0)
-                    basketCount++
-                },
-                count = basketCount
-            )
-        }
 
-        if (basketList.isNotEmpty()) {
             Spacer(modifier = Modifier.height(32.dp))
             BonusBlock(
                 isChecked = isChecked,
@@ -655,7 +721,3 @@ fun TransformingTopBar(
         }
     }
 }
-
-
-
-

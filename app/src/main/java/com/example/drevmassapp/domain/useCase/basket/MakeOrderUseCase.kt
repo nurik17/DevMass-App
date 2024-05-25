@@ -1,13 +1,9 @@
-package com.example.drevmassapp.domain.repository
+package com.example.drevmassapp.domain.useCase.basket
 
-import com.example.drevmassapp.data.model.BasketResponseDto
 import com.example.drevmassapp.data.model.ForgotPasswordDto
 import com.example.drevmassapp.domain.entity.OrderedProduct
 
-interface BasketRepository {
-    suspend fun getBasket(token: String, isUsing: String): BasketResponseDto
-    suspend fun deleteAllBasketItems(token: String): ForgotPasswordDto
-
+interface MakeOrderUseCase {
     suspend fun makeOrder(
         token: String,
         bonus: Int,

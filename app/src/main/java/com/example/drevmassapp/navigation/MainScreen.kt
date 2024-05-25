@@ -12,7 +12,8 @@ import androidx.navigation.NavHostController
 @Composable
 fun MainScreen(
     bottomNavController: NavHostController,
-    navigateToProductDetails: (Int) -> Unit
+    navigateToProductDetails: (Int) -> Unit,
+    navigateToMakeOrder: () -> Unit,
 ) {
 
     Scaffold(
@@ -26,7 +27,8 @@ fun MainScreen(
         BottomBarNavGraph(
             modifier = Modifier.padding(paddingValues),
             navController = bottomNavController,
-            navigateToProductDetails = navigateToProductDetails
+            navigateToProductDetails = navigateToProductDetails,
+            navigateToMakeOrder = navigateToMakeOrder
         )
     }
 }

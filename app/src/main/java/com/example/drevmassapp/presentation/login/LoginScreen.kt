@@ -159,13 +159,13 @@ fun LoginScreen(
                         isSheetOpen = it
                     },
                 )
-                Log.d("LoginScreen", "loading")
+                Log.d("LoginScreen", "login: loading")
             }
 
             is LoginState.Success -> {
                 isLoading = false
                 navigateToMain() // navigateHome
-                Log.d("LoginScreen", "success")
+                Log.d("LoginScreen", "login: success")
             }
 
             is LoginState.Failure -> {
@@ -178,7 +178,7 @@ fun LoginScreen(
                     )
                 }
                 viewModel.changeState()
-                Log.d("LoginScreen", "failure")
+                Log.d("LoginScreen", "login: failure")
             }
 
             is LoginState.Initial -> {
@@ -207,7 +207,7 @@ fun LoginScreen(
                         emailForgot = it
                     }
                 )
-                Log.d("LoginScreen", "initial")
+                Log.d("LoginScreen", "login: initial")
             }
         }
     }
@@ -453,7 +453,7 @@ fun ResetPasswordContent(
                     }
                 }
             }
-            Log.d("LoginScreen", "ResetPasswordContent loading")
+            Log.d("LoginScreen", "password: loading")
         }
 
         is ForgotPasswordState.Success -> {
@@ -475,14 +475,14 @@ fun ResetPasswordContent(
                     isSuccessBottomSheetOpen = false
                 }
             )
-            Log.d("LoginScreen", "ResetPasswordContent success")
+            Log.d("LoginScreen", "password success")
         }
 
         is ForgotPasswordState.Failure -> {
             isError = true
             isLoading = false
             viewModel.changeStateForgotPassword()
-            Log.d("LoginScreen", "ResetPasswordContent failure")
+            Log.d("LoginScreen", "password failure")
         }
 
         is ForgotPasswordState.Initial -> {
@@ -504,7 +504,7 @@ fun ResetPasswordContent(
                     isSuccessBottomSheetOpen = false
                 }
             )
-            Log.d("LoginScreen", "ResetPasswordContent initial")
+            Log.d("LoginScreen", "password initial")
         }
     }
 }
