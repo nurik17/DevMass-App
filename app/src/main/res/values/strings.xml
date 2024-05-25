@@ -58,4 +58,11 @@
     <string name="send_order">Отправить заявку</string>
     <string name="your_order_taked">Ваш заказ принят</string>
     <string name="order_taked_subTitle">Сейчас на ваш номер должна прийти смс с номера Drevmass. Наши менеджеры свяжутся с Вами в ближайшее время.</string>
+    <string name="my_points">Мои баллы</string>
+    <string name="chaange_password">Сменить пароль</string>
+    <string name="notification">Уведомления</string>
+    <string name="contact_with_us">Связаться с нами</string>
+    <string name="write_review">Оставить отзыв</string>
+    <string name="information">Информация</string>
+    <string name="logout">Выйти</string>
 </resources>

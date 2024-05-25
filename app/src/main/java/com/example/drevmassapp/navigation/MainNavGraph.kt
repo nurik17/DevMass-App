@@ -29,7 +29,7 @@ fun MainNavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = MainDestinations.MakeOrderScreen_route,
+        startDestination = MainDestinations.MainScreen_route,
         modifier = modifier,
         enterTransition = {
             EnterTransition.None
@@ -94,11 +94,12 @@ fun MainNavGraph(
             )
         }
 
-        composable(route = MainDestinations.MakeOrderScreen_route){
+        composable(route = MainDestinations.MakeOrderScreen_route) {
             val viewModel = hiltViewModel<MakeOrderViewModel>()
             MakeOrderScreen(
                 viewModel = viewModel,
-                navigateBack = {navController.popBackStack()}
+                navigateBack = { navController.popBackStack() },
+                navigateToMainScreen = { navController.navigate(MainDestinations.MainScreen_route) }
             )
         }
     }

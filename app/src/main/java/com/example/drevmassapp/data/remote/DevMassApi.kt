@@ -6,6 +6,7 @@ import com.example.drevmassapp.data.model.ProductDetailDto
 import com.example.drevmassapp.data.model.ProductX
 import com.example.drevmassapp.data.model.SignInResponseDto
 import com.example.drevmassapp.data.model.SignUpResponseDto
+import com.example.drevmassapp.data.model.UserDto
 import com.example.drevmassapp.domain.entity.AddToBasketBody
 import com.example.drevmassapp.domain.entity.MakeOrderBody
 import com.example.drevmassapp.domain.entity.SignInBody
@@ -97,4 +98,9 @@ interface DevMassApi {
         @Header("Authorization") token: String,
         @Body body: MakeOrderBody,
     ): ForgotPasswordDto
+
+    @GET("user")
+    suspend fun getUser(
+        @Header("Authorization") token: String
+    ): UserDto
 }

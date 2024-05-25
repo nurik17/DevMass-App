@@ -23,6 +23,8 @@ import com.example.drevmassapp.domain.useCase.catalog.detail.DecreaseItemUseCase
 import com.example.drevmassapp.domain.useCase.catalog.detail.DecreaseItemUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.detail.IncreaseItemUseCase
 import com.example.drevmassapp.domain.useCase.catalog.detail.IncreaseItemUseCaseImpl
+import com.example.drevmassapp.domain.useCase.profile.GetUserUseCase
+import com.example.drevmassapp.domain.useCase.profile.GetUserUseCaseImpl
 import com.example.drevmassapp.domain.useCase.registration.ForgotPasswordUseCase
 import com.example.drevmassapp.domain.useCase.registration.ForgotPasswordUseCaseImpl
 import com.example.drevmassapp.domain.useCase.registration.LoginUseCase
@@ -84,4 +86,7 @@ interface UseCaseModule {
 
     @Binds
     fun provideMakeOrderUseCase(impl: MakeOrderUseCaseImpl): MakeOrderUseCase
+
+    @Binds
+    fun provideGetUserUseCase(impl: GetUserUseCaseImpl): GetUserUseCase
 }

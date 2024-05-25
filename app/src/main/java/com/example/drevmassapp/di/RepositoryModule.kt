@@ -2,9 +2,11 @@ package com.example.drevmassapp.di
 
 import com.example.drevmassapp.data.local.BasketRepositoryImpl
 import com.example.drevmassapp.data.local.CatalogRepositoryImpl
+import com.example.drevmassapp.data.local.ProfileRepositoryImpl
 import com.example.drevmassapp.data.local.RegistrationRepositoryImpl
 import com.example.drevmassapp.domain.repository.BasketRepository
 import com.example.drevmassapp.domain.repository.CatalogRepository
+import com.example.drevmassapp.domain.repository.ProfileRepository
 import com.example.drevmassapp.domain.repository.RegistrationRepository
 import dagger.Binds
 import dagger.Module
@@ -22,4 +24,7 @@ interface RepositoryModule {
 
     @Binds
     fun provideBasketRepository(impl: BasketRepositoryImpl): BasketRepository
+
+    @Binds
+    fun provideProfileRepository(impl: ProfileRepositoryImpl): ProfileRepository
 }

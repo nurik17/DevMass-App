@@ -11,19 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -31,9 +24,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,7 +45,6 @@ import com.example.drevmassapp.common.SegmentedControl
 import com.example.drevmassapp.ui.theme.Brand900
 import com.example.drevmassapp.ui.theme.Dark1000
 import com.example.drevmassapp.ui.theme.Dark900
-import com.example.drevmassapp.ui.theme.Gray700
 import com.example.drevmassapp.ui.theme.Gray800
 import com.example.drevmassapp.ui.theme.typography
 
@@ -62,6 +52,7 @@ import com.example.drevmassapp.ui.theme.typography
 @Composable
 fun MakeOrderScreen(
     navigateBack: () -> Unit,
+    navigateToMainScreen: () -> Unit,
     viewModel: MakeOrderViewModel
 ) {
     val makeOrderState by viewModel.makeOrderState.collectAsStateWithLifecycle()
@@ -87,7 +78,7 @@ fun MakeOrderScreen(
                     onDismissChange = {
                         isSuccessBottomSheetOpen = false
                     },
-                    navigateToMainScreen = {}
+                    navigateToMainScreen = navigateToMainScreen
                 )
             }
 
