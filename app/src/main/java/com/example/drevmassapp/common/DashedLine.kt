@@ -23,12 +23,14 @@ import androidx.compose.ui.unit.LayoutDirection
 import kotlin.math.roundToInt
 
 @Composable
-fun DashedLine() {
+fun DashedLine(
+    height: Dp = 1.5.dp
+) {
     Box(
         Modifier
-            .height(1.5.dp)
+            .height(height)
             .fillMaxWidth()
-            .background(Color(0xFFD6D1CE), shape = DottedShape(step = 10.dp))
+            .background(Color(0xFFD6D1CE), shape = DottedShape(step = 8.dp))
     )
 }
 

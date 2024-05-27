@@ -24,8 +24,6 @@ private val LightColorScheme = lightColorScheme(
     background = Color.White,
 )
 
-
-
 @Composable
 fun DrevMassAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

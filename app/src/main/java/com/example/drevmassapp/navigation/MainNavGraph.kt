@@ -1,5 +1,7 @@
 package com.example.drevmassapp.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
@@ -9,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.drevmassapp.navigation.MainDestinations.MyPointsScreen_route
 import com.example.drevmassapp.presentation.basket.makeOrder.MakeOrderScreen
 import com.example.drevmassapp.presentation.basket.makeOrder.MakeOrderViewModel
 import com.example.drevmassapp.presentation.catalog.detail.ProductDetailScreen
@@ -16,10 +19,13 @@ import com.example.drevmassapp.presentation.catalog.detail.ProductDetailViewMode
 import com.example.drevmassapp.presentation.login.LoginScreen
 import com.example.drevmassapp.presentation.login.LoginViewModel
 import com.example.drevmassapp.presentation.onboarding.OnBoardingScreen
+import com.example.drevmassapp.presentation.profileScreen.myPoints.MyPointsScreen
+import com.example.drevmassapp.presentation.profileScreen.myPoints.MyPointsViewModel
 import com.example.drevmassapp.presentation.registration.SignUpScreen
 import com.example.drevmassapp.presentation.registration.SingUpViewModel
 import com.example.drevmassapp.presentation.splash.SplashScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainNavGraph(
     modifier: Modifier = Modifier,
@@ -48,6 +54,9 @@ fun MainNavGraph(
                 bottomNavController = bottomNavController,
                 navigateToMakeOrder = {
                     navController.navigate(MainDestinations.MakeOrderScreen_route)
+                },
+                navigateToPoints = {
+                    navController.navigate(MyPointsScreen_route)
                 }
             )
         }
@@ -102,6 +111,16 @@ fun MainNavGraph(
                 navigateToMainScreen = { navController.navigate(MainDestinations.MainScreen_route) }
             )
         }
+
+        composable(route = MainDestinations.MyPointsScreen_route){
+            val viewModel = hiltViewModel<MyPointsViewModel>()
+            MyPointsScreen(
+                viewModel = viewModel,
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }
 
@@ -122,6 +141,9 @@ private object MainScreens {
 
     const val MainScreen = "MainScreen"
 
+    const val MyPointsScreen = "MyPointsScreen"
+
+
 }
 
 object MainDestinations {
@@ -139,7 +161,7 @@ object MainDestinations {
     const val ProductDetailScreen_route = MainScreens.ProductDetailScreen
     const val MakeOrderScreen_route = MainScreens.MakeOrderScreen
 
-
     const val MainScreen_route = MainScreens.MainScreen
+    const val MyPointsScreen_route = MainScreens.MyPointsScreen
 
 }

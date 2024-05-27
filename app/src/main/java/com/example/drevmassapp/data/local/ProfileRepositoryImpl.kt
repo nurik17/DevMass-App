@@ -1,5 +1,7 @@
 package com.example.drevmassapp.data.local
 
+import com.example.drevmassapp.data.model.BonusDto
+import com.example.drevmassapp.data.model.BonusInfoDto
 import com.example.drevmassapp.data.model.UserDto
 import com.example.drevmassapp.data.remote.DevMassApi
 import com.example.drevmassapp.domain.repository.ProfileRepository
@@ -11,7 +13,17 @@ class ProfileRepositoryImpl @Inject constructor(
     override suspend fun getUser(token: String): UserDto {
         return api.getUser(getToken(token))
     }
+
+    override suspend fun getBonus(token: String): BonusDto {
+        return api.getBonus(getToken(token))
+    }
+
+    override suspend fun getBonusInfo(token: String): BonusInfoDto {
+        return api.getBonusInfo(getToken(token))
+    }
+
     private fun getToken(token: String): String {
         return "Bearer $token"
     }
+
 }

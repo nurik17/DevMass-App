@@ -21,6 +21,7 @@ fun BottomBarNavGraph(
     navController: NavHostController,
     navigateToProductDetails: (Int) -> Unit,
     navigateToMakeOrder:() -> Unit,
+    navigateToPoints:() -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -44,7 +45,6 @@ fun BottomBarNavGraph(
             CatalogScreen(
                 viewModel = viewModel,
                 navigateToProductDetails = navigateToProductDetails
-
             )
         }
 
@@ -55,7 +55,8 @@ fun BottomBarNavGraph(
         composable(route = MainDestinations.ProfileScreen_route) {
             val viewModel = hiltViewModel<ProfileViewModel>()
             ProfileScreen(
-                viewModel = viewModel
+                viewModel = viewModel,
+                navigateToPoints = navigateToPoints
             )
         }
     }

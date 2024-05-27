@@ -23,6 +23,10 @@ import com.example.drevmassapp.domain.useCase.catalog.detail.DecreaseItemUseCase
 import com.example.drevmassapp.domain.useCase.catalog.detail.DecreaseItemUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.detail.IncreaseItemUseCase
 import com.example.drevmassapp.domain.useCase.catalog.detail.IncreaseItemUseCaseImpl
+import com.example.drevmassapp.domain.useCase.profile.GetBonusInfoUseCase
+import com.example.drevmassapp.domain.useCase.profile.GetBonusInfoUseCaseImpl
+import com.example.drevmassapp.domain.useCase.profile.GetBonusUseCase
+import com.example.drevmassapp.domain.useCase.profile.GetBonusUseCaseImpl
 import com.example.drevmassapp.domain.useCase.profile.GetUserUseCase
 import com.example.drevmassapp.domain.useCase.profile.GetUserUseCaseImpl
 import com.example.drevmassapp.domain.useCase.registration.ForgotPasswordUseCase
@@ -89,4 +93,10 @@ interface UseCaseModule {
 
     @Binds
     fun provideGetUserUseCase(impl: GetUserUseCaseImpl): GetUserUseCase
+
+    @Binds
+    fun provideGetBonusUseCase(impl: GetBonusUseCaseImpl): GetBonusUseCase
+
+    @Binds
+    fun provideGetBonusInfoUseCase(impl: GetBonusInfoUseCaseImpl): GetBonusInfoUseCase
 }

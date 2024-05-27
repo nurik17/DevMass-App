@@ -65,4 +65,8 @@
     <string name="write_review">Оставить отзыв</string>
     <string name="information">Информация</string>
     <string name="logout">Выйти</string>
+    <string name="hiatory_of_points">История баллов</string>
+    <string name="empty_bonuses_title">В истории баллов пока пусто</string>
+    <string name="empty_bonuses_subTitle">Совершайте покупки, проходите видеоуроки и получайте за это баллы.</string>
+    <string name="bonus_programm">Бонусная программа</string>
 </resources>

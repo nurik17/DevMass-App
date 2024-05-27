@@ -164,7 +164,7 @@ fun LoginScreen(
 
             is LoginState.Success -> {
                 isLoading = false
-                navigateToMain() // navigateHome
+                navigateToMain()
                 Log.d("LoginScreen", "login: success")
             }
 

@@ -8,4 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#ECEBEB</color>
+
+    <color name="brand900">#B5A380</color>
 </resources>

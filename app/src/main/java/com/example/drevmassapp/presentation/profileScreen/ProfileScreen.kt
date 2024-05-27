@@ -15,9 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,9 +34,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.example.drevmassapp.R
 import com.example.drevmassapp.common.clickableWithoutRipple
+import com.example.drevmassapp.data.model.UserDto
 import com.example.drevmassapp.ui.theme.Brand900
 import com.example.drevmassapp.ui.theme.Dark1000
 import com.example.drevmassapp.ui.theme.Gray700
@@ -47,7 +45,8 @@ import com.example.drevmassapp.ui.theme.typography
 
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel
+    viewModel: ProfileViewModel,
+    navigateToPoints: () -> Unit
 ) {
     val userData by viewModel.user.observeAsState()
     val shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
@@ -59,23 +58,7 @@ fun ProfileScreen(
             .fillMaxSize()
             .background(Brand900)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Spacer(modifier = Modifier.height(25.dp))
-            Text(
-                text = userData?.name ?: "",
-                style = typography.l28sfD700,
-                color = Color.White
-            )
-            Text(
-                text = userData?.phoneNumber ?: "",
-                style = typography.l15sfT600,
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            MyPointsBlock()
-        }
+        ProfileTopBlock(userData = userData, navigateToPoints = navigateToPoints)
 
         Box(
             modifier = Modifier
@@ -107,7 +90,7 @@ fun ProfileScreen(
                         .wrapContentHeight()
                         .background(Color.White, RoundedCornerShape(20.dp))
                         .border(2.dp, borderColor, RoundedCornerShape(20.dp))
-                        .clickableWithoutRipple(interactionSource) { },
+                        .clickableWithoutRipple(interactionSource) { }
                 ) {
                     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
                         OneProfileBlockItem(
@@ -154,28 +137,56 @@ fun ProfileScreen(
                         )
                     }
                 }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 20.dp)
-                ) {
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        painter = painterResource(id = R.drawable.ic_logout),
-                        contentDescription = "",
-                        tint = Gray700
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 12.dp),
-                        text = stringResource(id = R.string.logout),
-                        style = typography.l15sfT600,
-                        fontSize = 17.sp,
-                        color = Gray700
-                    )
-                }
+                LogoutBlock()
             }
         }
+    }
+}
+
+@Composable
+fun ProfileTopBlock(
+    userData: UserDto?,
+    navigateToPoints: () -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Spacer(modifier = Modifier.height(25.dp))
+        Text(
+            text = userData?.name ?: "",
+            style = typography.l28sfD700,
+            color = Color.White
+        )
+        Text(
+            text = userData?.phoneNumber ?: "",
+            style = typography.l15sfT600,
+            color = Color.White
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        MyPointsBlock(navigateToPoints = navigateToPoints)
+    }
+}
+
+@Composable
+fun LogoutBlock() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 20.dp)
+    ) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(id = R.drawable.ic_logout),
+            contentDescription = "",
+            tint = Gray700
+        )
+        Text(
+            modifier = Modifier.padding(start = 12.dp),
+            text = stringResource(id = R.string.logout),
+            style = typography.l15sfT600,
+            fontSize = 17.sp,
+            color = Gray700
+        )
     }
 }
 
@@ -216,9 +227,15 @@ fun OneProfileBlockItem(
 }
 
 @Composable
-fun MyPointsBlock() {
+fun MyPointsBlock(
+    navigateToPoints: () -> Unit
+) {
+    val interactionSource = remember { MutableInteractionSource() }
     Box(
         modifier = Modifier
+            .clickableWithoutRipple(interactionSource) {
+                navigateToPoints()
+            }
             .fillMaxWidth()
             .wrapContentHeight()
             .background(

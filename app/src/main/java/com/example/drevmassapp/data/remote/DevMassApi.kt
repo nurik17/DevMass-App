@@ -1,6 +1,8 @@
 package com.example.drevmassapp.data.remote
 
 import com.example.drevmassapp.data.model.BasketResponseDto
+import com.example.drevmassapp.data.model.BonusDto
+import com.example.drevmassapp.data.model.BonusInfoDto
 import com.example.drevmassapp.data.model.ForgotPasswordDto
 import com.example.drevmassapp.data.model.ProductDetailDto
 import com.example.drevmassapp.data.model.ProductX
@@ -103,4 +105,15 @@ interface DevMassApi {
     suspend fun getUser(
         @Header("Authorization") token: String
     ): UserDto
+
+    @GET("bonus")
+    suspend fun getBonus(
+        @Header("Authorization") token: String
+    ):BonusDto
+
+    @GET("bonus/info")
+    suspend fun getBonusInfo(
+        @Header("Authorization") token: String
+    ): BonusInfoDto
+
 }

@@ -14,8 +14,8 @@ fun MainScreen(
     bottomNavController: NavHostController,
     navigateToProductDetails: (Int) -> Unit,
     navigateToMakeOrder: () -> Unit,
+    navigateToPoints: () -> Unit,
 ) {
-
     Scaffold(
         bottomBar = {
             Column {
@@ -28,7 +28,8 @@ fun MainScreen(
             modifier = Modifier.padding(paddingValues),
             navController = bottomNavController,
             navigateToProductDetails = navigateToProductDetails,
-            navigateToMakeOrder = navigateToMakeOrder
+            navigateToMakeOrder = navigateToMakeOrder,
+            navigateToPoints = navigateToPoints,
         )
     }
 }
