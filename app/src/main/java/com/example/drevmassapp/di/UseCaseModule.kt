@@ -27,6 +27,8 @@ import com.example.drevmassapp.domain.useCase.profile.GetBonusInfoUseCase
 import com.example.drevmassapp.domain.useCase.profile.GetBonusInfoUseCaseImpl
 import com.example.drevmassapp.domain.useCase.profile.GetBonusUseCase
 import com.example.drevmassapp.domain.useCase.profile.GetBonusUseCaseImpl
+import com.example.drevmassapp.domain.useCase.profile.GetPromocodeUseCase
+import com.example.drevmassapp.domain.useCase.profile.GetPromocodeUseCaseImpl
 import com.example.drevmassapp.domain.useCase.profile.GetUserUseCase
 import com.example.drevmassapp.domain.useCase.profile.GetUserUseCaseImpl
 import com.example.drevmassapp.domain.useCase.registration.ForgotPasswordUseCase
@@ -99,4 +101,7 @@ interface UseCaseModule {
 
     @Binds
     fun provideGetBonusInfoUseCase(impl: GetBonusInfoUseCaseImpl): GetBonusInfoUseCase
+
+    @Binds
+    fun provideGetPromocodeUseCase(impl: GetPromocodeUseCaseImpl): GetPromocodeUseCase
 }

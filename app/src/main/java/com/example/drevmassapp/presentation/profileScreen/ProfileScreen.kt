@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.drevmassapp.R
+import com.example.drevmassapp.common.SetEdgeToEdge
 import com.example.drevmassapp.common.clickableWithoutRipple
 import com.example.drevmassapp.data.model.UserDto
 import com.example.drevmassapp.ui.theme.Brand900
@@ -46,12 +47,14 @@ import com.example.drevmassapp.ui.theme.typography
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel,
-    navigateToPoints: () -> Unit
+    navigateToPoints: () -> Unit,
+    onPromocodeNavigate: () -> Unit,
 ) {
     val userData by viewModel.user.observeAsState()
     val shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
     val interactionSource = remember { MutableInteractionSource() }
 
+    SetEdgeToEdge(lightColor = Brand900, darkColor = Brand900)
 
     Column(
         modifier = Modifier
@@ -73,7 +76,9 @@ fun ProfileScreen(
                         .wrapContentHeight()
                         .background(Color.White, RoundedCornerShape(20.dp))
                         .border(2.dp, borderColor, RoundedCornerShape(20.dp))
-                        .clickableWithoutRipple(interactionSource) { },
+                        .clickableWithoutRipple(interactionSource) {
+                            onPromocodeNavigate()
+                        },
                 ) {
                     OneProfileBlockItem(
                         modifier = Modifier.padding(all = 16.dp),
@@ -94,8 +99,8 @@ fun ProfileScreen(
                 ) {
                     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
                         OneProfileBlockItem(
-                            iconId = R.drawable.ic_promocode,
-                            text = stringResource(id = R.string.write_promocode)
+                            iconId = R.drawable.ic_data_24,
+                            text = stringResource(id = R.string.my_data)
                         )
                         OneProfileBlockItem(
                             modifier = Modifier.padding(top = 15.dp),

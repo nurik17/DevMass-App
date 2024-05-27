@@ -69,4 +69,15 @@
     <string name="empty_bonuses_title">В истории баллов пока пусто</string>
     <string name="empty_bonuses_subTitle">Совершайте покупки, проходите видеоуроки и получайте за это баллы.</string>
     <string name="bonus_programm">Бонусная программа</string>
+    <string name="promocodes">Промокоды</string>
+    <string name="promocode_for_friends">Промокод для друга</string>
+    <string name="promocode_for_friends_subTitle">Промокод 2500 бонусов на покупку массажера для двух друзей!*</string>
+    <string name="share">Поделиться</string>
+    <string name="take_copy">Скопировать</string>
+    <string name="you_shared">Вы поделились</string>
+    <string name="box_promocode_info_text">*начислим вам 500 бонусов при условии\nпокупки массажера вашим другом</string>
+    <string name="i_have_promocode">У меня есть промокод</string>
+    <string name="my_data">Мои данные</string>
+    <string name="not_promocode">Действующих промокодов нет</string>
+    <string name="not_promocode_subTitle">Если у вас есть промокод, можете использовать его при оформлении заказа.</string>
 </resources>

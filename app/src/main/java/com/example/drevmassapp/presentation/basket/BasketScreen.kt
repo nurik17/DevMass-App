@@ -62,6 +62,7 @@ import com.example.drevmassapp.R
 import com.example.drevmassapp.common.AlertDialogComponent
 import com.example.drevmassapp.common.CustomButton
 import com.example.drevmassapp.common.DashedLine
+import com.example.drevmassapp.common.SetEdgeToEdge
 import com.example.drevmassapp.common.clickableWithoutRipple
 import com.example.drevmassapp.data.model.Basket
 import com.example.drevmassapp.data.model.BasketResponseDto
@@ -86,6 +87,7 @@ fun BasketScreen(
     viewModel: BasketViewModel,
     navigateToMakeOrder: () -> Unit,
 ) {
+    SetEdgeToEdge(lightColor = Brand400, darkColor = Brand400)
 
     val basketState = viewModel.basketState.collectAsStateWithLifecycle()
     val isDialogDeleteVisibility by viewModel.isDeleteDialogVisible.collectAsStateWithLifecycle()

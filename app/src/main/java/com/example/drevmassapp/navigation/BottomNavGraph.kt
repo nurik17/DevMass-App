@@ -22,6 +22,7 @@ fun BottomBarNavGraph(
     navigateToProductDetails: (Int) -> Unit,
     navigateToMakeOrder:() -> Unit,
     navigateToPoints:() -> Unit,
+    onPromocodeNavigate:() -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -56,7 +57,8 @@ fun BottomBarNavGraph(
             val viewModel = hiltViewModel<ProfileViewModel>()
             ProfileScreen(
                 viewModel = viewModel,
-                navigateToPoints = navigateToPoints
+                navigateToPoints = navigateToPoints,
+                onPromocodeNavigate = onPromocodeNavigate,
             )
         }
     }

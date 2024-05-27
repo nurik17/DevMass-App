@@ -24,13 +24,15 @@ import kotlin.math.roundToInt
 
 @Composable
 fun DashedLine(
-    height: Dp = 1.5.dp
+    height: Dp = 1.5.dp,
+    backgroundColor: Color = Color(0xFFD6D1CE),
+    shape: Dp = 8.dp
 ) {
     Box(
         Modifier
             .height(height)
             .fillMaxWidth()
-            .background(Color(0xFFD6D1CE), shape = DottedShape(step = 8.dp))
+            .background(backgroundColor, shape = DottedShape(step = shape))
     )
 }
 

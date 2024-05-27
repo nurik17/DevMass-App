@@ -6,6 +6,7 @@ import com.example.drevmassapp.data.model.BonusInfoDto
 import com.example.drevmassapp.data.model.ForgotPasswordDto
 import com.example.drevmassapp.data.model.ProductDetailDto
 import com.example.drevmassapp.data.model.ProductX
+import com.example.drevmassapp.data.model.Promocode
 import com.example.drevmassapp.data.model.SignInResponseDto
 import com.example.drevmassapp.data.model.SignUpResponseDto
 import com.example.drevmassapp.data.model.UserDto
@@ -115,5 +116,10 @@ interface DevMassApi {
     suspend fun getBonusInfo(
         @Header("Authorization") token: String
     ): BonusInfoDto
+
+    @GET("user/promocode")
+    suspend fun getPromocodeInfo(
+        @Header("Authorization") token: String
+    ): Promocode
 
 }

@@ -25,7 +25,7 @@ val Brand900 = Color(0xFFB5A380)
 val Coral1000 = Color(0xFFFA5C5C)
 
 val ErrorStateColor = Color(0xFFF96666)
-
+val SuccessStateColor = Color(0xFF3ABD5B)
 
 val GrayDefault = Color(0xFFE0DEDD)
 

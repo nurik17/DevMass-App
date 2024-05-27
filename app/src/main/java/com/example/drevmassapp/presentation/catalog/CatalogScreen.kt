@@ -57,6 +57,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.drevmassapp.R
 import com.example.drevmassapp.common.ProgressBlock
+import com.example.drevmassapp.common.SetEdgeToEdge
 import com.example.drevmassapp.common.clickableWithoutRipple
 import com.example.drevmassapp.data.model.Product
 import com.example.drevmassapp.ui.theme.Brand400
@@ -73,6 +74,8 @@ fun CatalogScreen(
 ) {
     val catalogState = viewModel.catalogState.collectAsStateWithLifecycle()
     val shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+
+    SetEdgeToEdge(lightColor = Brand400, darkColor = Brand400)
 
     LaunchedEffect(Unit){
         viewModel.getProducts()

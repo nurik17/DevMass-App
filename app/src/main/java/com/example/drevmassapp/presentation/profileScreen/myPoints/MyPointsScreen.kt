@@ -184,6 +184,7 @@ fun MyPointsContent(
                         fontSize = 16.sp,
                         color = Dark1000
                     )
+
                 }
             }
         }

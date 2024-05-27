@@ -21,6 +21,8 @@ import com.example.drevmassapp.presentation.login.LoginViewModel
 import com.example.drevmassapp.presentation.onboarding.OnBoardingScreen
 import com.example.drevmassapp.presentation.profileScreen.myPoints.MyPointsScreen
 import com.example.drevmassapp.presentation.profileScreen.myPoints.MyPointsViewModel
+import com.example.drevmassapp.presentation.profileScreen.promocode.PromocodeScreen
+import com.example.drevmassapp.presentation.profileScreen.promocode.PromocodeScreenViewModel
 import com.example.drevmassapp.presentation.registration.SignUpScreen
 import com.example.drevmassapp.presentation.registration.SingUpViewModel
 import com.example.drevmassapp.presentation.splash.SplashScreen
@@ -30,7 +32,6 @@ import com.example.drevmassapp.presentation.splash.SplashScreen
 fun MainNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    bottomNavController: NavHostController = rememberNavController()
 ) {
 
     NavHost(
@@ -51,12 +52,14 @@ fun MainNavGraph(
                 navigateToProductDetails = { id ->
                     navController.navigate("${MainDestinations.ProductDetailScreen_route}/$id")
                 },
-                bottomNavController = bottomNavController,
                 navigateToMakeOrder = {
                     navController.navigate(MainDestinations.MakeOrderScreen_route)
                 },
                 navigateToPoints = {
                     navController.navigate(MyPointsScreen_route)
+                },
+                onPromocodeNavigate = {
+                    navController.navigate(MainDestinations.PromocodeScreen_route)
                 }
             )
         }
@@ -98,7 +101,6 @@ fun MainNavGraph(
                 navigateBack = { navController.popBackStack() },
                 navigateToBasket = {
                     navController.navigate(MainDestinations.MainScreen_route)
-                    bottomNavController.navigate(MainDestinations.BasketScreen_route)
                 }
             )
         }
@@ -112,9 +114,19 @@ fun MainNavGraph(
             )
         }
 
-        composable(route = MainDestinations.MyPointsScreen_route){
+        composable(route = MainDestinations.MyPointsScreen_route) {
             val viewModel = hiltViewModel<MyPointsViewModel>()
             MyPointsScreen(
+                viewModel = viewModel,
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(route = MainDestinations.PromocodeScreen_route) {
+            val viewModel = hiltViewModel<PromocodeScreenViewModel>()
+            PromocodeScreen(
                 viewModel = viewModel,
                 navigateBack = {
                     navController.popBackStack()
@@ -142,6 +154,7 @@ private object MainScreens {
     const val MainScreen = "MainScreen"
 
     const val MyPointsScreen = "MyPointsScreen"
+    const val PromocodeScreen = "PromocodeScreen"
 
 
 }
@@ -162,6 +175,8 @@ object MainDestinations {
     const val MakeOrderScreen_route = MainScreens.MakeOrderScreen
 
     const val MainScreen_route = MainScreens.MainScreen
+
     const val MyPointsScreen_route = MainScreens.MyPointsScreen
+    const val PromocodeScreen_route = MainScreens.PromocodeScreen
 
 }
