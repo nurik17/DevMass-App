@@ -1,6 +1,6 @@
 package com.example.drevmassapp.di
 
-import com.example.drevmassapp.data.remote.DevMassApi
+import com.example.drevmassapp.data.remote.DrevMassApi
 import com.example.drevmassapp.util.Constant
 import dagger.Module
 import dagger.Provides
@@ -69,9 +69,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun getDevMassApi(@DevMassAppUrl retrofit: Retrofit): DevMassApi {
+    fun getDevMassApi(@DevMassAppUrl retrofit: Retrofit): DrevMassApi {
         return retrofit.create(
-            DevMassApi::class.java
+            DrevMassApi::class.java
         )
     }
 

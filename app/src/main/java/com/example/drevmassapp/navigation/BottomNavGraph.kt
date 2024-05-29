@@ -23,6 +23,9 @@ fun BottomBarNavGraph(
     navigateToMakeOrder:() -> Unit,
     navigateToPoints:() -> Unit,
     onPromocodeNavigate:() -> Unit,
+    onUserDataNavigate:() -> Unit,
+    onNotificationNavigate:() -> Unit,
+    onInformationScreenNavigate:() -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -59,6 +62,9 @@ fun BottomBarNavGraph(
                 viewModel = viewModel,
                 navigateToPoints = navigateToPoints,
                 onPromocodeNavigate = onPromocodeNavigate,
+                onUserDataNavigate = onUserDataNavigate,
+                onNotificationNavigate = onNotificationNavigate,
+                onInformationScreenNavigate = onInformationScreenNavigate,
             )
         }
     }

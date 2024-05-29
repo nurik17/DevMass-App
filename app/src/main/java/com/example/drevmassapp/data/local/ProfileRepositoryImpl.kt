@@ -4,14 +4,15 @@ import com.example.drevmassapp.data.model.BonusDto
 import com.example.drevmassapp.data.model.BonusInfoDto
 import com.example.drevmassapp.data.model.Promocode
 import com.example.drevmassapp.data.model.UserDto
-import com.example.drevmassapp.data.remote.DevMassApi
+import com.example.drevmassapp.data.remote.DrevMassApi
 import com.example.drevmassapp.domain.repository.ProfileRepository
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
-    private val api: DevMassApi
+    private val api: DrevMassApi
 ): ProfileRepository {
     override suspend fun getUser(token: String): UserDto {
+
         return api.getUser(getToken(token))
     }
 
@@ -25,6 +26,10 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getPromocodeInfo(token: String): Promocode {
         return api.getPromocodeInfo(getToken(token))
+    }
+
+    override suspend fun getSupportInfo(token: String): BonusInfoDto {
+        return api.getSupportInfo(getToken(token))
     }
 
     private fun getToken(token: String): String {

@@ -19,10 +19,13 @@ import com.example.drevmassapp.presentation.catalog.detail.ProductDetailViewMode
 import com.example.drevmassapp.presentation.login.LoginScreen
 import com.example.drevmassapp.presentation.login.LoginViewModel
 import com.example.drevmassapp.presentation.onboarding.OnBoardingScreen
+import com.example.drevmassapp.presentation.profileScreen.information.InformationScreen
 import com.example.drevmassapp.presentation.profileScreen.myPoints.MyPointsScreen
 import com.example.drevmassapp.presentation.profileScreen.myPoints.MyPointsViewModel
+import com.example.drevmassapp.presentation.profileScreen.notification.NotificationScreen
 import com.example.drevmassapp.presentation.profileScreen.promocode.PromocodeScreen
 import com.example.drevmassapp.presentation.profileScreen.promocode.PromocodeScreenViewModel
+import com.example.drevmassapp.presentation.profileScreen.userData.UserDataScreen
 import com.example.drevmassapp.presentation.registration.SignUpScreen
 import com.example.drevmassapp.presentation.registration.SingUpViewModel
 import com.example.drevmassapp.presentation.splash.SplashScreen
@@ -60,6 +63,15 @@ fun MainNavGraph(
                 },
                 onPromocodeNavigate = {
                     navController.navigate(MainDestinations.PromocodeScreen_route)
+                },
+                onUserDataNavigate = {
+                    navController.navigate(MainDestinations.UserDataScreen_route)
+                },
+                onNotificationNavigate = {
+                    navController.navigate(MainDestinations.NotificationScreen_route)
+                },
+                onInformationScreenNavigate = {
+                    navController.navigate(MainDestinations.InformationScreen_route)
                 }
             )
         }
@@ -114,7 +126,7 @@ fun MainNavGraph(
             )
         }
 
-        composable(route = MainDestinations.MyPointsScreen_route) {
+        composable(route = MyPointsScreen_route) {
             val viewModel = hiltViewModel<MyPointsViewModel>()
             MyPointsScreen(
                 viewModel = viewModel,
@@ -128,6 +140,29 @@ fun MainNavGraph(
             val viewModel = hiltViewModel<PromocodeScreenViewModel>()
             PromocodeScreen(
                 viewModel = viewModel,
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(route = MainDestinations.UserDataScreen_route) {
+            UserDataScreen(
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable(route = MainDestinations.NotificationScreen_route) {
+            NotificationScreen(
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(route = MainDestinations.InformationScreen_route) {
+            InformationScreen(
                 navigateBack = {
                     navController.popBackStack()
                 }
@@ -155,6 +190,9 @@ private object MainScreens {
 
     const val MyPointsScreen = "MyPointsScreen"
     const val PromocodeScreen = "PromocodeScreen"
+    const val UserDataScreen = "UserDataScreen"
+    const val NotificationScreen = "NotificationScreen"
+    const val InformationScreen = "InformationScreen"
 
 
 }
@@ -178,5 +216,9 @@ object MainDestinations {
 
     const val MyPointsScreen_route = MainScreens.MyPointsScreen
     const val PromocodeScreen_route = MainScreens.PromocodeScreen
+    const val UserDataScreen_route = MainScreens.UserDataScreen
+    const val NotificationScreen_route = MainScreens.NotificationScreen
+    const val InformationScreen_route = MainScreens.InformationScreen
+
 
 }

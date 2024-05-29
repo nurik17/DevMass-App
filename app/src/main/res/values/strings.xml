@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">DrevMass App</string>
+    <string name="app_name">DrevMass</string>
+    <string name="app_name_russian">Древмасс</string>
 
     <string name="navigation_item_course_main">Курсы</string>
     <string name="navigation_item_catalog">Каталог</string>
@@ -80,4 +81,19 @@
     <string name="my_data">Мои данные</string>
     <string name="not_promocode">Действующих промокодов нет</string>
     <string name="not_promocode_subTitle">Если у вас есть промокод, можете использовать его при оформлении заказа.</string>
+    <string name="birth_date">Дата рождения</string>
+    <string name="reminder_about_lesson">Напоминание о занятиях</string>
+    <string name="call">Позвонить</string>
+    <string name="support_service">Служба поддержки</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="are_you_sure_to_log_out">Вы действительно хотите выйти?</string>
+    <string name="dismiss_logOut">Остаться</string>
+    <string name="exit">Выйти</string>
+    <string name="about_company">О компании</string>
+    <string name="about_app">О приложении</string>
+    <string name="close">Закрыть</string>
+    <string name="app_info">© 2023 Name, Inc\nВсе права защищены</string>
+    <string name="we_in_social_network">Мы в соцсетях:</string>
+    <string name="send">Отправить</string>
+    <string name="cancel">Отмена</string>
 </resources>

@@ -17,6 +17,9 @@ fun MainScreen(
     navigateToMakeOrder: () -> Unit,
     navigateToPoints: () -> Unit,
     onPromocodeNavigate: () -> Unit,
+    onUserDataNavigate: () -> Unit,
+    onNotificationNavigate: () -> Unit,
+    onInformationScreenNavigate: () -> Unit,
 ) {
     Scaffold(
         bottomBar = {
@@ -33,6 +36,9 @@ fun MainScreen(
             navigateToMakeOrder = navigateToMakeOrder,
             navigateToPoints = navigateToPoints,
             onPromocodeNavigate = onPromocodeNavigate,
+            onUserDataNavigate = onUserDataNavigate,
+            onNotificationNavigate = onNotificationNavigate,
+            onInformationScreenNavigate = onInformationScreenNavigate,
         )
     }
 }

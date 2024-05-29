@@ -5,7 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -14,20 +14,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.drevmassapp.ui.theme.Blue1000
 import com.example.drevmassapp.ui.theme.Coral1000
-import com.example.drevmassapp.ui.theme.Dark900
 import com.example.drevmassapp.ui.theme.typography
 
 @Composable
+@Preview
+fun Prevo(){
+    AlertDialogComponent()
+}
+
+
+@Composable
 fun AlertDialogComponent(
-    textTitle: String,
-    textConfirm: String,
-    textDismiss: String,
-    onDismissRequest: () -> Unit,
-    onClickConfirmButton: () -> Unit,
+    textTitle: String = "",
+    textConfirm: String  = "",
+    textDismiss: String  = "",
+    onDismissRequest: () -> Unit = {},
+    onClickConfirmButton: () -> Unit = {},
 ) {
 
     AlertDialog(
@@ -44,7 +51,8 @@ fun AlertDialogComponent(
                 modifier = Modifier.fillMaxWidth(),
                 text = textTitle,
                 style = typography.l15sfT600,
-                color = Dark900,
+                color = Color.Black,
+                fontSize = 17.sp,
                 textAlign = TextAlign.Center
             )
         },
@@ -60,7 +68,7 @@ fun AlertDialogComponent(
                         .fillMaxWidth()
                         .padding(top = 8.dp),
                     text = textConfirm,
-                    style = typography.l20sfD600,
+                    style = typography.l17sfT400,
                     fontSize = 20.sp,
                     color = Coral1000,
                     fontWeight = FontWeight.Normal,
@@ -77,12 +85,12 @@ fun AlertDialogComponent(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = textDismiss,
-                    style = typography.l20sfD600,
+                    style = typography.l17sfT400,
                     color = Blue1000,
                     textAlign = TextAlign.Center
                 )
             }
         },
-        backgroundColor = Color.White,
+        containerColor = Color.White,
     )
 }

@@ -24,7 +24,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface DevMassApi {
+interface DrevMassApi {
     @POST("signup")
     suspend fun singUp(
         @Body body: SignUpBody
@@ -121,5 +121,10 @@ interface DevMassApi {
     suspend fun getPromocodeInfo(
         @Header("Authorization") token: String
     ): Promocode
+
+    @GET("info")
+    suspend fun getSupportInfo(
+        @Header("Authorization") token: String
+    ): BonusInfoDto
 
 }

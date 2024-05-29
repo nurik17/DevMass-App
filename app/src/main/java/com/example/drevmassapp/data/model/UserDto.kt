@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 
 @Keep
 data class UserDto(
-    @SerializedName("email") val email: String,
     @SerializedName("id") val id: Int,
     @SerializedName("name") val name: String,
+    @SerializedName("email") val email: String,
     @SerializedName("phone_number") val phoneNumber: String
 )

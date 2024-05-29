@@ -3,15 +3,14 @@ package com.example.drevmassapp.data.local
 import com.example.drevmassapp.data.model.ForgotPasswordDto
 import com.example.drevmassapp.data.model.SignInResponseDto
 import com.example.drevmassapp.data.model.SignUpResponseDto
-import com.example.drevmassapp.data.remote.DevMassApi
+import com.example.drevmassapp.data.remote.DrevMassApi
 import com.example.drevmassapp.domain.entity.SignInBody
 import com.example.drevmassapp.domain.entity.SignUpBody
 import com.example.drevmassapp.domain.repository.RegistrationRepository
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class RegistrationRepositoryImpl @Inject constructor(
-    private val api: DevMassApi
+    private val api: DrevMassApi
 ): RegistrationRepository {
 
     override suspend fun signUp(

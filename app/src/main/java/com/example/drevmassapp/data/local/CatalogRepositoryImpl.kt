@@ -3,13 +3,13 @@ package com.example.drevmassapp.data.local
 import com.example.drevmassapp.data.model.ForgotPasswordDto
 import com.example.drevmassapp.data.model.ProductDetailDto
 import com.example.drevmassapp.data.model.ProductX
-import com.example.drevmassapp.data.remote.DevMassApi
+import com.example.drevmassapp.data.remote.DrevMassApi
 import com.example.drevmassapp.domain.entity.AddToBasketBody
 import com.example.drevmassapp.domain.repository.CatalogRepository
 import javax.inject.Inject
 
 class CatalogRepositoryImpl @Inject constructor(
-    private val api: DevMassApi
+    private val api: DrevMassApi
 ) : CatalogRepository {
 
     override suspend fun getProducts(token: String): ProductX {

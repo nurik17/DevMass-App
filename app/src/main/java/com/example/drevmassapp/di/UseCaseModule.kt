@@ -1,6 +1,5 @@
 package com.example.drevmassapp.di
 
-import com.example.drevmassapp.domain.repository.BasketRepository
 import com.example.drevmassapp.domain.useCase.basket.DeleteAllBasketItemsUseCase
 import com.example.drevmassapp.domain.useCase.basket.DeleteAllBasketItemsUseCaseImpl
 import com.example.drevmassapp.domain.useCase.basket.GetBasketUseCase
@@ -9,8 +8,6 @@ import com.example.drevmassapp.domain.useCase.basket.MakeOrderUseCase
 import com.example.drevmassapp.domain.useCase.basket.MakeOrderUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.GetFamousProductUseCase
 import com.example.drevmassapp.domain.useCase.catalog.GetFamousProductUseCaseImpl
-import com.example.drevmassapp.domain.useCase.catalog.detail.GetProductByIdUseCase
-import com.example.drevmassapp.domain.useCase.catalog.detail.GetProductByIdUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.GetProductsPriceDownUseCase
 import com.example.drevmassapp.domain.useCase.catalog.GetProductsPriceDownUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.GetProductsPriceUpUseCase
@@ -21,6 +18,8 @@ import com.example.drevmassapp.domain.useCase.catalog.detail.AddToBasketUseCase
 import com.example.drevmassapp.domain.useCase.catalog.detail.AddToBasketUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.detail.DecreaseItemUseCase
 import com.example.drevmassapp.domain.useCase.catalog.detail.DecreaseItemUseCaseImpl
+import com.example.drevmassapp.domain.useCase.catalog.detail.GetProductByIdUseCase
+import com.example.drevmassapp.domain.useCase.catalog.detail.GetProductByIdUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.detail.IncreaseItemUseCase
 import com.example.drevmassapp.domain.useCase.catalog.detail.IncreaseItemUseCaseImpl
 import com.example.drevmassapp.domain.useCase.profile.GetBonusInfoUseCase
@@ -29,6 +28,8 @@ import com.example.drevmassapp.domain.useCase.profile.GetBonusUseCase
 import com.example.drevmassapp.domain.useCase.profile.GetBonusUseCaseImpl
 import com.example.drevmassapp.domain.useCase.profile.GetPromocodeUseCase
 import com.example.drevmassapp.domain.useCase.profile.GetPromocodeUseCaseImpl
+import com.example.drevmassapp.domain.useCase.profile.GetSupportInfoUseCase
+import com.example.drevmassapp.domain.useCase.profile.GetSupportInfoUseCaseImpl
 import com.example.drevmassapp.domain.useCase.profile.GetUserUseCase
 import com.example.drevmassapp.domain.useCase.profile.GetUserUseCaseImpl
 import com.example.drevmassapp.domain.useCase.registration.ForgotPasswordUseCase
@@ -39,7 +40,6 @@ import com.example.drevmassapp.domain.useCase.registration.SignUpUseCaseImpl
 import com.example.drevmassapp.domain.useCase.registration.SingUpUseCase
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
@@ -104,4 +104,7 @@ interface UseCaseModule {
 
     @Binds
     fun provideGetPromocodeUseCase(impl: GetPromocodeUseCaseImpl): GetPromocodeUseCase
+
+    @Binds
+    fun provideGetSupportInfoUseCase(impl: GetSupportInfoUseCaseImpl): GetSupportInfoUseCase
 }

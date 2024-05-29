@@ -24,12 +24,13 @@ import com.example.drevmassapp.R
 import com.example.drevmassapp.ui.theme.Brand900
 import com.example.drevmassapp.ui.theme.Dark1000
 import com.example.drevmassapp.ui.theme.Gray600
+import com.example.drevmassapp.ui.theme.Gray700
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditTextField(
-    value: String = "",
-    label: String = "",
+    value: String,
+    label: String,
     onValueChanged: (String) -> Unit = {},
     showTrailingIcon: Boolean = false,
     isError: Boolean,
@@ -39,9 +40,11 @@ fun EditTextField(
     val interactionSource = remember {
         MutableInteractionSource()
     }
+    var text by remember { mutableStateOf(value) }
+
 
     val colors = TextFieldDefaults.colors(
-        unfocusedLabelColor = Brand900,
+        unfocusedLabelColor = Gray700,
         focusedLabelColor = Brand900,
         cursorColor = Dark1000,
         focusedContainerColor = Color.Transparent,
@@ -62,8 +65,9 @@ fun EditTextField(
                 unfocusedIndicatorLineThickness = 2.dp
             )
             .onFocusChanged { isFocused = it.isFocused },
-        value = value,
+        value = text,
         onValueChange = {
+            text = it
             onValueChanged(it)
         },
         label = { Text(text = label) },
@@ -72,6 +76,7 @@ fun EditTextField(
             if (showTrailingIcon && isFocused && value.isNotEmpty()) {
                 Image(
                     modifier = Modifier.clickable {
+                        text = ""
                         onValueChanged("")
                     },
                     painter = painterResource(id = R.drawable.ic_arounded_close),
