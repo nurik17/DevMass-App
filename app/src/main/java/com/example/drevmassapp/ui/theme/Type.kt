@@ -10,6 +10,7 @@ data class Typographies(
     val l28sfD700: TextStyle,
     val l17sfT400: TextStyle,
     val l15sfT600: TextStyle,
+    val l17sfT600: TextStyle,
     val l13sf500: TextStyle,
     val l15sf700: TextStyle,
     val l20sfD600: TextStyle
@@ -31,10 +32,14 @@ val typography = Typographies(
         fontSize = 15.sp,
         color = Dark900
     ),
+    l17sfT600 = TextStyle(
+        fontFamily = FontFamily(Font(R.font.sf_protext_semibold)),
+        fontSize = 17.sp,
+        color = Dark900
+    ),
     l13sf500 = TextStyle(
         fontFamily = FontFamily(Font(R.font.sf_pro_text_medium)),
         fontSize = 13.sp,
-        color = Brand900
     ),
     l15sf700 = TextStyle(
         fontFamily = FontFamily(Font(R.font.sf_protext_bold)),

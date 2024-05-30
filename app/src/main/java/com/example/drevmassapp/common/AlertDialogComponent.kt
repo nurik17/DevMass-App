@@ -1,7 +1,6 @@
 package com.example.drevmassapp.common
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,36 +13,31 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.drevmassapp.ui.theme.Blue1000
 import com.example.drevmassapp.ui.theme.Coral1000
+import com.example.drevmassapp.ui.theme.Gray800
 import com.example.drevmassapp.ui.theme.typography
-
-@Composable
-@Preview
-fun Prevo(){
-    AlertDialogComponent()
-}
 
 
 @Composable
 fun AlertDialogComponent(
     textTitle: String = "",
-    textConfirm: String  = "",
-    textDismiss: String  = "",
+    textConfirm: String = "",
+    textDismiss: String = "",
     onDismissRequest: () -> Unit = {},
     onClickConfirmButton: () -> Unit = {},
+    subTitleText: String = "",
+    modifier: Modifier = Modifier,
 ) {
 
     AlertDialog(
-        modifier = Modifier
+        modifier = modifier
             .background(
                 Color.Transparent, RoundedCornerShape(15.dp)
             )
-            .clip(RoundedCornerShape(15.dp))
-            .border(2.dp, Color.Gray, RoundedCornerShape(15.dp)),
+            .clip(RoundedCornerShape(15.dp)),
         onDismissRequest = { onDismissRequest() },
         shape = RoundedCornerShape(15.dp),
         title = {
@@ -53,6 +47,16 @@ fun AlertDialogComponent(
                 style = typography.l15sfT600,
                 color = Color.Black,
                 fontSize = 17.sp,
+                textAlign = TextAlign.Center
+            )
+        },
+        text = {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = subTitleText,
+                style = typography.l17sfT400,
+                fontSize = 13.sp,
+                color = Gray800,
                 textAlign = TextAlign.Center
             )
         },

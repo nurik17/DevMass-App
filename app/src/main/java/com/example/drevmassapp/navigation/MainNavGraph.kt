@@ -36,7 +36,6 @@ fun MainNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
-
     NavHost(
         navController = navController,
         startDestination = MainDestinations.MainScreen_route,
@@ -72,6 +71,28 @@ fun MainNavGraph(
                 },
                 onInformationScreenNavigate = {
                     navController.navigate(MainDestinations.InformationScreen_route)
+                },
+                navigateToLogin = {
+                    navController.navigate(MainDestinations.LoginScreen_route){
+                        popUpTo(0){
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+        composable(route = MainDestinations.UserDataScreen_route) {
+            UserDataScreen(
+                navigateBack = {
+                    navController.popBackStack()
+                },
+                navController =  navController,
+                navigateOnBoarding = {
+                    navController.navigate(MainDestinations.OnBoardingScreen_route){
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
@@ -146,13 +167,7 @@ fun MainNavGraph(
             )
         }
 
-        composable(route = MainDestinations.UserDataScreen_route) {
-            UserDataScreen(
-                navigateBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
+
         composable(route = MainDestinations.NotificationScreen_route) {
             NotificationScreen(
                 navigateBack = {

@@ -26,6 +26,7 @@ fun BottomBarNavGraph(
     onUserDataNavigate:() -> Unit,
     onNotificationNavigate:() -> Unit,
     onInformationScreenNavigate:() -> Unit,
+    navigateToLogin:() -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -65,6 +66,7 @@ fun BottomBarNavGraph(
                 onUserDataNavigate = onUserDataNavigate,
                 onNotificationNavigate = onNotificationNavigate,
                 onInformationScreenNavigate = onInformationScreenNavigate,
+                navigateToLogin = navigateToLogin
             )
         }
     }

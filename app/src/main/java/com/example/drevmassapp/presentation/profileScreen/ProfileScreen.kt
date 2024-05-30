@@ -2,6 +2,7 @@ package com.example.drevmassapp.presentation.profileScreen
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -34,7 +35,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,8 +52,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.drevmassapp.R
 import com.example.drevmassapp.common.AlertDialogComponent
+import com.example.drevmassapp.common.ChangePasswordTextField
 import com.example.drevmassapp.common.CustomButton
-import com.example.drevmassapp.common.SampleTextField
+import com.example.drevmassapp.common.HintTextField
 import com.example.drevmassapp.common.SetEdgeToEdge
 import com.example.drevmassapp.common.clickableWithoutRipple
 import com.example.drevmassapp.data.model.UserDto
@@ -72,6 +73,7 @@ fun ProfileScreen(
     onPromocodeNavigate: () -> Unit,
     onUserDataNavigate: () -> Unit,
     onNotificationNavigate: () -> Unit,
+    navigateToLogin: () -> Unit,
     onInformationScreenNavigate: () -> Unit,
 ) {
     val userData by viewModel.user.observeAsState()
@@ -80,18 +82,26 @@ fun ProfileScreen(
 
     val isDialogDeleteVisibility by viewModel.isDeleteDialogVisible.collectAsStateWithLifecycle()
     val mainSheetState = rememberModalBottomSheetState()
-    var isContactBottomOpen by rememberSaveable() { mutableStateOf(false) }
+    var isContactBottomOpen by remember { mutableStateOf(false) }
 
-    val isContactBottomContent = rememberModalBottomSheetState(
+    val isContactBottomContent = rememberModalBottomSheetState()
+    val isContactBottomContent2 = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
-    var isContactBottomContentOpen by rememberSaveable() { mutableStateOf(false) }
-    var chooseBottomSheetState by rememberSaveable() { mutableStateOf(false) }
+    val changePasswordSheet = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
 
+    var isContactBottomContentOpen by remember { mutableStateOf(false) }
+    var chooseBottomSheetState by remember { mutableStateOf(false) }
+    var isChangePasswordBottomContentOpen by remember { mutableStateOf(false) }
 
-
+    var serviceText by remember { mutableStateOf("") }
+    var currentPassword by remember { mutableStateOf("") }
+    var newPassword by remember { mutableStateOf("") }
 
     SetEdgeToEdge(lightColor = Brand900, darkColor = Brand900)
+    Log.d("ProfileScreen", "opened")
 
     Column(
         modifier = Modifier
@@ -99,7 +109,6 @@ fun ProfileScreen(
             .background(Brand900)
     ) {
         ProfileTopBlock(userData = userData, navigateToPoints = navigateToPoints)
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -107,96 +116,31 @@ fun ProfileScreen(
                 .clip(shape = shape)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .background(Color.White, RoundedCornerShape(20.dp))
-                        .border(2.dp, borderColor, RoundedCornerShape(20.dp))
-                        .clickableWithoutRipple(interactionSource) {
-                            onPromocodeNavigate()
-                        },
-                ) {
-                    OneProfileBlockItem(
-                        modifier = Modifier.padding(all = 16.dp),
-                        iconId = R.drawable.ic_promocode,
-                        text = stringResource(id = R.string.promocodes)
-                    )
-                }
-
+                PromocodeBox(
+                    onPromocodeNavigate = onPromocodeNavigate,
+                    interactionSource = interactionSource
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                FirstBox(
+                    onUserDataNavigate = onUserDataNavigate,
+                    onNotificationNavigate = onNotificationNavigate,
+                    onChangePasswordClick = {
+                        isChangePasswordBottomContentOpen = true
+                    },
+                    interactionSource = interactionSource
+                )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .background(Color.White, RoundedCornerShape(20.dp))
-                        .border(2.dp, borderColor, RoundedCornerShape(20.dp))
-                ) {
-                    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
-                        OneProfileBlockItem(
-                            modifier = Modifier.clickableWithoutRipple(interactionSource) {
-                                onUserDataNavigate()
-                            },
-                            iconId = R.drawable.ic_data_24,
-                            text = stringResource(id = R.string.my_data)
-                        )
-                        OneProfileBlockItem(
-                            modifier = Modifier
-                                .clickableWithoutRipple(interactionSource) {
-                                }
-                                .padding(top = 15.dp),
-                            iconId = R.drawable.ic_lock,
-                            text = stringResource(id = R.string.chaange_password)
-                        )
-                        OneProfileBlockItem(
-                            modifier = Modifier
-                                .clickableWithoutRipple(interactionSource) {
-                                    onNotificationNavigate()
-                                }
-                                .padding(top = 15.dp),
-                            iconId = R.drawable.ic_notif,
-                            text = stringResource(id = R.string.notification)
-                        )
+                SecondBox(
+                    onMessageClick = { isContactBottomOpen = true },
+                    onInformationScreenNavigate = onInformationScreenNavigate,
+                    interactionSource = interactionSource
+                )
+                LogoutBlock(
+                    onClick = {
+                        viewModel.changeVisibilityDeleteDialog(true)
                     }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .background(Color.White, RoundedCornerShape(20.dp))
-                        .border(2.dp, borderColor, RoundedCornerShape(20.dp)),
-                ) {
-                    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
-                        OneProfileBlockItem(
-                            modifier = Modifier.clickableWithoutRipple(interactionSource) {
-                                isContactBottomOpen = true
-                            },
-                            iconId = R.drawable.ic_write_24,
-                            text = stringResource(id = R.string.contact_with_us)
-                        )
-                        OneProfileBlockItem(
-                            modifier = Modifier.padding(top = 15.dp),
-                            iconId = R.drawable.ic_star_24,
-                            text = stringResource(id = R.string.write_review)
-                        )
-                        OneProfileBlockItem(
-                            modifier = Modifier
-                                .clickableWithoutRipple(interactionSource) {
-                                    onInformationScreenNavigate()
-                                }
-                                .padding(top = 15.dp),
-                            iconId = R.drawable.ic_info_24,
-                            text = stringResource(id = R.string.information)
-                        )
-                    }
-                }
-                LogoutBlock(onClick = {
-                    viewModel.changeVisibilityDeleteDialog(true)
-                })
+                )
             }
         }
         if (isContactBottomOpen) {
@@ -208,10 +152,12 @@ fun ProfileScreen(
                 onPhoneClick = {
                     isContactBottomContentOpen = true
                     chooseBottomSheetState = true
+                    isContactBottomOpen = false
                 },
                 onServiceHelpClick = {
                     chooseBottomSheetState = false
                     isContactBottomContentOpen = true
+                    isContactBottomOpen = false
                 }
             )
         }
@@ -222,17 +168,243 @@ fun ProfileScreen(
                 textDismiss = stringResource(id = R.string.dismiss_logOut),
                 onDismissRequest = { viewModel.changeVisibilityDeleteDialog(false) },
                 onClickConfirmButton = {
-                    //logOut
+                    navigateToLogin()
                 }
             )
         }
         if (isContactBottomContentOpen) {
             ContactBottomSheetContent(
-                sheetState = isContactBottomContent,
+                sheetState = if (chooseBottomSheetState) isContactBottomContent else isContactBottomContent2,
                 onDismissChange = {
                     isContactBottomContentOpen = false
                 },
-                chooseBottomSheet = chooseBottomSheetState
+                chooseBottomSheet = chooseBottomSheetState,
+                serviceText = serviceText,
+                onValueChanged = {
+                    serviceText = it
+                },
+                onSendSupportText = {
+                    viewModel.sendSupportText(serviceText)
+                    serviceText = ""
+                    isContactBottomContentOpen = false
+                }
+            )
+        }
+        if (isChangePasswordBottomContentOpen) {
+            ChangePasswordBottomContent(
+                sheetState = changePasswordSheet,
+                onDismissChange = {
+                    isChangePasswordBottomContentOpen = false
+                },
+                onCurrentPasswordValueChanged = {
+                    currentPassword = it
+                },
+                currentPassword = currentPassword,
+                newPassword = newPassword,
+                onNewPasswordValueChanged = {
+                    newPassword = it
+                },
+                onSubmitPasswords = {
+                    viewModel.resetPassword(currentPassword, newPassword)
+                    isChangePasswordBottomContentOpen = false
+                }
+            )
+        }
+    }
+}
+
+
+@Composable
+fun PromocodeBox(
+    onPromocodeNavigate: () -> Unit,
+    interactionSource: MutableInteractionSource
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .background(Color.White, RoundedCornerShape(20.dp))
+            .border(2.dp, borderColor, RoundedCornerShape(20.dp))
+            .clickableWithoutRipple(interactionSource) {
+                onPromocodeNavigate()
+            },
+    ) {
+        OneProfileBlockItem(
+            modifier = Modifier.padding(all = 16.dp),
+            iconId = R.drawable.ic_promocode,
+            text = stringResource(id = R.string.promocodes)
+        )
+    }
+}
+
+@Composable
+fun FirstBox(
+    onUserDataNavigate: () -> Unit,
+    onNotificationNavigate: () -> Unit,
+    onChangePasswordClick: () -> Unit,
+    interactionSource: MutableInteractionSource,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .background(Color.White, RoundedCornerShape(20.dp))
+            .border(2.dp, borderColor, RoundedCornerShape(20.dp))
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
+            OneProfileBlockItem(
+                modifier = Modifier.clickableWithoutRipple(interactionSource) {
+                    onUserDataNavigate()
+                },
+                iconId = R.drawable.ic_data_24,
+                text = stringResource(id = R.string.my_data)
+            )
+            OneProfileBlockItem(
+                modifier = Modifier
+                    .clickableWithoutRipple(interactionSource) {
+                        onChangePasswordClick()
+                    }
+                    .padding(top = 15.dp),
+                iconId = R.drawable.ic_lock,
+                text = stringResource(id = R.string.chaange_password)
+            )
+            OneProfileBlockItem(
+                modifier = Modifier
+                    .clickableWithoutRipple(interactionSource) {
+                        onNotificationNavigate()
+                    }
+                    .padding(top = 15.dp),
+                iconId = R.drawable.ic_notif,
+                text = stringResource(id = R.string.notification)
+            )
+        }
+    }
+}
+
+
+@Composable
+fun SecondBox(
+    onMessageClick: () -> Unit,
+    onInformationScreenNavigate: () -> Unit,
+
+    interactionSource: MutableInteractionSource
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .background(Color.White, RoundedCornerShape(20.dp))
+            .border(2.dp, borderColor, RoundedCornerShape(20.dp)),
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
+            OneProfileBlockItem(
+                modifier = Modifier.clickableWithoutRipple(interactionSource) {
+                    /*isContactBottomOpen = true*/
+                    onMessageClick()
+                },
+                iconId = R.drawable.ic_write_24,
+                text = stringResource(id = R.string.contact_with_us)
+            )
+            OneProfileBlockItem(
+                modifier = Modifier.padding(top = 15.dp),
+                iconId = R.drawable.ic_star_24,
+                text = stringResource(id = R.string.write_review)
+            )
+            OneProfileBlockItem(
+                modifier = Modifier
+                    .clickableWithoutRipple(interactionSource) {
+                        onInformationScreenNavigate()
+                    }
+                    .padding(top = 15.dp),
+                iconId = R.drawable.ic_info_24,
+                text = stringResource(id = R.string.information)
+            )
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ChangePasswordBottomContent(
+    sheetState: SheetState,
+    onDismissChange: (Boolean) -> Unit,
+    onCurrentPasswordValueChanged: (String) -> Unit,
+    onNewPasswordValueChanged: (String) -> Unit,
+    currentPassword: String,
+    newPassword: String,
+    onSubmitPasswords: () -> Unit,
+) {
+
+    ModalBottomSheet(
+        sheetState = sheetState,
+        onDismissRequest = { onDismissChange(false) },
+        containerColor = Color.White,
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            onDismissChange(false)
+                        },
+                    painter = painterResource(id = R.drawable.ic_back),
+                    contentDescription = "",
+                    tint = Brand900
+                )
+                Text(
+                    text = stringResource(id = R.string.chaange_password),
+                    style = typography.l15sfT600,
+                    fontSize = 17.sp,
+                    color = Color.Black
+                )
+                Box {}
+            }
+            ChangePasswordTextField(
+                modifier = Modifier.padding(top = 40.dp),
+                onValueChanged = onCurrentPasswordValueChanged,
+                value = currentPassword,
+                label = stringResource(id = R.string.current_password)
+            )
+            Text(
+                modifier = Modifier.padding(top = 12.dp),
+                text = stringResource(id = R.string.forgot_password),
+                style = typography.l15sfT600,
+                color = Brand900
+            )
+            ChangePasswordTextField(
+                modifier = Modifier.padding(top = 24.dp),
+                onValueChanged = onNewPasswordValueChanged,
+                value = newPassword,
+                label = stringResource(id = R.string.write_new_password)
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            CustomButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                text = stringResource(id = R.string.continue1),
+                onButtonClick = {
+                    onSubmitPasswords()
+                },
+                enabled = true,
+                backgroundColor = if (currentPassword.isNotEmpty() && newPassword.isNotEmpty()) {
+                    Brand900
+                } else {
+                    Color(0xFFD3C8B3)
+                },
+                borderColor = Color.Transparent,
             )
         }
     }
@@ -499,6 +671,9 @@ fun ContactBottomSheet(
 fun ContactBottomSheetContent(
     sheetState: SheetState,
     onDismissChange: (Boolean) -> Unit,
+    serviceText: String,
+    onValueChanged: (String) -> Unit,
+    onSendSupportText: () -> Unit,
     chooseBottomSheet: Boolean,
 ) {
     val dialLauncher = rememberLauncherForActivityResult(
@@ -513,9 +688,7 @@ fun ContactBottomSheetContent(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (chooseBottomSheet) {
                 PhoneNumberBottomSheetContent(
@@ -530,20 +703,25 @@ fun ContactBottomSheetContent(
                     },
                 )
             } else {
-                ServiceHelpBottomSheetContent()
+                ServiceHelpBottomSheetContent(
+                    serviceText = serviceText,
+                    onValueChanged = onValueChanged,
+                    onSendSupportText = onSendSupportText
+                )
             }
         }
     }
 }
 
-
 @Composable
 fun PhoneNumberBottomSheetContent(
-    onCancelClick: () -> Unit,
-    onNumberClick: () -> Unit,
+    onCancelClick: () -> Unit = {},
+    onNumberClick: () -> Unit = {},
 ) {
     Column(
-        modifier = Modifier.height(40.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -556,6 +734,7 @@ fun PhoneNumberBottomSheetContent(
             color = Dark1000
         )
         Spacer(modifier = Modifier.height(10.dp))
+
         Text(
             modifier = Modifier.clickable {
                 onCancelClick()
@@ -569,8 +748,16 @@ fun PhoneNumberBottomSheetContent(
 }
 
 @Composable
-fun ServiceHelpBottomSheetContent() {
-    Column(modifier = Modifier.fillMaxSize()) {
+fun ServiceHelpBottomSheetContent(
+    serviceText: String,
+    onValueChanged: (String) -> Unit,
+    onSendSupportText: () -> Unit,
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -588,15 +775,30 @@ fun ServiceHelpBottomSheetContent() {
             )
             Box {}
         }
-        SampleTextField()
+        HintTextField(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            onValueChanged = onValueChanged,
+            value = serviceText,
+            placeholder = stringResource(id = R.string.describe_problem)
+        )
         Spacer(modifier = Modifier.weight(1f))
+
         CustomButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
             text = stringResource(id = R.string.send),
-            onButtonClick = { },
-            enabled = true
+            onButtonClick = {
+                onSendSupportText()
+            },
+            backgroundColor = if (serviceText.isNotEmpty()) {
+                Brand900
+            } else {
+                Color(0xFFD3C8B3)
+            },
+            borderColor = Color.Transparent,
+            enabled = serviceText.isNotEmpty()
         )
     }
 }

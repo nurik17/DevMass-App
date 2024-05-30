@@ -43,7 +43,7 @@ fun CustomSnackBar(
                     tint = Color.White
                 )
                 Text(
-                    message,
+                    text = message,
                     modifier = Modifier.padding(start = 8.dp),
                     color = Color.White
                 )

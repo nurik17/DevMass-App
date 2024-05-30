@@ -12,8 +12,10 @@ import com.example.drevmassapp.data.model.SignUpResponseDto
 import com.example.drevmassapp.data.model.UserDto
 import com.example.drevmassapp.domain.entity.AddToBasketBody
 import com.example.drevmassapp.domain.entity.MakeOrderBody
+import com.example.drevmassapp.domain.entity.ResetPasswordBody
 import com.example.drevmassapp.domain.entity.SignInBody
 import com.example.drevmassapp.domain.entity.SignUpBody
+import com.example.drevmassapp.domain.entity.UpdateUserBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Field
@@ -110,7 +112,7 @@ interface DrevMassApi {
     @GET("bonus")
     suspend fun getBonus(
         @Header("Authorization") token: String
-    ):BonusDto
+    ): BonusDto
 
     @GET("bonus/info")
     suspend fun getBonusInfo(
@@ -127,4 +129,27 @@ interface DrevMassApi {
         @Header("Authorization") token: String
     ): BonusInfoDto
 
+    @FormUrlEncoded
+    @POST("support")
+    suspend fun sendSupportText(
+        @Header("Authorization") token: String,
+        @Field("message") message: String,
+    ): ForgotPasswordDto
+
+    @POST("user/information")
+    suspend fun updateUserData(
+        @Header("Authorization") token: String,
+        @Body body: UpdateUserBody,
+    ):UpdateUserBody
+
+    @POST("reset_password")
+    suspend fun resetPassword(
+        @Header("Authorization") token: String,
+        @Body body: ResetPasswordBody,
+    ):ForgotPasswordDto
+
+    @DELETE("/user")
+    suspend fun deleteUserAccount(
+        @Header("Authorization") token: String,
+    ): ForgotPasswordDto
 }

@@ -213,6 +213,7 @@ fun LoginScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreenContent(
     navigateToRegistration: () -> Unit = {},
@@ -587,7 +588,6 @@ fun ForgotPasswordBottomContent(
                 onButtonClick = {
                     val decodedEmail = URLDecoder.decode(emailForgot, "UTF-8")
                     viewModel.forgotPassword(decodedEmail)
-                    Log.d("ResetPasswordContent", decodedEmail)
                 },
                 backgroundColor = if (emailForgot.isNotEmpty()) {
                     Brand900

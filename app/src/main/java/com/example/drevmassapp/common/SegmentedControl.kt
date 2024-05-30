@@ -127,13 +127,6 @@ fun SegmentedControl(
                             bottomEnd = 0.dp
                         )
                     },
-                    /*border = BorderStroke(
-                        1.dp, if (selectedIndex.value == index) {
-                            colorResource(id = color)
-                        } else {
-                            colorResource(id = R.color.black)
-                        }
-                    ),*/
                     colors = if (selectedIndex.value == index) {
                         /**
                          * selected colors

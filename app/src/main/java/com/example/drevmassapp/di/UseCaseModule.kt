@@ -22,6 +22,8 @@ import com.example.drevmassapp.domain.useCase.catalog.detail.GetProductByIdUseCa
 import com.example.drevmassapp.domain.useCase.catalog.detail.GetProductByIdUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.detail.IncreaseItemUseCase
 import com.example.drevmassapp.domain.useCase.catalog.detail.IncreaseItemUseCaseImpl
+import com.example.drevmassapp.domain.useCase.profile.DeleteUserAccountUseCase
+import com.example.drevmassapp.domain.useCase.profile.DeleteUserAccountUseCaseImpl
 import com.example.drevmassapp.domain.useCase.profile.GetBonusInfoUseCase
 import com.example.drevmassapp.domain.useCase.profile.GetBonusInfoUseCaseImpl
 import com.example.drevmassapp.domain.useCase.profile.GetBonusUseCase
@@ -32,6 +34,12 @@ import com.example.drevmassapp.domain.useCase.profile.GetSupportInfoUseCase
 import com.example.drevmassapp.domain.useCase.profile.GetSupportInfoUseCaseImpl
 import com.example.drevmassapp.domain.useCase.profile.GetUserUseCase
 import com.example.drevmassapp.domain.useCase.profile.GetUserUseCaseImpl
+import com.example.drevmassapp.domain.useCase.profile.ResetPasswordUseCase
+import com.example.drevmassapp.domain.useCase.profile.ResetPasswordUseCaseImpl
+import com.example.drevmassapp.domain.useCase.profile.SendSupportTextUseCase
+import com.example.drevmassapp.domain.useCase.profile.SendSupportTextUseCaseImpl
+import com.example.drevmassapp.domain.useCase.profile.UpdateUserDataUseCase
+import com.example.drevmassapp.domain.useCase.profile.UpdateUserDataUseCaseImpl
 import com.example.drevmassapp.domain.useCase.registration.ForgotPasswordUseCase
 import com.example.drevmassapp.domain.useCase.registration.ForgotPasswordUseCaseImpl
 import com.example.drevmassapp.domain.useCase.registration.LoginUseCase
@@ -80,9 +88,9 @@ interface UseCaseModule {
     @Binds
     fun provideDecreaseItemUseCase(impl: DecreaseItemUseCaseImpl): DecreaseItemUseCase
 
-   /* @Provides
-    fun provideGetBasketUseCase(repo: BasketRepository): GetBasketUseCase =
-        GetBasketUseCaseImpl(repo)*/
+    /* @Provides
+     fun provideGetBasketUseCase(repo: BasketRepository): GetBasketUseCase =
+         GetBasketUseCaseImpl(repo)*/
 
     @Binds
     fun provideGetBasketUseCase(impl: GetBasketUseCaseImpl): GetBasketUseCase
@@ -107,4 +115,16 @@ interface UseCaseModule {
 
     @Binds
     fun provideGetSupportInfoUseCase(impl: GetSupportInfoUseCaseImpl): GetSupportInfoUseCase
+
+    @Binds
+    fun provideSendSupportTextUseCase(impl: SendSupportTextUseCaseImpl): SendSupportTextUseCase
+
+    @Binds
+    fun provideUpdateUserDataUseCase(impl: UpdateUserDataUseCaseImpl): UpdateUserDataUseCase
+
+    @Binds
+    fun provideResetPasswordUseCase(impl: ResetPasswordUseCaseImpl): ResetPasswordUseCase
+
+    @Binds
+    fun provideDeleteUserAccountUseCase(impl: DeleteUserAccountUseCaseImpl): DeleteUserAccountUseCase
 }
