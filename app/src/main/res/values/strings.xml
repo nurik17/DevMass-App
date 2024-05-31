@@ -108,4 +108,8 @@
     <string name="delete">Удалить</string>
     <string name="stay">Оставить</string>
     <string name="delete_account_subTitle">Ваши личные данные и накопленные бонусы будут удалены без возможности восстановления.</string>
+    <string name="course">Курсы</string>
+    <string name="my_bookMarks">Мои закладки</string>
+    <string name="course_bonus_title">Получайте бонусы за\nпрохождение курсов</string>
+    <string name="course_bonus_subTitle">Начислим до 0 ₽\nбонусами....</string>
 </resources>

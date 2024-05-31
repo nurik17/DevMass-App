@@ -12,6 +12,7 @@ import com.example.drevmassapp.presentation.basket.BasketScreen
 import com.example.drevmassapp.presentation.basket.BasketViewModel
 import com.example.drevmassapp.presentation.catalog.CatalogScreen
 import com.example.drevmassapp.presentation.catalog.CatalogViewModel
+import com.example.drevmassapp.presentation.course.CourseScreen
 import com.example.drevmassapp.presentation.profileScreen.ProfileScreen
 import com.example.drevmassapp.presentation.profileScreen.ProfileViewModel
 
@@ -42,7 +43,7 @@ fun BottomBarNavGraph(
         popExitTransition = { ExitTransition.None }
     ) {
         composable(route = MainDestinations.CourseScreen_route) {
-
+            CourseScreen(onBookMarkNavigate = {})
         }
 
         composable(route = MainDestinations.CatalogScreen_route) {

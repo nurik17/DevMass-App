@@ -102,9 +102,9 @@ fun BasketScreen(
     val currentState = basketState.value
 
     LaunchedEffect(isChecked) {
-        if(isChecked){
+        if (isChecked) {
             viewModel.getBasket("true")
-        }else{
+        } else {
             viewModel.getBasket("false")
         }
     }
@@ -118,7 +118,9 @@ fun BasketScreen(
         ) {
             item {
                 HeaderScrollingContent(
-                    onDeleteIconClick = { viewModel.changeVisibilityDeleteDialog(true) }
+                    titleText = stringResource(id = R.string.basket),
+                    titleIconId = R.drawable.ic_delete,
+                    onIconClick = { viewModel.changeVisibilityDeleteDialog(true) }
                 )
             }
             item {
@@ -139,18 +141,20 @@ fun BasketScreen(
             }
         }
         if (currentState is BasketState.Success) {
-            if(currentState.basket.basket.isNotEmpty()){
+            if (currentState.basket.basket.isNotEmpty()) {
                 StickyButton(
                     totalPrice = currentState.basket.totalPrice,
                     navigateToMakeOrder = navigateToMakeOrder
                 )
             }
-        }else{
-            Box{}
+        } else {
+            Box {}
         }
         TransformingTopBar(
+            titleText = stringResource(id = R.string.basket),
+            titleIconId = R.drawable.ic_delete,
             isVisible = isScrolled,
-            onDeleteIconClick = { viewModel.changeVisibilityDeleteDialog(true) }
+            onIconClick = { viewModel.changeVisibilityDeleteDialog(true) }
         )
     }
 }
@@ -160,7 +164,7 @@ fun BasketContent(
     currentState: BasketState,
     isDialogDeleteVisibility: Boolean,
     isChecked: Boolean,
-    onCheckedChange:(Boolean) -> Unit,
+    onCheckedChange: (Boolean) -> Unit,
     viewModel: BasketViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -266,11 +270,11 @@ fun StickyButton(
 }
 
 
-
-
 @Composable
 fun HeaderScrollingContent(
-    onDeleteIconClick: () -> Unit,
+    onIconClick: () -> Unit,
+    titleText: String,
+    titleIconId: Int,
 ) {
     Box(
         modifier = Modifier
@@ -284,17 +288,17 @@ fun HeaderScrollingContent(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = stringResource(id = R.string.basket),
+                text = titleText,
                 color = Color.Black,
                 style = typography.l28sfD700,
             )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 modifier = Modifier
-                    .clickable { onDeleteIconClick() }
+                    .clickable { onIconClick() }
                     .size(24.dp),
-                painter = painterResource(id = R.drawable.ic_delete),
-                contentDescription = "Delete Icon",
+                painter = painterResource(id = titleIconId),
+                contentDescription = " Icon",
                 tint = Gray700
             )
         }
@@ -687,7 +691,9 @@ fun EmptyStateBasket() {
 @Composable
 fun TransformingTopBar(
     isVisible: Boolean,
-    onDeleteIconClick: () -> Unit,
+    onIconClick: () -> Unit,
+    titleText: String,
+    titleIconId: Int
 ) {
     val alpha by animateFloatAsState(if (isVisible) 1f else 0f)
     val offsetY by animateFloatAsState(if (isVisible) 0f else 50f)
@@ -707,16 +713,16 @@ fun TransformingTopBar(
         ) {
             Box {}
             Text(
-                text = stringResource(id = R.string.basket),
+                text = titleText,
                 color = Color.Black,
                 style = typography.l15sfT600,
                 fontSize = 17.sp
             )
             Icon(
                 modifier = Modifier
-                    .clickable { onDeleteIconClick() }
+                    .clickable { onIconClick() }
                     .size(24.dp),
-                painter = painterResource(id = R.drawable.ic_delete),
+                painter = painterResource(id = titleIconId),
                 contentDescription = "Delete Icon",
                 tint = Gray700
             )

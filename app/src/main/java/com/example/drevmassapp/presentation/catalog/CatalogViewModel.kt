@@ -38,6 +38,7 @@ class CatalogViewModel @Inject constructor(
 
     private val bearerToken = sharedPreferences.getString("accessToken", null)
 
+
     init {
         getProducts()
         loadSelectedOption()
@@ -47,6 +48,7 @@ class CatalogViewModel @Inject constructor(
     private fun loadSelectedOption() {
         val defaultOption = "По популярности"
         _selectedOption.value = sharedPreferences.getString(PREF_KEY, defaultOption)
+        Log.d("loadSelectedOption",  bearerToken!!.toString())
     }
 
     fun updateSelectedOption(option: String) {

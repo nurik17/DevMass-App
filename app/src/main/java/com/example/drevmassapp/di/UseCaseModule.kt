@@ -22,6 +22,8 @@ import com.example.drevmassapp.domain.useCase.catalog.detail.GetProductByIdUseCa
 import com.example.drevmassapp.domain.useCase.catalog.detail.GetProductByIdUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.detail.IncreaseItemUseCase
 import com.example.drevmassapp.domain.useCase.catalog.detail.IncreaseItemUseCaseImpl
+import com.example.drevmassapp.domain.useCase.course.GetCourseUseCase
+import com.example.drevmassapp.domain.useCase.course.GetCourseUseCaseImpl
 import com.example.drevmassapp.domain.useCase.profile.DeleteUserAccountUseCase
 import com.example.drevmassapp.domain.useCase.profile.DeleteUserAccountUseCaseImpl
 import com.example.drevmassapp.domain.useCase.profile.GetBonusInfoUseCase
@@ -127,4 +129,7 @@ interface UseCaseModule {
 
     @Binds
     fun provideDeleteUserAccountUseCase(impl: DeleteUserAccountUseCaseImpl): DeleteUserAccountUseCase
+
+    @Binds
+    fun provideGetCourseUseCase(impl: GetCourseUseCaseImpl): GetCourseUseCase
 }

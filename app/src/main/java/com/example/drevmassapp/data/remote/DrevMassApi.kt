@@ -3,6 +3,7 @@ package com.example.drevmassapp.data.remote
 import com.example.drevmassapp.data.model.BasketResponseDto
 import com.example.drevmassapp.data.model.BonusDto
 import com.example.drevmassapp.data.model.BonusInfoDto
+import com.example.drevmassapp.data.model.CourseDtotem
 import com.example.drevmassapp.data.model.ForgotPasswordDto
 import com.example.drevmassapp.data.model.ProductDetailDto
 import com.example.drevmassapp.data.model.ProductX
@@ -152,4 +153,9 @@ interface DrevMassApi {
     suspend fun deleteUserAccount(
         @Header("Authorization") token: String,
     ): ForgotPasswordDto
+
+    @GET("course")
+    suspend fun getCourseList(
+        @Header("Authorization") token: String
+    ): List<CourseDtotem>
 }
