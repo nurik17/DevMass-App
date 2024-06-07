@@ -13,6 +13,7 @@ data class CourseDtotem(
     @SerializedName("id") val id: Int,
     @SerializedName("image_src") val imageSrc: String,
     @SerializedName("is_started") val isStarted: Boolean,
+    @SerializedName("lessons") val lessons: List<Lesson>,
     @SerializedName("lesson_cnt") val lessonCont: Int,
     @SerializedName("name") val name: String
 )

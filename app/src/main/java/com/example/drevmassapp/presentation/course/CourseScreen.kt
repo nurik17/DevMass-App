@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.SubcomposeAsyncImage
 import com.example.drevmassapp.R
 import com.example.drevmassapp.common.ProgressBlock
 import com.example.drevmassapp.common.clickableWithoutRipple
@@ -52,11 +54,12 @@ import com.example.drevmassapp.ui.theme.Gray700
 import com.example.drevmassapp.ui.theme.Gray800
 import com.example.drevmassapp.ui.theme.borderColor
 import com.example.drevmassapp.ui.theme.typography
+import com.example.drevmassapp.util.Constant
 
 @Composable
 fun CourseScreen(
     viewModel: CourseViewModel = hiltViewModel(),
-    onBookMarkNavigate: () -> Unit
+    onCourseDetailsNavigate: (Int) -> Unit
 ) {
     val courseState = viewModel.courseState.collectAsStateWithLifecycle()
     val currentState = courseState.value
@@ -88,10 +91,14 @@ fun CourseScreen(
             CourseScreenState(
                 currentState = currentState,
                 interactionSource = interactionSource,
-                viewModel = viewModel
+                viewModel = viewModel,
+                modifier = Modifier
+                    .offset(y = (-12).dp),
+                onCourseDetailsNavigate = onCourseDetailsNavigate
             )
         }
     }
+
     TransformingTopBar(
         titleText = stringResource(id = R.string.course),
         titleIconId = R.drawable.ic_bookmark,
@@ -104,10 +111,12 @@ fun CourseScreen(
 fun CourseScreenState(
     currentState: CourseState,
     interactionSource: MutableInteractionSource,
-    viewModel: CourseViewModel
+    viewModel: CourseViewModel,
+    onCourseDetailsNavigate: (Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color.White, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
             .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
@@ -121,15 +130,18 @@ fun CourseScreenState(
             is CourseState.Success -> {
                 SuccessCourseContent(
                     interactionSource = interactionSource,
-                    onBookMarkNavigate = {  },
+                    onBookMarkOpen = { },
                     listCourse = currentState.course,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    onCourseDetailsNavigate = onCourseDetailsNavigate
                 )
             }
-            is CourseState.Failure->{
+
+            is CourseState.Failure -> {
 
             }
-            else->{}
+
+            else -> {}
         }
     }
 }
@@ -138,27 +150,31 @@ fun CourseScreenState(
 @Composable
 fun SuccessCourseContent(
     interactionSource: MutableInteractionSource,
-    onBookMarkNavigate: () -> Unit,
     listCourse: List<CourseDtotem>,
+    onBookMarkOpen: () -> Unit,
+    onCourseDetailsNavigate: (Int) -> Unit,
     viewModel: CourseViewModel
 ) {
     Column() {
         BookMarkBox(
             interactionSource = interactionSource,
-            onBookMarkNavigate = onBookMarkNavigate
+            onBookMarkOpen = onBookMarkOpen
         )
         Spacer(modifier = Modifier.height(24.dp))
         CourseScreenBonusBox()
         Spacer(modifier = Modifier.height(24.dp))
         LazyColumn(
-            modifier = Modifier.height(400.dp),
+            modifier = Modifier.height(480.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(items = listCourse) {
                 CourseItem(
                     interactionSource = interactionSource,
                     item = it,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    onCourseItemClick = {
+                        onCourseDetailsNavigate(it.id)
+                    }
                 )
             }
         }
@@ -168,7 +184,7 @@ fun SuccessCourseContent(
 @Composable
 fun BookMarkBox(
     interactionSource: MutableInteractionSource,
-    onBookMarkNavigate: () -> Unit
+    onBookMarkOpen: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -177,7 +193,7 @@ fun BookMarkBox(
             .background(Color.White, RoundedCornerShape(20.dp))
             .border(2.dp, borderColor, RoundedCornerShape(20.dp))
             .clickableWithoutRipple(interactionSource) {
-                onBookMarkNavigate()
+                onBookMarkOpen()
             },
     ) {
         OneProfileBlockItem(
@@ -196,8 +212,7 @@ fun CourseScreenBonusBox() {
             .height(128.dp)
             .background(Color.White, RoundedCornerShape(24.dp))
             .clip(RoundedCornerShape(24.dp)),
-
-        ) {
+    ) {
         Image(
             modifier = Modifier.fillMaxSize(),
             painter = painterResource(id = R.drawable.main_screen_bonus_image),
@@ -231,6 +246,7 @@ fun CourseScreenBonusBox() {
 fun CourseItem(
     interactionSource: MutableInteractionSource,
     item: CourseDtotem,
+    onCourseItemClick: () -> Unit,
     viewModel: CourseViewModel
 ) {
     val duration = viewModel.lessonSecondToMinute(item.duration)
@@ -241,7 +257,9 @@ fun CourseItem(
             .wrapContentHeight()
             .background(Color.White, RoundedCornerShape(24.dp))
             .border(2.dp, borderColor, RoundedCornerShape(24.dp))
-            .clickableWithoutRipple(interactionSource) {},
+            .clickableWithoutRipple(interactionSource) {
+                onCourseItemClick()
+            },
     ) {
         Row(
             modifier = Modifier
@@ -250,15 +268,16 @@ fun CourseItem(
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
+            SubcomposeAsyncImage(
                 modifier = Modifier
                     .width(96.dp)
                     .height(108.dp)
                     .background(Color.White, RoundedCornerShape(15.dp))
                     .clip(RoundedCornerShape(15.dp)),
-                painter = painterResource(id = R.drawable.image_ex),
-                contentDescription = "",
-                contentScale = ContentScale.Crop
+                model = "${Constant.IMAGE_URL}${item.imageSrc}",
+                contentScale = ContentScale.Crop,
+                contentDescription = "item image",
+                loading = {}
             )
             Spacer(modifier = Modifier.width(12.dp))
             Column() {
@@ -295,13 +314,14 @@ fun CourseItem(
 
 @Composable
 fun BonusPriceBox(
-    price: Int
+    price: Int,
+    backgroundColor: Color = Brand400,
 ) {
     Box(
         modifier = Modifier
             .width(76.dp)
             .height(24.dp)
-            .background(Brand400, RoundedCornerShape(39.dp)),
+            .background(backgroundColor, RoundedCornerShape(39.dp)),
         contentAlignment = Alignment.Center
     ) {
         Row(

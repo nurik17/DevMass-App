@@ -3,8 +3,11 @@ package com.example.drevmassapp.data.remote
 import com.example.drevmassapp.data.model.BasketResponseDto
 import com.example.drevmassapp.data.model.BonusDto
 import com.example.drevmassapp.data.model.BonusInfoDto
+import com.example.drevmassapp.data.model.CourseDetailsDto
 import com.example.drevmassapp.data.model.CourseDtotem
+import com.example.drevmassapp.data.model.CourseStartDto
 import com.example.drevmassapp.data.model.ForgotPasswordDto
+import com.example.drevmassapp.data.model.Lesson
 import com.example.drevmassapp.data.model.ProductDetailDto
 import com.example.drevmassapp.data.model.ProductX
 import com.example.drevmassapp.data.model.Promocode
@@ -141,13 +144,13 @@ interface DrevMassApi {
     suspend fun updateUserData(
         @Header("Authorization") token: String,
         @Body body: UpdateUserBody,
-    ):UpdateUserBody
+    ): UpdateUserBody
 
     @POST("reset_password")
     suspend fun resetPassword(
         @Header("Authorization") token: String,
         @Body body: ResetPasswordBody,
-    ):ForgotPasswordDto
+    ): ForgotPasswordDto
 
     @DELETE("/user")
     suspend fun deleteUserAccount(
@@ -158,4 +161,29 @@ interface DrevMassApi {
     suspend fun getCourseList(
         @Header("Authorization") token: String
     ): List<CourseDtotem>
+
+    @GET("course/{course_id}")
+    suspend fun getCourseById(
+        @Header("Authorization") token: String,
+        @Path("course_id") courseId: Int,
+    ): CourseDetailsDto
+
+    @GET("course/{course_id}/lessons")
+    suspend fun getLessonsById(
+        @Header("Authorization") token: String,
+        @Path("course_id") courseId: Int,
+    ): List<Lesson>
+
+    @GET("course/{course_id}/lessons/{id}")
+    suspend fun getLessonsDetailById(
+        @Header("Authorization") token: String,
+        @Path("course_id") courseId: Int,
+        @Path("id") lessonId: Int,
+    ): Lesson
+
+    @POST("course/start/{id}")
+    suspend fun startCourse(
+        @Header("Authorization") token: String,
+        @Path("id") courseId: Int,
+    ): CourseStartDto
 }

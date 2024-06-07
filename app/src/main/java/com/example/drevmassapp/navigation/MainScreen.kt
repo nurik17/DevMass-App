@@ -21,6 +21,7 @@ fun MainScreen(
     onNotificationNavigate: () -> Unit,
     onInformationScreenNavigate: () -> Unit,
     navigateToLogin: () -> Unit,
+    onCourseDetailsNavigate: (Int) -> Unit
 ) {
     Scaffold(
         bottomBar = {
@@ -41,6 +42,7 @@ fun MainScreen(
             onNotificationNavigate = onNotificationNavigate,
             onInformationScreenNavigate = onInformationScreenNavigate,
             navigateToLogin = navigateToLogin,
+            onCourseDetailsNavigate = onCourseDetailsNavigate,
         )
     }
 }

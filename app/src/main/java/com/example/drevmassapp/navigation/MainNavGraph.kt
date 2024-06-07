@@ -1,6 +1,7 @@
 package com.example.drevmassapp.navigation
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -16,6 +17,9 @@ import com.example.drevmassapp.presentation.basket.makeOrder.MakeOrderScreen
 import com.example.drevmassapp.presentation.basket.makeOrder.MakeOrderViewModel
 import com.example.drevmassapp.presentation.catalog.detail.ProductDetailScreen
 import com.example.drevmassapp.presentation.catalog.detail.ProductDetailViewModel
+import com.example.drevmassapp.presentation.course.detail.CourseDetailScreen
+import com.example.drevmassapp.presentation.course.lessonDetail.LessonDetailsScreen
+import com.example.drevmassapp.presentation.course.lessonDetail.VideoPlayerScreen
 import com.example.drevmassapp.presentation.login.LoginScreen
 import com.example.drevmassapp.presentation.login.LoginViewModel
 import com.example.drevmassapp.presentation.onboarding.OnBoardingScreen
@@ -73,11 +77,14 @@ fun MainNavGraph(
                     navController.navigate(MainDestinations.InformationScreen_route)
                 },
                 navigateToLogin = {
-                    navController.navigate(MainDestinations.LoginScreen_route){
-                        popUpTo(0){
+                    navController.navigate(MainDestinations.LoginScreen_route) {
+                        popUpTo(0) {
                             inclusive = true
                         }
                     }
+                },
+                onCourseDetailsNavigate = { id ->
+                    navController.navigate("${MainDestinations.CourseDetailScreen_route}/$id")
                 }
             )
         }
@@ -86,9 +93,9 @@ fun MainNavGraph(
                 navigateBack = {
                     navController.popBackStack()
                 },
-                navController =  navController,
+                navController = navController,
                 navigateOnBoarding = {
-                    navController.navigate(MainDestinations.OnBoardingScreen_route){
+                    navController.navigate(MainDestinations.OnBoardingScreen_route) {
                         popUpTo(0) {
                             inclusive = true
                         }
@@ -138,6 +145,21 @@ fun MainNavGraph(
             )
         }
 
+        composable(route = "${MainDestinations.CourseDetailScreen_route}/{id}") { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("id")
+            CourseDetailScreen(
+                courseId = id,
+                navigateBack = {
+                    navController.popBackStack()
+                },
+                onLessonDetailNavigate = { lessonId, courseId ->
+                    navController.navigate("${MainDestinations.LessonDetailsScreen_route}/$lessonId/$courseId")
+                }
+            )
+        }
+
+
+
         composable(route = MainDestinations.MakeOrderScreen_route) {
             val viewModel = hiltViewModel<MakeOrderViewModel>()
             MakeOrderScreen(
@@ -183,6 +205,26 @@ fun MainNavGraph(
                 }
             )
         }
+        composable(route = "${MainDestinations.LessonDetailsScreen_route}/{lessonId}/{courseId}") { navBackStackEntry ->
+            val lessonId = navBackStackEntry.arguments?.getString("lessonId")
+            val courseId = navBackStackEntry.arguments?.getString("courseId")
+            LessonDetailsScreen(
+                navigateBack = {
+                    navController.popBackStack()
+                },
+                courseId = courseId,
+                lessonId = lessonId,
+                navigateToVideoPlayerScreen = { string ->
+                    navController.navigate("${MainDestinations.VideoPlayerScreen_route}/$string")
+                }
+            )
+        }
+
+        composable(route = "${MainDestinations.VideoPlayerScreen_route}/{string}") { navBackStackEntry ->
+            val link = navBackStackEntry.arguments?.getString("string")
+            link?.let { VideoPlayerScreen(link = it) }
+        }
+        Log.d("MainNavGraph", "\"${MainDestinations.VideoPlayerScreen_route}/{string}\"")
     }
 }
 
@@ -200,6 +242,9 @@ private object MainScreens {
 
     const val ProductDetailScreen = "ProductDetailScreen"
     const val MakeOrderScreen = "MakeOrderScreen"
+    const val CourseDetailScreen = "CourseDetailScreen"
+    const val LessonDetailsScreen = "LessonDetailsScreen"
+    const val VideoPlayerScreen = "VideoPlayerScreen"
 
     const val MainScreen = "MainScreen"
 
@@ -226,6 +271,9 @@ object MainDestinations {
 
     const val ProductDetailScreen_route = MainScreens.ProductDetailScreen
     const val MakeOrderScreen_route = MainScreens.MakeOrderScreen
+    const val CourseDetailScreen_route = MainScreens.CourseDetailScreen
+    const val LessonDetailsScreen_route = MainScreens.LessonDetailsScreen
+    const val VideoPlayerScreen_route = MainScreens.VideoPlayerScreen
 
     const val MainScreen_route = MainScreens.MainScreen
 

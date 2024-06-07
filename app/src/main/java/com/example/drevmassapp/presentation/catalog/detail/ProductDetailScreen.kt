@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -90,12 +92,12 @@ fun ProductDetailScreen(
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-
     LaunchedEffect(Unit) {
         if (id != null) {
             viewModel.getProductById(id.toInt())
         }
     }
+
 
     Scaffold(
         topBar = {
@@ -138,7 +140,9 @@ fun ProductDetailScreen(
                 scrollBehavior = scrollBehavior
             )
         },
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .padding(top = 10.dp),
         content = { paddingValues ->
             CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
                 Box(
@@ -454,6 +458,7 @@ fun DetailScreenContent(
                 Spacer(modifier = Modifier.height(32.dp))
                 RecommendBlock(
                     items = recommendedList,
+                    titleText = stringResource(id = R.string.buy_with_this),
                     imageExtractor = { "${Constant.IMAGE_URL}${it.image_src}" },
                     priceExtractor = { "${it.price} ₽" },
                     titleExtractor = { it.title },
@@ -900,17 +905,17 @@ fun <T> RecommendBlock(
     imageExtractor: (T) -> String,
     priceExtractor: (T) -> String,
     titleExtractor: (T) -> String,
-    isItemInBasket: (T) -> Boolean
+    isItemInBasket: (T) -> Boolean,
+    titleText: String,
 ) {
 
     Text(
         modifier = Modifier.padding(bottom = 16.dp),
-        text = stringResource(id = R.string.buy_with_this),
+        text = titleText,
         style = typography.l20sfD600
     )
 
     LazyRow(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-
         items(items = items) { item ->
             CatalogItem(
                 height = 100.dp,

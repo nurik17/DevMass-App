@@ -28,6 +28,7 @@ fun BottomBarNavGraph(
     onNotificationNavigate:() -> Unit,
     onInformationScreenNavigate:() -> Unit,
     navigateToLogin:() -> Unit,
+    onCourseDetailsNavigate: (Int) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -43,7 +44,7 @@ fun BottomBarNavGraph(
         popExitTransition = { ExitTransition.None }
     ) {
         composable(route = MainDestinations.CourseScreen_route) {
-            CourseScreen(onBookMarkNavigate = {})
+            CourseScreen(onCourseDetailsNavigate = onCourseDetailsNavigate)
         }
 
         composable(route = MainDestinations.CatalogScreen_route) {

@@ -77,9 +77,6 @@ fun CatalogScreen(
 
     SetEdgeToEdge(lightColor = Brand400, darkColor = Brand400)
 
-    LaunchedEffect(Unit){
-        viewModel.getProducts()
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()

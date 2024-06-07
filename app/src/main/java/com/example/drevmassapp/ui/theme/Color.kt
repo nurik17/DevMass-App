@@ -30,3 +30,6 @@ val SuccessStateColor = Color(0xFF3ABD5B)
 val GrayDefault = Color(0xFFE0DEDD)
 
 val borderColor = Color(0xFFF3F1F0)
+
+val White20 = Color(0x33FFFFFF)
+val White60 = Color(0x99FFFFFF)

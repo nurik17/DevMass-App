@@ -112,4 +112,12 @@
     <string name="my_bookMarks">Мои закладки</string>
     <string name="course_bonus_title">Получайте бонусы за\nпрохождение курсов</string>
     <string name="course_bonus_subTitle">Начислим до 0 ₽\nбонусами....</string>
+    <string name="start_course">Начать курс</string>
+    <string name="bonus_accurals_text">Начислим 500 бонусов за\nпрохождение курса</string>
+    <string name="lesson_calendar">Календарь занятий</string>
+    <string name="lessons">Уроки</string>
+    <string name="day_of_lessons">Дни занятий</string>
+    <string name="time">Время</string>
+    <string name="save">Сохранить</string>
+    <string name="product_used">Товары используемые на видео</string>
 </resources>

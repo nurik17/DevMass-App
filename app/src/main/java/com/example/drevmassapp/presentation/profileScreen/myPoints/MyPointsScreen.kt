@@ -22,7 +22,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -156,6 +158,7 @@ fun MyPointsContent(
                     modifier = Modifier
                         .wrapContentHeight()
                         .padding(16.dp)
+                        .verticalScroll(rememberScrollState())
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -285,7 +288,8 @@ fun PointsScreenTopBlockContent(
     Column(modifier = Modifier.padding(all = 16.dp)) {
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(top = 10.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -343,7 +347,6 @@ fun PointsScreenTopBlockContent(
             color = White
         )
         Spacer(modifier = Modifier.height(25.dp))
-
     }
 }
 

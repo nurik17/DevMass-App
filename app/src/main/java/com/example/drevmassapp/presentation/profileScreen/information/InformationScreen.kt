@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -231,10 +232,17 @@ fun BottomSheetContent(
         ) {
             if (chooseBottomSheet) {
                 AboutCompanyBottomSheetContent(
-                    item = item
+                    item = item,
+                    onCloseClick = {
+                        onDismissChange(false)
+                    }
                 )
             } else {
-                AboutAppBottomSheetContent()
+                AboutAppBottomSheetContent(
+                    onCloseClick = {
+                        onDismissChange(false)
+                    }
+                )
             }
         }
     }
@@ -242,13 +250,14 @@ fun BottomSheetContent(
 
 @Composable
 fun AboutCompanyBottomSheetContent(
-    item: BonusInfoDto?
+    item: BonusInfoDto?,
+    onCloseClick:() ->Unit
 ) {
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
     ) {
-        BottomSheetTopBlock(text = stringResource(id = R.string.about_company))
+        BottomSheetTopBlock(text = stringResource(id = R.string.about_company), onCloseClick = onCloseClick)
         Image(
             modifier = Modifier
                 .fillMaxWidth()
@@ -264,16 +273,17 @@ fun AboutCompanyBottomSheetContent(
             fontSize = 16.sp,
             color = Dark900
         )
-        Log.d("AboutCompanyBottomSheetContent", item?.text ?: "")
     }
 }
 
 @Composable
-fun AboutAppBottomSheetContent() {
+fun AboutAppBottomSheetContent(
+    onCloseClick: () -> Unit,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BottomSheetTopBlock(text = stringResource(id = R.string.about_company))
+        BottomSheetTopBlock(text = stringResource(id = R.string.about_company), onCloseClick = onCloseClick)
         Spacer(modifier = Modifier.height(100.dp))
         Box(
             modifier = Modifier
@@ -354,7 +364,8 @@ fun TextWithEndIcon(
 
 @Composable
 fun BottomSheetTopBlock(
-    text: String
+    text: String,
+    onCloseClick:() ->Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -372,7 +383,10 @@ fun BottomSheetTopBlock(
         Text(
             modifier = Modifier
                 .weight(1f)
-                .padding(start = 50.dp),
+                .padding(start = 50.dp)
+                .clickable {
+                    onCloseClick()
+                },
             text = stringResource(id = R.string.close),
             style = typography.l15sfT600,
             color = Blue1000

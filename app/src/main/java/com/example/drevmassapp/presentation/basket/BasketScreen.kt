@@ -279,7 +279,7 @@ fun HeaderScrollingContent(
     Box(
         modifier = Modifier
             .background(Brand400)
-            .padding(start = 16.dp, end = 16.dp, top = 48.dp, bottom = 35.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 60.dp, bottom = 35.dp)
     ) {
         Row(
             modifier = Modifier
@@ -291,15 +291,6 @@ fun HeaderScrollingContent(
                 text = titleText,
                 color = Color.Black,
                 style = typography.l28sfD700,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Icon(
-                modifier = Modifier
-                    .clickable { onIconClick() }
-                    .size(24.dp),
-                painter = painterResource(id = titleIconId),
-                contentDescription = " Icon",
-                tint = Gray700
             )
         }
     }
@@ -363,6 +354,7 @@ fun BasketContentSuccess(
 
             RecommendBlock(
                 items = basketState.basket.products,
+                titleText = stringResource(id = R.string.buy_with_this),
                 imageExtractor = { "${Constant.IMAGE_URL}${it.imageSrc}" },
                 priceExtractor = { "${it.price} ₽" },
                 titleExtractor = { it.title },
@@ -702,7 +694,7 @@ fun TransformingTopBar(
         color = Color.White,
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(80.dp)
             .offset(y = offsetY.dp)
             .alpha(alpha),
     ) {
