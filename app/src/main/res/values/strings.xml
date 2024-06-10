@@ -120,4 +120,8 @@
     <string name="time">Время</string>
     <string name="save">Сохранить</string>
     <string name="product_used">Товары используемые на видео</string>
+    <string name="finished_lessons">Пройдено уроков</string>
+    <string name="congratulations">Поздравляем</string>
+    <string name="bookmark_empty">В закладках пока ничего нет</string>
+    <string name="bookmark_empty_subTitle">Смотрите курсы и сохраняйте полезные уроки здесь</string>
 </resources>

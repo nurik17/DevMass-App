@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.drevmassapp.ui.theme.Blue1000
-import com.example.drevmassapp.ui.theme.Coral1000
+import com.example.drevmassapp.ui.theme.CoralRed1000
 import com.example.drevmassapp.ui.theme.Gray800
 import com.example.drevmassapp.ui.theme.typography
 
@@ -74,7 +74,7 @@ fun AlertDialogComponent(
                     text = textConfirm,
                     style = typography.l17sfT400,
                     fontSize = 20.sp,
-                    color = Coral1000,
+                    color = CoralRed1000,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center
                 )

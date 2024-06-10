@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,7 +23,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,7 +35,6 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -63,7 +60,7 @@ import com.example.drevmassapp.data.model.Product
 import com.example.drevmassapp.ui.theme.Brand400
 import com.example.drevmassapp.ui.theme.Brand900
 import com.example.drevmassapp.ui.theme.Gray700
-import com.example.drevmassapp.ui.theme.RadioButtonColor
+import com.example.drevmassapp.ui.theme.Brand500
 import com.example.drevmassapp.ui.theme.typography
 import com.example.drevmassapp.util.Constant.IMAGE_URL
 
@@ -437,7 +434,7 @@ fun SortBottomSheet(
                         },
                         colors = RadioButtonDefaults.colors(
                             selectedColor = Brand900,
-                            unselectedColor = RadioButtonColor
+                            unselectedColor = Brand500
                         )
                     )
                 }

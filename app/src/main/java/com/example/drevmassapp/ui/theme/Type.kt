@@ -3,6 +3,7 @@ package com.example.drevmassapp.ui.theme
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.drevmassapp.R
 
@@ -30,7 +31,8 @@ val typography = Typographies(
     l15sfT600 = TextStyle(
         fontFamily = FontFamily(Font(R.font.sf_protext_semibold)),
         fontSize = 15.sp,
-        color = Dark900
+        color = Dark900,
+        fontWeight = FontWeight.SemiBold
     ),
     l17sfT600 = TextStyle(
         fontFamily = FontFamily(Font(R.font.sf_protext_semibold)),

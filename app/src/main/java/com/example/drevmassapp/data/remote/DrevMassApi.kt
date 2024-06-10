@@ -3,11 +3,13 @@ package com.example.drevmassapp.data.remote
 import com.example.drevmassapp.data.model.BasketResponseDto
 import com.example.drevmassapp.data.model.BonusDto
 import com.example.drevmassapp.data.model.BonusInfoDto
+import com.example.drevmassapp.data.model.BookMarkDto
 import com.example.drevmassapp.data.model.CourseDetailsDto
 import com.example.drevmassapp.data.model.CourseDtotem
 import com.example.drevmassapp.data.model.CourseStartDto
 import com.example.drevmassapp.data.model.ForgotPasswordDto
 import com.example.drevmassapp.data.model.Lesson
+import com.example.drevmassapp.data.model.LessonCompleteDto
 import com.example.drevmassapp.data.model.ProductDetailDto
 import com.example.drevmassapp.data.model.ProductX
 import com.example.drevmassapp.data.model.Promocode
@@ -186,4 +188,17 @@ interface DrevMassApi {
         @Header("Authorization") token: String,
         @Path("id") courseId: Int,
     ): CourseStartDto
+
+    @POST("lessons/complete")
+    suspend fun lessonComplete(
+        @Header("Authorization") token: String,
+        @Path("lesson_id") lessonId: Int,
+        @Path("course_id") courseId: Int,
+    ): LessonCompleteDto
+
+
+    @GET("favorites")
+    suspend fun getBookMarks(
+        @Header("Authorization") token: String
+    ): List<BookMarkDto>
 }

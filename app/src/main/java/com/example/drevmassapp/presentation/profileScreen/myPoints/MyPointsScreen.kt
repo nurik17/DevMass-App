@@ -57,7 +57,7 @@ import com.example.drevmassapp.data.model.BonusDto
 import com.example.drevmassapp.data.model.BonusInfoDto
 import com.example.drevmassapp.data.model.Transaction
 import com.example.drevmassapp.ui.theme.Brand900
-import com.example.drevmassapp.ui.theme.Coral1000
+import com.example.drevmassapp.ui.theme.CoralRed1000
 import com.example.drevmassapp.ui.theme.Dark1000
 import com.example.drevmassapp.ui.theme.Dark900
 import com.example.drevmassapp.ui.theme.Gray700
@@ -385,7 +385,7 @@ fun BonusListItem(
                     modifier = Modifier,
                     text = "${item.transactionType}${item.promoPrice}",
                     style = typography.l15sf700,
-                    color = if (item.transactionType == "-") Coral1000 else Dark900
+                    color = if (item.transactionType == "-") CoralRed1000 else Dark900
                 )
                 Icon(
                     modifier = Modifier

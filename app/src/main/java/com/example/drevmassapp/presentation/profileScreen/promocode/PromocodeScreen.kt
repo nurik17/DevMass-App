@@ -64,7 +64,7 @@ import com.example.drevmassapp.ui.theme.Brand900
 import com.example.drevmassapp.ui.theme.Dark1000
 import com.example.drevmassapp.ui.theme.Gray700
 import com.example.drevmassapp.ui.theme.Gray800
-import com.example.drevmassapp.ui.theme.SuccessStateColor
+import com.example.drevmassapp.ui.theme.CoralGreen1000
 import com.example.drevmassapp.ui.theme.typography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -88,8 +88,8 @@ fun PromocodeScreen(
         if (isCopied) {
             contextActivity.enableEdgeToEdge(
                 statusBarStyle = SystemBarStyle.light(
-                    SuccessStateColor.toArgb(),
-                    SuccessStateColor.toArgb()
+                    CoralGreen1000.toArgb(),
+                    CoralGreen1000.toArgb()
                 )
             )
             delay(10000L)
@@ -188,7 +188,7 @@ fun PromocodeScreenContent(
                     snackState = snackState,
                     text = "Промокод успешно скопирован",
                     iconId = R.drawable.ic_checked,
-                    backgroundColor = SuccessStateColor
+                    backgroundColor = CoralGreen1000
                 )
             }
         }

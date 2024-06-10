@@ -22,6 +22,8 @@ import com.example.drevmassapp.domain.useCase.catalog.detail.GetProductByIdUseCa
 import com.example.drevmassapp.domain.useCase.catalog.detail.GetProductByIdUseCaseImpl
 import com.example.drevmassapp.domain.useCase.catalog.detail.IncreaseItemUseCase
 import com.example.drevmassapp.domain.useCase.catalog.detail.IncreaseItemUseCaseImpl
+import com.example.drevmassapp.domain.useCase.course.GetBookMarkUseCase
+import com.example.drevmassapp.domain.useCase.course.GetBookMarkUseCaseImpl
 import com.example.drevmassapp.domain.useCase.course.GetCourseByIdUseCase
 import com.example.drevmassapp.domain.useCase.course.GetCourseByIdUseCaseImpl
 import com.example.drevmassapp.domain.useCase.course.GetCourseUseCase
@@ -30,6 +32,10 @@ import com.example.drevmassapp.domain.useCase.course.GetLessonDetailByIdUseCase
 import com.example.drevmassapp.domain.useCase.course.GetLessonDetailByIdUseCaseImpl
 import com.example.drevmassapp.domain.useCase.course.GetLessonListUseCase
 import com.example.drevmassapp.domain.useCase.course.GetLessonListUseCaseImpl
+import com.example.drevmassapp.domain.useCase.course.LessonCompleteUseCase
+import com.example.drevmassapp.domain.useCase.course.LessonCompleteUseCaseImpl
+import com.example.drevmassapp.domain.useCase.course.StartCourseUseCase
+import com.example.drevmassapp.domain.useCase.course.StartCourseUseCaseImpl
 import com.example.drevmassapp.domain.useCase.profile.DeleteUserAccountUseCase
 import com.example.drevmassapp.domain.useCase.profile.DeleteUserAccountUseCaseImpl
 import com.example.drevmassapp.domain.useCase.profile.GetBonusInfoUseCase
@@ -147,4 +153,13 @@ interface UseCaseModule {
 
     @Binds
     fun provideGetLessonDetailByIdUseCase(impl: GetLessonDetailByIdUseCaseImpl): GetLessonDetailByIdUseCase
+
+    @Binds
+    fun provideStartCourseUseCase(impl: StartCourseUseCaseImpl): StartCourseUseCase
+
+    @Binds
+    fun provideLessonCompleteUseCase(impl: LessonCompleteUseCaseImpl): LessonCompleteUseCase
+
+    @Binds
+    fun provideGetBookMarkUseCase(impl: GetBookMarkUseCaseImpl): GetBookMarkUseCase
 }

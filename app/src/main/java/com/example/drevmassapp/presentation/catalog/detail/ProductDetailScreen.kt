@@ -25,6 +25,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -55,6 +56,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -98,20 +100,19 @@ fun ProductDetailScreen(
         }
     }
 
-
     Scaffold(
         topBar = {
-            LargeTopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
                     if (currentState is ProductDetailState.Success) {
                         Text(
-                            modifier = Modifier.fillMaxWidth(),
                             text = if (scrollState.value > showTitleThreshold)
                                 currentState.productDetail.product.title
                             else "",
                             style = typography.l15sfT600,
                             fontSize = 17.sp,
-                            textAlign = TextAlign.Center
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 },
@@ -144,7 +145,6 @@ fun ProductDetailScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .padding(top = 10.dp),
         content = { paddingValues ->
-            CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -176,147 +176,9 @@ fun ProductDetailScreen(
                     }
                 }
             }
-        }
     )
 }
 
-
-/*@Composable
-fun DetailScreenContent(
-    recommendedList: List<Recommend>,
-    item: ProductDetailItemDto,
-    navigateToBasket: () -> Unit,
-    scrollState: ScrollState,
-    id: Int,
-    viewModel: ProductDetailViewModel
-) {
-    val buttonUiType by viewModel.basketButtonUiType.observeAsState(initial = AddBasketButtonType.DEFAULT)
-    val interactionSource = remember { MutableInteractionSource() }
-
-    var basketCount by rememberSaveable() {
-        mutableStateOf(item.basketCount)
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.checkButtonState(item)
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(scrollState),
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
-                .clip(RoundedCornerShape(10.dp))
-        ) {
-            SubcomposeAsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                model = "${Constant.IMAGE_URL}${item.imageSrc}",
-                contentScale = ContentScale.Crop,
-                contentDescription = "user history item",
-                loading = {}
-            )
-        }
-
-        Column(
-            modifier = Modifier
-                .padding(all = 16.dp)
-        ) {
-            Text(
-                text = item.title,
-                style = typography.l17sfT400,
-            )
-            Text(
-                modifier = Modifier.padding(top = 8.dp),
-                text = item.price.toString() + " ₽",
-                style = typography.l28sfD700,
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            when (buttonUiType) {
-
-                AddBasketButtonType.DEFAULT -> {
-                    CustomButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        text = stringResource(id = R.string.to_basket),
-                        onButtonClick = {
-                            viewModel.addToBasket(count = 1, productId = id, userId = 0)
-                            basketCount++
-                            viewModel.changeButtonUiType(id, AddBasketButtonType.ADD_BASKET)
-                        }
-                    )
-                }
-
-                AddBasketButtonType.ADD_BASKET -> {
-                    AddToBasketTypeBlock(
-                        interactionSource = interactionSource,
-                        navigateToBasket = navigateToBasket,
-                        count = basketCount,
-                        onIncreaseClick = {
-                            viewModel.increaseItem(basketCount, id, 0)
-                            basketCount++
-                        },
-                        onDecreaseClick = {
-                            if (basketCount == 0) {
-                                viewModel.changeButtonUiType(id, AddBasketButtonType.DEFAULT)
-                            } else {
-                                viewModel.decreaseItem(basketCount, id, 0)
-                                basketCount--
-                            }
-                        }
-                    )
-                }
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 14.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    modifier = Modifier.size(28.dp),
-                    painter = painterResource(id = R.drawable.ic_youtube),
-                    contentDescription = "",
-                    tint = Brand900
-                )
-                Text(
-                    modifier = Modifier.padding(start = 10.dp),
-                    text = stringResource(id = R.string.how_to_use),
-                    style = typography.l15sfT600,
-                    color = Brand900
-                )
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-            ProductSizeInfoBlock(item = item)
-
-            Text(
-                modifier = Modifier.padding(top = 32.dp),
-                text = stringResource(id = R.string.description),
-                style = typography.l20sfD600
-            )
-
-            Text(
-                modifier = Modifier.padding(top = 12.dp),
-                text = item.description,
-                style = typography.l17sfT400,
-                color = Gray800,
-                fontSize = 16.sp
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            RecommendBlock(recommendedList = recommendedList)
-            Spacer(modifier = Modifier.height(32.dp))
-        }
-    }
-}*/
 
 @Composable
 fun DetailScreenContent(

@@ -89,9 +89,7 @@ fun LoginScreen(
 
     var isLoading by rememberSaveable { mutableStateOf(false) }
     var isError by rememberSaveable { mutableStateOf(false) }
-    var email by rememberSaveable { mutableStateOf("") }
-    var emailForgot by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+
 
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -112,7 +110,9 @@ fun LoginScreen(
             isError = false
         }
     }
-
+    var email by rememberSaveable { mutableStateOf("") }
+    var emailForgot by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -140,7 +140,8 @@ fun LoginScreen(
                     backgroundColor = ErrorStateColor
                 )
             }
-        }
+        },
+        modifier = Modifier.padding(top = 10.dp)
     ) { paddingValues ->
         when (loginState) {
             is LoginState.Loading -> {

@@ -3,6 +3,7 @@ package com.example.drevmassapp.common
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -26,14 +27,19 @@ fun CustomSnackBar(
     containerColor: Color = Color.White,
 ) {
     val shape = RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)
-    Snackbar(containerColor = containerColor, shape = shape) {
+
+    Snackbar(
+        modifier = Modifier.height(60.dp),
+        containerColor = containerColor,
+        shape = shape
+    ) {
         CompositionLocalProvider(
             LocalLayoutDirection provides
                     if (isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr
         ) {
             Row(
                 modifier = Modifier
-                    .padding(start = 16.dp),
+                    .padding(start = 16.dp,top = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

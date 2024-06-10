@@ -59,7 +59,8 @@ import com.example.drevmassapp.util.Constant
 @Composable
 fun CourseScreen(
     viewModel: CourseViewModel = hiltViewModel(),
-    onCourseDetailsNavigate: (Int) -> Unit
+    onCourseDetailsNavigate: (Int) -> Unit,
+    onBookMarkNavigate: () -> Unit,
 ) {
     val courseState = viewModel.courseState.collectAsStateWithLifecycle()
     val currentState = courseState.value
@@ -94,7 +95,8 @@ fun CourseScreen(
                 viewModel = viewModel,
                 modifier = Modifier
                     .offset(y = (-12).dp),
-                onCourseDetailsNavigate = onCourseDetailsNavigate
+                onCourseDetailsNavigate = onCourseDetailsNavigate,
+                onBookMarkNavigate = onBookMarkNavigate
             )
         }
     }
@@ -113,6 +115,7 @@ fun CourseScreenState(
     interactionSource: MutableInteractionSource,
     viewModel: CourseViewModel,
     onCourseDetailsNavigate: (Int) -> Unit,
+    onBookMarkNavigate:() ->Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -130,7 +133,7 @@ fun CourseScreenState(
             is CourseState.Success -> {
                 SuccessCourseContent(
                     interactionSource = interactionSource,
-                    onBookMarkOpen = { },
+                    onBookMarkOpen = onBookMarkNavigate,
                     listCourse = currentState.course,
                     viewModel = viewModel,
                     onCourseDetailsNavigate = onCourseDetailsNavigate

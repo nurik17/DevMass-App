@@ -36,23 +36,6 @@ object NetworkModule {
             .build()
     }
 
-    @AuthenticatedOkHttpClient
-    @Provides
-    fun provideAuthenticatedOkHttpClient(
-        @BasicOkHttpClient okHttpClient: OkHttpClient,
-        token: String
-    ): OkHttpClient {
-        return okHttpClient.newBuilder()
-            .addInterceptor { chain ->
-                val original = chain.request()
-                val requestBuilder = original.newBuilder()
-                    .header("Authorization", "Bearer $token")
-                val request = requestBuilder.build()
-                chain.proceed(request)
-            }
-            .build()
-    }
-
     @DevMassAppUrl
     @Provides
     @Singleton

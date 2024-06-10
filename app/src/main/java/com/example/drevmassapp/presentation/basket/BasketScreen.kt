@@ -70,7 +70,7 @@ import com.example.drevmassapp.presentation.catalog.detail.RecommendBlock
 import com.example.drevmassapp.ui.theme.Brand300
 import com.example.drevmassapp.ui.theme.Brand400
 import com.example.drevmassapp.ui.theme.Brand900
-import com.example.drevmassapp.ui.theme.Coral1000
+import com.example.drevmassapp.ui.theme.CoralRed1000
 import com.example.drevmassapp.ui.theme.Dark1000
 import com.example.drevmassapp.ui.theme.Dark900
 import com.example.drevmassapp.ui.theme.Gray400
@@ -496,7 +496,7 @@ fun PriceBlock(
                 modifier = Modifier.padding(top = 15.dp),
                 textName = stringResource(id = R.string.pay_with_bonus),
                 priceText = if (item.usedBonus == 0) "0 ₽" else "- ${item.bonus} ₽",
-                priceTextColor = Coral1000
+                priceTextColor = CoralRed1000
             )
             Spacer(modifier = Modifier.height(12.dp))
             DashedLine()

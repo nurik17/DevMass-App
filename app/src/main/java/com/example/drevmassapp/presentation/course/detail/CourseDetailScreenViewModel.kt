@@ -2,13 +2,12 @@ package com.example.drevmassapp.presentation.course.detail
 
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.drevmassapp.data.model.ForgotPasswordDto
+import com.example.drevmassapp.data.model.CourseDetailsDto
 import com.example.drevmassapp.domain.useCase.course.GetCourseByIdUseCase
 import com.example.drevmassapp.domain.useCase.course.GetLessonListUseCase
+import com.example.drevmassapp.domain.useCase.course.StartCourseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +21,7 @@ import javax.inject.Inject
 class CourseDetailScreenViewModel @Inject constructor(
     private val getCourseByIdUseCase: GetCourseByIdUseCase,
     private val getLessonListUseCase: GetLessonListUseCase,
+    private val startCourseUseCase: dagger.Lazy<StartCourseUseCase>,
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
@@ -34,6 +34,9 @@ class CourseDetailScreenViewModel @Inject constructor(
     private val _isSwitchChecked = MutableStateFlow(false)
     val isSwitchChecked: StateFlow<Boolean> = _isSwitchChecked
 
+    private val _alertDialogOpen = MutableStateFlow(false)
+    val alertDialogOpen: StateFlow<Boolean> = _alertDialogOpen
+
     private val _isDayOfLessonSheet = MutableStateFlow(false)
     val isDayOfLessonSheet: StateFlow<Boolean> = _isDayOfLessonSheet
 
@@ -43,14 +46,16 @@ class CourseDetailScreenViewModel @Inject constructor(
     private val _clickedDays = MutableStateFlow<Map<Int, List<String>>>(emptyMap())
     val clickedDays: StateFlow<Map<Int, List<String>>> = _clickedDays
 
+    private val _isCourseStarted = MutableStateFlow(false)
+    val isCourseStarted: StateFlow<Boolean> = _isCourseStarted
 
+    private val _isCourseFinished = MutableStateFlow(false)
+    val isCourseFinished: StateFlow<Boolean> = _isCourseStarted
 
     private val bearerToken = sharedPreferences.getString("accessToken", null)
 
-
     init {
         _clickedDays.value = loadClickedDays().toMutableMap()
-
     }
 
     fun getCourseDetailsById(courseId: Int) {
@@ -59,7 +64,9 @@ class CourseDetailScreenViewModel @Inject constructor(
             try {
                 val result = getCourseByIdUseCase.getCourseById(bearerToken!!, courseId)
                 _courseDetailState.update { CourseDetailState.Success(result) }
-                _isSwitchChecked.value = loadSwitchState(courseId)
+                _isSwitchChecked.update { loadSwitchState(courseId) }
+                _isCourseStarted.update { result.course.isStarted }
+                _isCourseFinished.update { result.course.completed }
             } catch (e: Exception) {
                 _courseDetailState.update { CourseDetailState.Failure(e.message.toString()) }
                 Log.d("CourseDetailScreenViewModel", "getCourseDetailsById:${e.message.toString()}")
@@ -72,8 +79,20 @@ class CourseDetailScreenViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = getLessonListUseCase.getLessonsById(bearerToken!!, courseId)
+                Log.d("CourseDetailScreenViewModel", "result: $result")
             } catch (e: Exception) {
                 Log.d("CourseDetailScreenViewModel", "getLessonListUseCase:${e.message.toString()}")
+            }
+        }
+    }
+
+    fun startCourse(courseId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val
+                        result = startCourseUseCase.get().startCourse(bearerToken!!, courseId)
+            } catch (e: Exception) {
+                Log.d("CourseDetailScreenViewModel", "startCourse:${e.message.toString()}")
             }
         }
     }
@@ -86,6 +105,11 @@ class CourseDetailScreenViewModel @Inject constructor(
         _isSwitchChecked.value = isChecked
         saveSwitchState(courseId, isChecked)
     }
+
+    fun onAlertDialogChange(isOpened: Boolean) {
+        _alertDialogOpen.update { isOpened }
+    }
+
 
     private fun saveSwitchState(courseId: Int, isChecked: Boolean) {
         sharedPreferences.edit().putBoolean("switch_state_$courseId", isChecked).apply()
@@ -116,7 +140,6 @@ class CourseDetailScreenViewModel @Inject constructor(
         updatedList[courseId] = currentList
         _clickedDays.value = updatedList.toMap()
 
-        // Save the updated clicked days
         saveClickedDays()
     }
 
@@ -125,7 +148,8 @@ class CourseDetailScreenViewModel @Inject constructor(
             .filter { it.key.startsWith("clicked_days_") }
             .map { entry ->
                 val courseId = entry.key.substring("clicked_days_".length).toInt()
-                val days = sharedPreferences.getStringSet(entry.key, emptySet())?.toList() ?: emptyList()
+                val days =
+                    sharedPreferences.getStringSet(entry.key, emptySet())?.toList() ?: emptyList()
                 courseId to days
             }
             .toMap()
@@ -140,11 +164,10 @@ class CourseDetailScreenViewModel @Inject constructor(
     }
 
 
-
     fun deleteListOfDays(courseId: Int) {
         val updatedList = _clickedDays.value.toMutableMap()
         updatedList.remove(courseId)
-        _clickedDays.value = updatedList.toMap()
+        _clickedDays.update { updatedList.toMap() }
 
         sharedPreferences.edit().remove("clicked_days_$courseId").apply()
     }
@@ -179,5 +202,9 @@ class CourseDetailScreenViewModel @Inject constructor(
 
     fun lessonSecondToMinute(duration: Int): Int {
         return duration / 60
+    }
+
+    fun calculateCourseProgress(item: CourseDetailsDto): Float {
+        return (item.completedLessons.toFloat() / item.allLessons)
     }
 }

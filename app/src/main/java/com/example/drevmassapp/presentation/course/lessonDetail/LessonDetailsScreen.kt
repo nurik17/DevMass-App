@@ -25,12 +25,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -67,10 +65,6 @@ fun LessonDetailsScreen(
     val isIconChecked by viewModel.isIconChecked.collectAsStateWithLifecycle()
 
     val scrollState = rememberScrollState()
-    val density = LocalDensity.current
-    val showTitleThreshold = with(density) { 250.dp.toPx() }
-    val title = remember { mutableStateOf("") }
-
 
     LaunchedEffect(Unit) {
         courseId?.let {
@@ -81,10 +75,10 @@ fun LessonDetailsScreen(
                 )
             }
         }
+        Log.d("LessonDetailsScreen", "courseId:$courseId")
+        Log.d("LessonDetailsScreen", "lessonId:$lessonId")
     }
 
-    Log.d("LessonDetailsScreen", "courseId: $courseId")
-    Log.d("LessonDetailsScreen", "lessonId: $lessonId")
 
     Scaffold(
         topBar = {
@@ -156,7 +150,17 @@ fun LessonDetailsScreen(
                         },
                         usedProducts = currentState.lesson.usedProducts,
                         item = currentState.lesson,
-                        navigateToVideoPlayerScreen = navigateToVideoPlayerScreen
+                        navigateToVideoPlayerScreen = navigateToVideoPlayerScreen,
+                        onLessonComplete = {
+                            lessonId?.let {
+                                courseId?.let { it1 ->
+                                    viewModel.lessonComplete(
+                                        lessonId = it.toInt(),
+                                        courseId = it1.toInt()
+                                    )
+                                }
+                            }
+                        }
                     )
                 }
 
@@ -172,6 +176,7 @@ fun LessonDetailScreenContent(
     isIconChecked: Boolean,
     onIconCheckedChange: (Boolean) -> Unit,
     usedProducts: List<Product>,
+    onLessonComplete: () -> Unit,
     navigateToVideoPlayerScreen: (String) -> Unit,
     item: Lesson,
 ) {
@@ -189,7 +194,9 @@ fun LessonDetailScreenContent(
                 .padding(top = 5.dp)
                 .clickableWithoutRipple(interactionSource) {
                     navigateToVideoPlayerScreen(item.videoSrc)
-                }
+                    onLessonComplete()
+                },
+            item = item
         )
 
         Spacer(modifier = Modifier.height(16.dp))

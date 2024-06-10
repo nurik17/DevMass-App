@@ -48,7 +48,7 @@ import com.example.drevmassapp.common.SegmentedControl
 import com.example.drevmassapp.common.SetEdgeToEdge
 import com.example.drevmassapp.common.SnackbarBlock
 import com.example.drevmassapp.ui.theme.Brand900
-import com.example.drevmassapp.ui.theme.Coral1000
+import com.example.drevmassapp.ui.theme.CoralRed1000
 import com.example.drevmassapp.ui.theme.ErrorStateColor
 import com.example.drevmassapp.ui.theme.Gray700
 import com.example.drevmassapp.ui.theme.typography
@@ -82,7 +82,7 @@ fun UserDataScreen(
 
         is UserDataState.Failure -> {
             val errorMessage = currentState.message
-            SetEdgeToEdge(lightColor = Coral1000, darkColor = Coral1000)
+            SetEdgeToEdge(lightColor = CoralRed1000, darkColor = CoralRed1000)
             coroutineScope.launch {
                 snackState.showSnackbar(
                     "CustomSnackbar",
@@ -381,7 +381,7 @@ fun UserInfoContent(
             },
             text = stringResource(id = R.string.delete_account),
             style = typography.l15sfT600,
-            color = Coral1000
+            color = CoralRed1000
         )
         Spacer(modifier = Modifier.weight(1f))
 

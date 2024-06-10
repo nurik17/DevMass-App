@@ -124,6 +124,7 @@ fun SignUpScreen(
                 )
             }
         },
+        modifier = Modifier.padding(top = 10.dp)
     ) { paddingValues ->
         when (signUpState) {
             is SignUpState.Loading -> {

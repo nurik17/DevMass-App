@@ -12,11 +12,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.drevmassapp.navigation.MainDestinations.BookMarkScreen_route
 import com.example.drevmassapp.navigation.MainDestinations.MyPointsScreen_route
 import com.example.drevmassapp.presentation.basket.makeOrder.MakeOrderScreen
 import com.example.drevmassapp.presentation.basket.makeOrder.MakeOrderViewModel
 import com.example.drevmassapp.presentation.catalog.detail.ProductDetailScreen
 import com.example.drevmassapp.presentation.catalog.detail.ProductDetailViewModel
+import com.example.drevmassapp.presentation.course.bookMark.BookMarkScreen
 import com.example.drevmassapp.presentation.course.detail.CourseDetailScreen
 import com.example.drevmassapp.presentation.course.lessonDetail.LessonDetailsScreen
 import com.example.drevmassapp.presentation.course.lessonDetail.VideoPlayerScreen
@@ -53,6 +55,7 @@ fun MainNavGraph(
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None }
     ) {
+
         composable(route = MainDestinations.MainScreen_route) {
             MainScreen(
                 navigateToProductDetails = { id ->
@@ -85,9 +88,13 @@ fun MainNavGraph(
                 },
                 onCourseDetailsNavigate = { id ->
                     navController.navigate("${MainDestinations.CourseDetailScreen_route}/$id")
+                },
+                onBookMarkNavigate = {
+                    navController.navigate(MainDestinations.BookMarkScreen_route)
                 }
             )
         }
+
         composable(route = MainDestinations.UserDataScreen_route) {
             UserDataScreen(
                 navigateBack = {
@@ -141,6 +148,7 @@ fun MainNavGraph(
                 navigateBack = { navController.popBackStack() },
                 navigateToBasket = {
                     navController.navigate(MainDestinations.MainScreen_route)
+                    navController.navigate(MainDestinations.BasketScreen_route)
                 }
             )
         }
@@ -157,8 +165,6 @@ fun MainNavGraph(
                 }
             )
         }
-
-
 
         composable(route = MainDestinations.MakeOrderScreen_route) {
             val viewModel = hiltViewModel<MakeOrderViewModel>()
@@ -188,7 +194,6 @@ fun MainNavGraph(
                 }
             )
         }
-
 
         composable(route = MainDestinations.NotificationScreen_route) {
             NotificationScreen(
@@ -220,12 +225,20 @@ fun MainNavGraph(
             )
         }
 
+        composable(route = MainDestinations.BookMarkScreen_route) {
+            BookMarkScreen(
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
         composable(route = "${MainDestinations.VideoPlayerScreen_route}/{string}") { navBackStackEntry ->
             val link = navBackStackEntry.arguments?.getString("string")
             link?.let { VideoPlayerScreen(link = it) }
         }
-        Log.d("MainNavGraph", "\"${MainDestinations.VideoPlayerScreen_route}/{string}\"")
     }
+
 }
 
 private object MainScreens {
@@ -245,6 +258,7 @@ private object MainScreens {
     const val CourseDetailScreen = "CourseDetailScreen"
     const val LessonDetailsScreen = "LessonDetailsScreen"
     const val VideoPlayerScreen = "VideoPlayerScreen"
+    const val BookMarkScreen = "BookMarkScreen"
 
     const val MainScreen = "MainScreen"
 
@@ -274,6 +288,7 @@ object MainDestinations {
     const val CourseDetailScreen_route = MainScreens.CourseDetailScreen
     const val LessonDetailsScreen_route = MainScreens.LessonDetailsScreen
     const val VideoPlayerScreen_route = MainScreens.VideoPlayerScreen
+    const val BookMarkScreen_route = MainScreens.BookMarkScreen
 
     const val MainScreen_route = MainScreens.MainScreen
 
@@ -282,6 +297,4 @@ object MainDestinations {
     const val UserDataScreen_route = MainScreens.UserDataScreen
     const val NotificationScreen_route = MainScreens.NotificationScreen
     const val InformationScreen_route = MainScreens.InformationScreen
-
-
 }

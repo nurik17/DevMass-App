@@ -27,12 +27,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -49,7 +51,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -65,12 +66,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.example.drevmassapp.R
 import com.example.drevmassapp.common.CustomButton
 import com.example.drevmassapp.common.ProgressBlock
@@ -80,6 +85,7 @@ import com.example.drevmassapp.data.model.Lesson
 import com.example.drevmassapp.presentation.course.BonusPriceBox
 import com.example.drevmassapp.ui.theme.Brand300
 import com.example.drevmassapp.ui.theme.Brand400
+import com.example.drevmassapp.ui.theme.Brand500
 import com.example.drevmassapp.ui.theme.Brand900
 import com.example.drevmassapp.ui.theme.Dark1000
 import com.example.drevmassapp.ui.theme.Dark900
@@ -89,6 +95,7 @@ import com.example.drevmassapp.ui.theme.GrayDefault
 import com.example.drevmassapp.ui.theme.White60
 import com.example.drevmassapp.ui.theme.borderColor
 import com.example.drevmassapp.ui.theme.typography
+import com.example.drevmassapp.util.Constant
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -108,11 +115,15 @@ fun CourseDetailScreen(
     }
 
     val detailState = viewModel.courseDetailState.collectAsStateWithLifecycle()
-    val isSwitchChecked by viewModel.isSwitchChecked.collectAsState()
-    val isDayOfLessonVisible by viewModel.isDayOfLessonSheet.collectAsState()
-    val clickedDayOfLesson by viewModel.clickedDays.collectAsState()
-    val isTimePickerOpen by viewModel.isTimePickerOpen.collectAsState()
     val currentState = detailState.value
+
+    val isSwitchChecked by viewModel.isSwitchChecked.collectAsStateWithLifecycle()
+    val isDayOfLessonVisible by viewModel.isDayOfLessonSheet.collectAsStateWithLifecycle()
+    val clickedDayOfLesson by viewModel.clickedDays.collectAsStateWithLifecycle()
+    val isTimePickerOpen by viewModel.isTimePickerOpen.collectAsStateWithLifecycle()
+    val isCourseStarted by viewModel.isCourseStarted.collectAsStateWithLifecycle()
+    val isCourseFinished by viewModel.isCourseFinished.collectAsStateWithLifecycle()
+    val alertDialogOpen by viewModel.alertDialogOpen.collectAsStateWithLifecycle()
 
     val interactionSource = remember {
         MutableInteractionSource()
@@ -123,10 +134,6 @@ fun CourseDetailScreen(
     val title = remember { mutableStateOf("") }
 
     val timePickerState = rememberTimePickerState()
-    val formatter = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
-
-    val cal = Calendar.getInstance()
-    Log.d("CourseDetailScreen", "Entered time: ${formatter.format(cal.time)}")
 
     val dayOfLessonSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -144,6 +151,7 @@ fun CourseDetailScreen(
         }
     }
 
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -152,7 +160,9 @@ fun CourseDetailScreen(
                         modifier = Modifier.padding(top = 5.dp),
                         text = title.value,
                         color = Color.Black,
-                        style = typography.l17sfT600
+                        style = typography.l17sfT600,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 },
                 navigationIcon = {
@@ -225,7 +235,13 @@ fun CourseDetailScreen(
                             viewModel.setTimePickerState(false)
                         },
                         timePickerState = timePickerState,
-                        onLessonDetailNavigate = onLessonDetailNavigate
+                        onLessonDetailNavigate = onLessonDetailNavigate,
+                        isCourseStarted = isCourseStarted,
+                        onAlertDialogDismissChange = {
+                            viewModel.onAlertDialogChange(false)
+                        },
+                        showFinishDialog = isCourseFinished,
+                        isCourseFinished = alertDialogOpen
                     )
                 }
             }
@@ -249,11 +265,15 @@ fun SuccessCourseDetailContent(
     timePickerState: TimePickerState,
     onTimeClick: () -> Unit,
     onDismissChange: (Boolean) -> Unit,
+    onAlertDialogDismissChange: (Boolean) -> Unit,
     onTimePickerChange: (Boolean) -> Unit,
     isDayOfLessonVisible: Boolean,
     clickedDays: Map<Int, List<String>>,
     courseId: Int,
+    isCourseStarted: Boolean,
+    isCourseFinished: Boolean,
     onLessonDetailNavigate: (Int, String) -> Unit,
+    showFinishDialog: Boolean,
     viewModel: CourseDetailScreenViewModel
 ) {
     val duration = viewModel.lessonSecondToMinute(item.course.duration)
@@ -272,7 +292,15 @@ fun SuccessCourseDetailContent(
             .background(Color.White)
             .verticalScroll(scrollState)
     ) {
-        ImageInfoBox(duration = duration.toString(), item = item)
+        ImageInfoBox(
+            duration = duration.toString(),
+            item = item,
+            isCourseStarted = isCourseStarted,
+            onStartCourseClick = {
+                viewModel.startCourse(courseId)
+                viewModel.getCourseDetailsById(courseId)
+            }
+        )
 
         WhiteRoundedBlockBox(
             interactionSource = interactionSource,
@@ -285,7 +313,8 @@ fun SuccessCourseDetailContent(
             onTimeClick = onTimeClick,
             courseId = courseId,
             timerText = timerText,
-            onLessonDetailNavigate = onLessonDetailNavigate
+            onLessonDetailNavigate = onLessonDetailNavigate,
+            isCourseStarted = isCourseStarted,
         )
     }
     if (isDayOfLessonVisible) {
@@ -317,31 +346,41 @@ fun SuccessCourseDetailContent(
             TimeInput(state = timePickerState)
         }
     }
+    if (isCourseFinished && showFinishDialog) {
+        BasicAlertDialog(
+            modifier = Modifier
+                .height(334.dp)
+                .width(281.dp)
+                .background(Color.White, RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(16.dp)),
+            onDismissRequest = { onAlertDialogDismissChange(false) },
+        ) {
+            FinishCourseDialogContent(
+                item = item,
+                onAlertDialogChange = onAlertDialogDismissChange
+            )
+        }
+    }
 }
 
 
 @Composable
 fun ImageInfoBox(
     item: CourseDetailsDto,
-    duration: String
+    duration: String,
+    isCourseStarted: Boolean,
+    onStartCourseClick: () -> Unit,
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.46f)
     ) {
-        /*
         SubcomposeAsyncImage(
-            model = item.course.imageSrc,
+            modifier = Modifier.fillMaxSize(),
+            model = "${Constant.IMAGE_URL}${item.course.imageSrc}",
             contentDescription = "",
             contentScale = ContentScale.Crop,
-            loading = {}
-        )*/
-        Image(
-            modifier = Modifier.fillMaxSize(),
-            painter = painterResource(id = R.drawable.ex_image3),
-            contentDescription = "",
-            contentScale = ContentScale.Crop
         )
         Column(
             modifier = Modifier
@@ -360,15 +399,18 @@ fun ImageInfoBox(
                 modifier = Modifier.padding(top = 14.dp)
             )
             Spacer(modifier = Modifier.height(12.dp))
-            CustomButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                text = stringResource(id = R.string.start_course),
-                backgroundColor = Color.White.copy(alpha = 0.2f),
-                borderColor = Color.Transparent,
-                onButtonClick = { /*TODO*/ }
-            )
+
+            if (!isCourseStarted) {
+                CustomButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    text = stringResource(id = R.string.start_course),
+                    backgroundColor = Color.White.copy(alpha = 0.2f),
+                    borderColor = Color.Transparent,
+                    onButtonClick = onStartCourseClick
+                )
+            }
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -379,6 +421,7 @@ fun WhiteRoundedBlockBox(
     interactionSource: MutableInteractionSource,
     item: CourseDetailsDto,
     isChecked: Boolean,
+    isCourseStarted: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     lessonList: List<Lesson>,
     onDayClick: () -> Unit,
@@ -405,6 +448,10 @@ fun WhiteRoundedBlockBox(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
+                if (isCourseStarted) {
+                    CourseProgressBox(item = item)
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
                 Text(
                     text = item.course.description,
                     style = typography.l17sfT400,
@@ -443,7 +490,7 @@ fun WhiteRoundedBlockBox(
                             item = lesson,
                             viewModel = viewModel,
                             onLessonDetailNavigate = onLessonDetailNavigate,
-                            courseId = courseId.toString()
+                            courseId = courseId.toString(),
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                     }
@@ -696,46 +743,9 @@ fun DayOfLessonsSheet(
 
 
 @Composable
-fun LessonsItem(
-    item: Lesson,
-    viewModel: CourseDetailScreenViewModel,
-    onLessonDetailNavigate: (Int, String) -> Unit,
-    courseId: String,
-) {
-    val interactionSource = remember {
-        MutableInteractionSource()
-    }
-    val duration = viewModel.lessonSecondToMinute(item.duration)
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(330.dp)
-            .background(Color.White, RoundedCornerShape(20.dp))
-            .border(2.dp, borderColor, RoundedCornerShape(20.dp))
-            .clickableWithoutRipple(interactionSource) {
-                onLessonDetailNavigate(item.id,courseId)
-            },
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            VideoImageBox(modifier = Modifier.padding(all = 8.dp))
-            RowWithLessonInfo2(
-                item = item,
-                duration = duration.toString(),
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-            Text(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 0.dp),
-                text = item.title,
-                style = typography.l17sfT600,
-                color = Dark1000
-            )
-        }
-    }
-}
-
-@Composable
 fun VideoImageBox(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    item: Lesson
 ) {
     Box(
         modifier = modifier
@@ -744,12 +754,12 @@ fun VideoImageBox(
             .background(Color.Transparent, RoundedCornerShape(15.dp))
             .clip(RoundedCornerShape(15.dp))
     ) {
-        Image(
+        SubcomposeAsyncImage(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Transparent, RoundedCornerShape(15.dp))
                 .clip(RoundedCornerShape(15.dp)),
-            painter = painterResource(id = R.drawable.ex_image4),
+            model = "${Constant.IMAGE_URL}${item.imageSrc}",
             contentDescription = "",
             contentScale = ContentScale.Crop
         )
@@ -832,48 +842,6 @@ fun RowWithLessonInfo(
     }
 }
 
-@Composable
-fun RowWithLessonInfo2(
-    item: Lesson,
-    duration: String,
-    modifier: Modifier
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            modifier = Modifier
-                .size(8.dp)
-                .align(Alignment.CenterVertically),
-            painter = painterResource(id = R.drawable.ic_play),
-            contentDescription = "",
-            tint = Color.White
-        )
-        Text(
-            modifier = Modifier.padding(start = 8.dp),
-            text = "${item.id} урок",
-            style = typography.l15sf700,
-            fontSize = 13.sp,
-            color = Gray700
-        )
-        Image(
-            modifier = Modifier
-                .size(6.dp)
-                .padding(horizontal = 5.dp)
-                .align(Alignment.CenterVertically),
-            painter = painterResource(id = R.drawable.ic_dot),
-            contentDescription = "",
-            colorFilter = ColorFilter.tint(Color.White)
-        )
-        Text(
-            text = "$duration мин",
-            style = typography.l15sf700,
-            fontSize = 13.sp,
-            color = Gray700
-        )
-    }
-}
 
 @Composable
 fun DayOfLessonItem(
@@ -971,3 +939,90 @@ fun TimePickerDialog(
     }
 }
 
+@Composable
+fun CourseProgressBox(
+    item: CourseDetailsDto,
+    viewModel: CourseDetailScreenViewModel = hiltViewModel()
+) {
+    val progress = viewModel.calculateCourseProgress(item)
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(66.dp)
+            .background(Brand400, RoundedCornerShape(16.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = stringResource(id = R.string.finished_lessons),
+                    style = typography.l15sfT600,
+                    color = Dark1000
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = "${item.completedLessons} из ${item.allLessons}",
+                    style = typography.l15sfT600,
+                    color = Dark1000,
+                )
+            }
+
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp)
+                    .clip(RoundedCornerShape(15.dp)),
+                color = Brand900,
+                trackColor = Brand500,
+            )
+        }
+    }
+}
+
+
+@Composable
+fun FinishCourseDialogContent(
+    item: CourseDetailsDto,
+    onAlertDialogChange: (Boolean) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        AsyncImage(
+            modifier = Modifier.size(112.dp),
+            model = R.drawable.image_finish_course,
+            contentDescription = null
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(id = R.string.congratulations),
+            style = typography.l20sfD600,
+            color = Dark900,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8 .dp))
+        Text(
+            text = "Вы успешно прошли курс и получаете ${item.course.bonusInfo.price} бонусов.",
+            style = typography.l17sfT400,
+            fontSize = 16.sp,
+            color = Gray800,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        CustomButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            text = stringResource(id = R.string.sure),
+            onButtonClick = {
+                onAlertDialogChange(false)
+            }
+        )
+    }
+}
