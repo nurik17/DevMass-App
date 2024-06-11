@@ -1,16 +1,11 @@
 package com.example.drevmassapp.presentation.course.bookMark
 
 import android.os.Build
-import android.widget.Space
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,31 +26,26 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.drevmassapp.R
-import com.example.drevmassapp.common.ProgressBlock
-import com.example.drevmassapp.common.clickableWithoutRipple
+import com.example.drevmassapp.common.SetEdgeToEdge
+import com.example.drevmassapp.common.shimmerEffect
 import com.example.drevmassapp.data.model.BookMarkDto
 import com.example.drevmassapp.data.model.Lesson
-import com.example.drevmassapp.navigation.MainNavGraph
-import com.example.drevmassapp.presentation.course.detail.CourseDetailScreenViewModel
 import com.example.drevmassapp.presentation.course.detail.LessonsItem
-import com.example.drevmassapp.presentation.course.detail.RowWithLessonInfo2
-import com.example.drevmassapp.presentation.course.detail.VideoImageBox
 import com.example.drevmassapp.ui.theme.Brand900
-import com.example.drevmassapp.ui.theme.Dark1000
-import com.example.drevmassapp.ui.theme.borderColor
+import com.example.drevmassapp.ui.theme.CoralRed1000
 import com.example.drevmassapp.ui.theme.typography
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -65,7 +56,7 @@ fun BookMarkScreen(
     viewModel: BookMarkViewModel = hiltViewModel()
 ) {
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.getBookMark()
     }
 
@@ -104,44 +95,53 @@ fun BookMarkScreen(
             )
         },
     ) { paddingValues ->
-        when(currentState){
-            is BookMarkState.Initial ->{
-                EmptyBookMarkScreenContent(paddingValues = paddingValues)
-            }
-            is BookMarkState.Success ->{
-                SuccessBookMarkScreenContent(
-                    paddingValues = paddingValues,
-                    listBookMark = currentState.bookMarkDto[0].lessons,
-                    item = currentState.bookMarkDto[0]
-                )
-            }
-            is BookMarkState.Failure ->{
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(paddingValues = paddingValues)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(start = 4.dp, top = 4.dp),
+                text = stringResource(id = R.string.my_bookMarks),
+                style = typography.l28sfD700
+            )
+            when (currentState) {
+                is BookMarkState.Success -> {
+                    if (currentState.bookMarkDto.isNotEmpty()) {
+                        SuccessBookMarkScreenContent(
+                            listBookMark = currentState.bookMarkDto[0].lessons,
+                            item = currentState.bookMarkDto[0]
+                        )
+                    } else {
+                        EmptyBookMarkScreenContent()
+                    }
+                }
 
-            }
-            is BookMarkState.Loading ->{
-                ProgressBlock()
+                is BookMarkState.Failure -> {
+                    SetEdgeToEdge(lightColor = CoralRed1000, darkColor = CoralRed1000)
+                }
+
+                is BookMarkState.Loading -> {
+                    ShimmerLessonsItem(
+                        modifier = Modifier.width(350.dp),
+                        isHeader = true
+                    )
+                }
+
+                else -> {}
             }
         }
     }
 }
+
 @Composable
-fun EmptyBookMarkScreenContent(
-    paddingValues: PaddingValues
-){
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(paddingValues = paddingValues),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            modifier = Modifier
-                .align(Alignment.Start)
-                .padding(top = 4.dp),
-            text = stringResource(id = R.string.my_bookMarks),
-            style = typography.l28sfD700
-        )
+fun EmptyBookMarkScreenContent() {
+    Column() {
         Spacer(modifier = Modifier.fillMaxHeight(0.3f))
         Image(
             modifier = Modifier.size(112.dp),
@@ -166,39 +166,58 @@ fun EmptyBookMarkScreenContent(
 
 @Composable
 fun SuccessBookMarkScreenContent(
-    paddingValues: PaddingValues,
     listBookMark: List<Lesson>,
     item: BookMarkDto
-){
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(paddingValues = paddingValues)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+) {
+    Spacer(modifier = Modifier.height(16.dp))
+
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text(
-            modifier = Modifier
-                .align(Alignment.Start)
-                .padding(top = 4.dp),
-            text = stringResource(id = R.string.my_bookMarks),
-            style = typography.l28sfD700
-        )
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ){
-            items(items = listBookMark){
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(top = 16.dp),
-                    text = item.courseName,
-                    style = typography.l20sfD600
-                )
-                LessonsItem(item = it)
-            }
+        items(items = listBookMark) {
+            LessonsItem(
+                modifier = Modifier
+                    .width(350.dp),
+                item = it,
+                isHeader = true,
+                headerText = item.courseName
+            )
         }
     }
 }
 
+@Composable
+fun ShimmerLessonsItem(
+    isHeader: Boolean = false,
+    modifier: Modifier = Modifier,
+) {
+    Column() {
+        if (isHeader) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(
+                modifier = Modifier
+                    .width(320.dp)
+                    .height(24.dp)
+                    .clip(RoundedCornerShape(5.dp))
+                    .shimmerEffect()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        Spacer(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(330.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .shimmerEffect()
+        )
+    }
+}
+
+@Composable
+@Preview
+fun shimmerItemPreview(){
+    ShimmerLessonsItem(
+        isHeader = true,
+        modifier = Modifier
+    )
+}

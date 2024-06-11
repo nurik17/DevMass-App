@@ -37,42 +37,58 @@ import com.example.drevmassapp.ui.theme.typography
 fun LessonsItem(
     item: Lesson,
     viewModel: CourseDetailScreenViewModel = hiltViewModel(),
-    onLessonDetailNavigate: (Int, String) -> Unit = {lessonId,lessonString-> },
+    onLessonDetailNavigate: (Int, String) -> Unit = { _, _ -> },
     courseId: String = "",
+    isHeader: Boolean = false,
+    headerText: String = "",
+    modifier: Modifier = Modifier,
 ) {
     val interactionSource = remember {
         MutableInteractionSource()
     }
     val duration = viewModel.lessonSecondToMinute(item.duration)
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(330.dp)
-            .background(Color.White, RoundedCornerShape(20.dp))
-            .border(2.dp, borderColor, RoundedCornerShape(20.dp))
-            .clickableWithoutRipple(interactionSource) {
-                onLessonDetailNavigate(item.id, courseId)
-            },
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            VideoImageBox(
-                modifier = Modifier.padding(all = 8.dp),
-                item = item
-            )
-            RowWithLessonInfo2(
-                item = item,
-                duration = duration.toString(),
-                modifier = Modifier.padding(vertical = 8.dp),
-                isLessonCompleted = item.completed
-            )
+
+    Column() {
+        if(isHeader){
             Text(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 0.dp),
-                text = item.title,
-                style = typography.l17sfT600,
+                modifier = Modifier
+                    .padding(bottom = 16.dp),
+                text = headerText,
+                style = typography.l20sfD600,
                 color = Dark1000
             )
         }
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(330.dp)
+                .background(Color.White, RoundedCornerShape(20.dp))
+                .border(2.dp, borderColor, RoundedCornerShape(20.dp))
+                .clickableWithoutRipple(interactionSource) {
+                    onLessonDetailNavigate(item.id, courseId)
+                },
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                VideoImageBox(
+                    modifier = Modifier.padding(all = 8.dp),
+                    item = item
+                )
+                RowWithLessonInfo2(
+                    item = item,
+                    duration = duration.toString(),
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    isLessonCompleted = item.completed
+                )
+                Text(
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 0.dp),
+                    text = item.title,
+                    style = typography.l17sfT600,
+                    color = Dark1000
+                )
+            }
+        }
     }
+
 }
 
 @Composable

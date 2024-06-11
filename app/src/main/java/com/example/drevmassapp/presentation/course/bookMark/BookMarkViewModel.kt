@@ -25,7 +25,7 @@ class BookMarkViewModel @Inject constructor(
     private val bearerToken = sharedPreferences.getString("accessToken", null)
 
     fun getBookMark() {
-        _bookMarkState.update { BookMarkState.Initial }
+        _bookMarkState.update { BookMarkState.Loading }
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = getBookMarkUseCase.getBookMarks(bearerToken!!)

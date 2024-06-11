@@ -8,12 +8,14 @@ import com.example.drevmassapp.data.model.Lesson
 import com.example.drevmassapp.data.model.LessonCompleteDto
 import com.example.drevmassapp.data.remote.DrevMassApi
 import com.example.drevmassapp.domain.repository.CourseRepository
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class CourseRepositoryImpl @Inject constructor(
     private val api: DrevMassApi
 ): CourseRepository {
     override suspend fun getCourseList(token: String): List<CourseDtotem> {
+        delay(2500L)
         return api.getCourseList(getToken(token))
     }
 
@@ -42,6 +44,7 @@ class CourseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getBookMarks(token: String): List<BookMarkDto> {
+        delay(1000L)
         return api.getBookMarks(getToken(token))
     }
 

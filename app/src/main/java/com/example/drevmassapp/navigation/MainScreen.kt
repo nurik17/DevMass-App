@@ -1,5 +1,7 @@
 package com.example.drevmassapp.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBars
@@ -10,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
@@ -22,7 +25,6 @@ fun MainScreen(
     onInformationScreenNavigate: () -> Unit,
     navigateToLogin: () -> Unit,
     onCourseDetailsNavigate: (Int) -> Unit,
-    onBookMarkNavigate: () -> Unit,
 ) {
     Scaffold(
         bottomBar = {
@@ -44,7 +46,6 @@ fun MainScreen(
             onInformationScreenNavigate = onInformationScreenNavigate,
             navigateToLogin = navigateToLogin,
             onCourseDetailsNavigate = onCourseDetailsNavigate,
-            onBookMarkNavigate = onBookMarkNavigate,
         )
     }
 }

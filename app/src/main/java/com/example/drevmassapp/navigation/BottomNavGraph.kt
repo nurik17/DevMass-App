@@ -1,5 +1,7 @@
 package com.example.drevmassapp.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
@@ -16,6 +18,7 @@ import com.example.drevmassapp.presentation.course.CourseScreen
 import com.example.drevmassapp.presentation.profileScreen.ProfileScreen
 import com.example.drevmassapp.presentation.profileScreen.ProfileViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BottomBarNavGraph(
     modifier: Modifier = Modifier,
@@ -29,7 +32,6 @@ fun BottomBarNavGraph(
     onInformationScreenNavigate:() -> Unit,
     navigateToLogin:() -> Unit,
     onCourseDetailsNavigate: (Int) -> Unit,
-    onBookMarkNavigate: () -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -45,7 +47,7 @@ fun BottomBarNavGraph(
         popExitTransition = { ExitTransition.None }
     ) {
         composable(route = MainDestinations.CourseScreen_route) {
-            CourseScreen(onCourseDetailsNavigate = onCourseDetailsNavigate,onBookMarkNavigate = onBookMarkNavigate)
+            CourseScreen(onCourseDetailsNavigate = onCourseDetailsNavigate)
         }
 
         composable(route = MainDestinations.CatalogScreen_route) {

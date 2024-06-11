@@ -1,5 +1,7 @@
 package com.example.drevmassapp.presentation.course
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -34,20 +37,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import coil.compose.SubcomposeAsyncImage
 import com.example.drevmassapp.R
-import com.example.drevmassapp.common.ProgressBlock
+import com.example.drevmassapp.common.SetEdgeToEdge
 import com.example.drevmassapp.common.clickableWithoutRipple
+import com.example.drevmassapp.common.shimmerEffect
 import com.example.drevmassapp.data.model.CourseDtotem
+import com.example.drevmassapp.navigation.MainDestinations
 import com.example.drevmassapp.presentation.basket.HeaderScrollingContent
 import com.example.drevmassapp.presentation.basket.TransformingTopBar
+import com.example.drevmassapp.presentation.course.bookMark.BookMarkScreen
 import com.example.drevmassapp.presentation.profileScreen.OneProfileBlockItem
 import com.example.drevmassapp.ui.theme.Brand400
+import com.example.drevmassapp.ui.theme.Brand500
 import com.example.drevmassapp.ui.theme.Brand900
+import com.example.drevmassapp.ui.theme.CoralRed1000
 import com.example.drevmassapp.ui.theme.Dark1000
 import com.example.drevmassapp.ui.theme.Dark900
 import com.example.drevmassapp.ui.theme.Gray700
@@ -56,11 +68,11 @@ import com.example.drevmassapp.ui.theme.borderColor
 import com.example.drevmassapp.ui.theme.typography
 import com.example.drevmassapp.util.Constant
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CourseScreen(
     viewModel: CourseViewModel = hiltViewModel(),
     onCourseDetailsNavigate: (Int) -> Unit,
-    onBookMarkNavigate: () -> Unit,
 ) {
     val courseState = viewModel.courseState.collectAsStateWithLifecycle()
     val currentState = courseState.value
@@ -75,38 +87,55 @@ fun CourseScreen(
         MutableInteractionSource()
     }
 
-    LazyColumn(
-        state = scrollState,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = MainDestinations.MainScreen_route,
+        modifier = Modifier.fillMaxSize()
     ) {
-        item {
-            HeaderScrollingContent(
-                onIconClick = { /*TODO*/ },
-                titleText = stringResource(id = R.string.course),
-                titleIconId = R.drawable.ic_bookmark
-            )
+        composable(route = MainDestinations.MainScreen_route) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    state = scrollState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White),
+                ) {
+                    item {
+                        HeaderScrollingContent(
+                            onIconClick = { },
+                            titleText = stringResource(id = R.string.course),
+                            titleIconId = R.drawable.ic_bookmark
+                        )
+                    }
+                    item {
+                        CourseScreenState(
+                            currentState = currentState,
+                            interactionSource = interactionSource,
+                            viewModel = viewModel,
+                            modifier = Modifier
+                                .offset(y = (-12).dp),
+                            onCourseDetailsNavigate = onCourseDetailsNavigate,
+                            onBookMarkNavigate = {
+                                navController.navigate(MainDestinations.BookMarkScreen_route)
+                            }
+                        )
+                    }
+                }
+
+                TransformingTopBar(
+                    titleText = stringResource(id = R.string.course),
+                    titleIconId = R.drawable.ic_bookmark,
+                    isVisible = isScrolled,
+                    onIconClick = {}
+                )
+            }
         }
-        item {
-            CourseScreenState(
-                currentState = currentState,
-                interactionSource = interactionSource,
-                viewModel = viewModel,
-                modifier = Modifier
-                    .offset(y = (-12).dp),
-                onCourseDetailsNavigate = onCourseDetailsNavigate,
-                onBookMarkNavigate = onBookMarkNavigate
-            )
+
+        composable(route = MainDestinations.BookMarkScreen_route) {
+            BookMarkScreen(navigateBack = { navController.popBackStack() })
         }
     }
-
-    TransformingTopBar(
-        titleText = stringResource(id = R.string.course),
-        titleIconId = R.drawable.ic_bookmark,
-        isVisible = isScrolled,
-        onIconClick = {}
-    )
 }
 
 @Composable
@@ -115,7 +144,7 @@ fun CourseScreenState(
     interactionSource: MutableInteractionSource,
     viewModel: CourseViewModel,
     onCourseDetailsNavigate: (Int) -> Unit,
-    onBookMarkNavigate:() ->Unit,
+    onBookMarkNavigate: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -127,7 +156,7 @@ fun CourseScreenState(
     ) {
         when (currentState) {
             is CourseState.Loading -> {
-                ProgressBlock()
+                LoadingShimmerContent()
             }
 
             is CourseState.Success -> {
@@ -141,7 +170,7 @@ fun CourseScreenState(
             }
 
             is CourseState.Failure -> {
-
+                SetEdgeToEdge(lightColor = CoralRed1000, darkColor = CoralRed1000)
             }
 
             else -> {}
@@ -344,6 +373,138 @@ fun BonusPriceBox(
                 contentDescription = "",
                 tint = Brand900
             )
+        }
+    }
+}
+
+@Composable
+fun LoadingShimmerContent() {
+    Column() {
+        BookMarkLoadingBox()
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(160.dp)
+                .padding(vertical = 24.dp)
+                .background(Brand400, RoundedCornerShape(24.dp))
+                .clip(RoundedCornerShape(24.dp))
+
+        )
+        repeat(3) {
+            CourseItemShimmer()
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+    }
+}
+
+@Composable
+fun BookMarkLoadingBox() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .background(Color.White, RoundedCornerShape(20.dp))
+            .border(2.dp, borderColor, RoundedCornerShape(20.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 20.dp, horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(24.dp)
+                    .shimmerEffect()
+            )
+            Spacer(
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(16.dp)
+                    .padding(start = 12.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .shimmerEffect()
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                modifier = Modifier.size(12.dp),
+                painter = painterResource(id = R.drawable.ic_right_12),
+                contentDescription = "",
+                tint = Brand400
+            )
+        }
+    }
+}
+
+@Composable
+fun CourseItemShimmer() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .background(Color.White, RoundedCornerShape(24.dp))
+            .border(2.dp, borderColor, RoundedCornerShape(24.dp)),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(124.dp)
+                .padding(8.dp),
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .width(96.dp)
+                    .height(108.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .shimmerEffect()
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column() {
+                Row(
+                    modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Spacer(
+                        modifier = Modifier
+                            .width(56.dp)
+                            .height(12.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .shimmerEffect()
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .size(3.dp)
+                            .clip(CircleShape)
+                            .background(Brand500)
+                            .shimmerEffect()
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .width(56.dp)
+                            .height(12.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .shimmerEffect()
+                    )
+                }
+                Spacer(
+                    modifier = Modifier
+                        .width(170.dp)
+                        .height(12.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .shimmerEffect()
+                )
+                Spacer(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .width(90.dp)
+                        .height(12.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .shimmerEffect()
+                )
+            }
         }
     }
 }

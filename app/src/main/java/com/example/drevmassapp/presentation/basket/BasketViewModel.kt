@@ -35,6 +35,7 @@ class BasketViewModel @Inject constructor(
     private val _deleteIconVisibility = MutableStateFlow(false)
     val deleteIconVisibility = _deleteIconVisibility.asStateFlow()
 
+
     private val bearerToken = sharedPreferences.getString("accessToken", null)
 
     fun getBasket(isUsing: String) {

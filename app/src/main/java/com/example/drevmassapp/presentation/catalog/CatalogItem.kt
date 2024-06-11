@@ -49,7 +49,8 @@ fun <T> CatalogItem(
     priceExtractor: (T) -> String,
     titleExtractor: (T) -> String,
     isItemInBasket: (T) -> Boolean,
-    onItemClickListener: () -> Unit = {}
+    onItemClickListener: () -> Unit = {},
+    modifier : Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -60,7 +61,7 @@ fun <T> CatalogItem(
             .clickableWithoutRipple(interactionSource) { onItemClickListener() }
     ) {
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .width(width)
                 .height(height)
                 .clip(RoundedCornerShape(10.dp))

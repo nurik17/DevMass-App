@@ -101,7 +101,6 @@ fun ProfileScreen(
     var newPassword by remember { mutableStateOf("") }
 
     SetEdgeToEdge(lightColor = Brand900, darkColor = Brand900)
-    Log.d("ProfileScreen", "opened")
 
     Column(
         modifier = Modifier

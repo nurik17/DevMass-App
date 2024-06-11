@@ -19,7 +19,6 @@ val Gray800 = Color(0xFF787878)
 val Brand300 = Color(0xFFF3F1F0)
 val Brand400 = Color(0xFFEFEBE9)
 val Brand500 = Color(0xFFD6D1CE)
-val Brand700 = Color(0xFFCDC9C1)
 val Brand900 = Color(0xFFB5A380)
 
 val CoralRed1000 = Color(0xFFFA5C5C)
@@ -30,5 +29,4 @@ val ErrorStateColor = Color(0xFFF96666)
 val GrayDefault = Color(0xFFE0DEDD)
 val borderColor = Color(0xFFF3F1F0)
 
-val White20 = Color(0x33FFFFFF)
 val White60 = Color(0x99FFFFFF)

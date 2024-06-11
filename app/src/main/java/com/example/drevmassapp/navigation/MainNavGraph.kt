@@ -1,7 +1,6 @@
 package com.example.drevmassapp.navigation
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -12,7 +11,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.drevmassapp.navigation.MainDestinations.BookMarkScreen_route
 import com.example.drevmassapp.navigation.MainDestinations.MyPointsScreen_route
 import com.example.drevmassapp.presentation.basket.makeOrder.MakeOrderScreen
 import com.example.drevmassapp.presentation.basket.makeOrder.MakeOrderViewModel
@@ -44,7 +42,7 @@ fun MainNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = MainDestinations.MainScreen_route,
+        startDestination = MainDestinations.SPLASH_ROUTE,
         modifier = modifier,
         enterTransition = {
             EnterTransition.None
@@ -89,9 +87,6 @@ fun MainNavGraph(
                 onCourseDetailsNavigate = { id ->
                     navController.navigate("${MainDestinations.CourseDetailScreen_route}/$id")
                 },
-                onBookMarkNavigate = {
-                    navController.navigate(MainDestinations.BookMarkScreen_route)
-                }
             )
         }
 

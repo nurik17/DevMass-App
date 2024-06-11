@@ -217,85 +217,10 @@ fun BasketContent(
             }
 
             is BasketState.Failure -> {
-                // Handle failure state if needed
             }
         }
     }
 }
-
-@Composable
-fun StickyButton(
-    totalPrice: Int,
-    navigateToMakeOrder: () -> Unit,
-) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Button(
-            onClick = { navigateToMakeOrder() },
-            colors = ButtonColors(
-                containerColor = Brand900,
-                contentColor = Color.White,
-                disabledContainerColor = Brand900,
-                disabledContentColor = Color.White
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .padding(horizontal = 16.dp)
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            Color.White,
-                            Color.White.copy(alpha = 0.8f),
-                            Color.White.copy(alpha = 0f)
-                        )
-                    )
-                )
-                .align(Alignment.BottomCenter),
-        ) {
-            Text(
-                text = "Оформить",
-                style = typography.l15sfT600,
-                fontSize = 17.sp,
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "$totalPrice ₽",
-                style = typography.l15sfT600,
-                fontSize = 17.sp,
-                color = Color.White
-            )
-        }
-    }
-}
-
-
-@Composable
-fun HeaderScrollingContent(
-    onIconClick: () -> Unit,
-    titleText: String,
-    titleIconId: Int,
-) {
-    Box(
-        modifier = Modifier
-            .background(Brand400)
-            .padding(start = 16.dp, end = 16.dp, top = 60.dp, bottom = 35.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = titleText,
-                color = Color.Black,
-                style = typography.l28sfD700,
-            )
-        }
-    }
-}
-
 
 @Composable
 fun BasketContentSuccess(
@@ -373,6 +298,78 @@ fun BasketContentSuccess(
                     }
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun StickyButton(
+    totalPrice: Int,
+    navigateToMakeOrder: () -> Unit,
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Button(
+            onClick = { navigateToMakeOrder() },
+            colors = ButtonColors(
+                containerColor = Brand900,
+                contentColor = Color.White,
+                disabledContainerColor = Brand900,
+                disabledContentColor = Color.White
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .padding(horizontal = 16.dp)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.White,
+                            Color.White.copy(alpha = 0.8f),
+                            Color.White.copy(alpha = 0f)
+                        )
+                    )
+                )
+                .align(Alignment.BottomCenter),
+        ) {
+            Text(
+                text = "Оформить",
+                style = typography.l15sfT600,
+                fontSize = 17.sp,
+                color = Color.White
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = "$totalPrice ₽",
+                style = typography.l15sfT600,
+                fontSize = 17.sp,
+                color = Color.White
+            )
+        }
+    }
+}
+
+@Composable
+fun HeaderScrollingContent(
+    onIconClick: () -> Unit,
+    titleText: String,
+    titleIconId: Int,
+) {
+    Box(
+        modifier = Modifier
+            .background(Brand400)
+            .padding(start = 16.dp, end = 16.dp, top = 60.dp, bottom = 35.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = titleText,
+                color = Color.Black,
+                style = typography.l28sfD700,
+            )
         }
     }
 }
