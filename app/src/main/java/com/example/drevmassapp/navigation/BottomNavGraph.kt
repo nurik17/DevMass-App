@@ -60,7 +60,21 @@ fun BottomBarNavGraph(
 
         composable(route = MainDestinations.BasketScreen_route) {
             val viewModel = hiltViewModel<BasketViewModel>()
-            BasketScreen(viewModel = viewModel, navigateToMakeOrder = navigateToMakeOrder)
+            BasketScreen(
+                viewModel = viewModel,
+                navigateToMakeOrder = navigateToMakeOrder,
+                onCatalogNavigate = {
+                    navController.navigate(MainDestinations.CatalogScreen_route) {
+                        navController.graph.startDestinationRoute?.let { route ->
+                            popUpTo(route) {
+                                saveState = true
+                            }
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
         }
         composable(route = MainDestinations.ProfileScreen_route) {
             val viewModel = hiltViewModel<ProfileViewModel>()

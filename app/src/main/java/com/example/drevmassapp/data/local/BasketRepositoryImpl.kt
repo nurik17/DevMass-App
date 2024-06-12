@@ -13,7 +13,6 @@ class BasketRepositoryImpl @Inject constructor(
     private val api: DrevMassApi
 ) : BasketRepository {
     override suspend fun getBasket(token: String, isUsing: String): BasketResponseDto {
-        delay(2000L)
         return api.getBasket(getToken(token), isUsing)
     }
 

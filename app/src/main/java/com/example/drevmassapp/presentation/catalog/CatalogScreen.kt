@@ -37,6 +37,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -82,6 +83,7 @@ fun CatalogScreen(
     )
 
     val catalogState = viewModel.catalogState.collectAsStateWithLifecycle()
+    val isItemInBasket by viewModel.isItemInBasket.collectAsStateWithLifecycle()
     val listType by viewModel.listType.observeAsState(initial = GRID)
     val selectedOption by viewModel.selectedOption.observeAsState(radioOptions[0])
 
@@ -94,6 +96,10 @@ fun CatalogScreen(
 
 
     SetEdgeToEdge(lightColor = Brand400, darkColor = Brand400)
+
+    /*LaunchedEffect(Unit){
+        viewModel.getProducts()
+    }*/
 
     Column(
         modifier = Modifier
@@ -202,7 +208,8 @@ fun CatalogScreen(
                         CatalogContent(
                             list = currentState.products,
                             navigateToProductDetails = navigateToProductDetails,
-                            listType = listType
+                            listType = listType,
+                            isItemInBasket = isItemInBasket
                         )
                     }
 
@@ -212,7 +219,8 @@ fun CatalogScreen(
                         CatalogContent(
                             list = currentState.famousProducts,
                             navigateToProductDetails = navigateToProductDetails,
-                            listType = listType
+                            listType = listType,
+                            isItemInBasket = isItemInBasket
                         )
 
                     }
@@ -223,7 +231,8 @@ fun CatalogScreen(
                         CatalogContent(
                             list = currentState.productsPriceUp,
                             navigateToProductDetails = navigateToProductDetails,
-                            listType = listType
+                            listType = listType,
+                            isItemInBasket = isItemInBasket
                         )
 
                     }
@@ -234,7 +243,8 @@ fun CatalogScreen(
                         CatalogContent(
                             list = currentState.productsPriceDown,
                             navigateToProductDetails = navigateToProductDetails,
-                            listType = listType
+                            listType = listType,
+                            isItemInBasket = isItemInBasket
                         )
                     }
 
@@ -258,22 +268,26 @@ fun CatalogScreen(
 fun CatalogContent(
     list: List<Product>,
     listType: ListType,
-    navigateToProductDetails: (Int) -> Unit
+    navigateToProductDetails: (Int) -> Unit,
+    isItemInBasket: Boolean
 ) {
     when (listType) {
         GRID -> GridListType(
             list = list,
-            navigateToProductDetails = navigateToProductDetails
+            navigateToProductDetails = navigateToProductDetails,
+            isItemInBasket = isItemInBasket
         )
 
         VERTICAL_COLUMN -> VerticalListType(
             list = list,
-            navigateToProductDetails = navigateToProductDetails
+            navigateToProductDetails = navigateToProductDetails,
+            isItemInBasket = isItemInBasket
         )
 
         HORIZONTAL_COLUMN -> HorizontalListType(
             list = list,
-            navigateToProductDetails = navigateToProductDetails
+            navigateToProductDetails = navigateToProductDetails,
+            isItemInBasket = isItemInBasket
         )
     }
 }
@@ -281,7 +295,8 @@ fun CatalogContent(
 @Composable
 fun GridListType(
     list: List<Product>,
-    navigateToProductDetails: (Int) -> Unit
+    navigateToProductDetails: (Int) -> Unit,
+    isItemInBasket: Boolean,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -300,9 +315,7 @@ fun GridListType(
                 onItemClickListener = {
                     navigateToProductDetails(item.id)
                 },
-                isItemInBasket = {
-                    it.basketCount > 0
-                }
+                isItemInBasket = isItemInBasket
             )
         }
     }
@@ -311,8 +324,9 @@ fun GridListType(
 @Composable
 fun VerticalListType(
     list: List<Product>,
-    navigateToProductDetails: (Int) -> Unit
-) {
+    navigateToProductDetails: (Int) -> Unit,
+    isItemInBasket: Boolean,
+    ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
@@ -328,9 +342,7 @@ fun VerticalListType(
                 onItemClickListener = {
                     navigateToProductDetails(item.id)
                 },
-                isItemInBasket = {
-                    it.basketCount > 0
-                }
+                isItemInBasket = isItemInBasket
             )
         }
     }
@@ -339,7 +351,8 @@ fun VerticalListType(
 @Composable
 fun HorizontalListType(
     list: List<Product>,
-    navigateToProductDetails: (Int) -> Unit
+    navigateToProductDetails: (Int) -> Unit,
+    isItemInBasket: Boolean
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -349,7 +362,8 @@ fun HorizontalListType(
                 item = item,
                 onItemClickListener = {
                     navigateToProductDetails(item.id)
-                }
+                },
+                isItemInBasket = isItemInBasket
             )
             HorizontalDivider(
                 modifier = Modifier.padding(top = 16.dp),
@@ -363,7 +377,8 @@ fun HorizontalListType(
 @Composable
 fun CatalogHorizontalItem(
     item: Product,
-    onItemClickListener: () -> Unit
+    onItemClickListener: () -> Unit,
+    isItemInBasket: Boolean
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -389,7 +404,6 @@ fun CatalogHorizontalItem(
                 contentDescription = "user history item",
                 loading = {}
             )
-            Log.d("CatalogHorizontalItem", "$IMAGE_URL${item.imageSrc}")
         }
         Spacer(modifier = Modifier.width(12.dp))
 
@@ -411,7 +425,11 @@ fun CatalogHorizontalItem(
                     style = typography.l15sf700
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                RoundedBoxIcon()
+                if (isItemInBasket) {
+                    CheckedRoundedBoxIcon()
+                } else {
+                    RoundedBoxIcon()
+                }
             }
         }
     }

@@ -15,7 +15,6 @@ class CourseRepositoryImpl @Inject constructor(
     private val api: DrevMassApi
 ): CourseRepository {
     override suspend fun getCourseList(token: String): List<CourseDtotem> {
-        delay(2500L)
         return api.getCourseList(getToken(token))
     }
 
@@ -44,7 +43,6 @@ class CourseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getBookMarks(token: String): List<BookMarkDto> {
-        delay(1000L)
         return api.getBookMarks(getToken(token))
     }
 

@@ -1,6 +1,7 @@
 package com.example.drevmassapp.presentation.basket
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,7 +11,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +29,6 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -50,29 +48,24 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.SubcomposeAsyncImage
 import com.example.drevmassapp.R
 import com.example.drevmassapp.common.AlertDialogComponent
 import com.example.drevmassapp.common.CustomButton
 import com.example.drevmassapp.common.DashedLine
 import com.example.drevmassapp.common.SetEdgeToEdge
 import com.example.drevmassapp.common.clickableWithoutRipple
-import com.example.drevmassapp.data.model.Basket
 import com.example.drevmassapp.data.model.BasketResponseDto
 import com.example.drevmassapp.presentation.catalog.detail.RecommendBlock
-import com.example.drevmassapp.ui.theme.Brand300
 import com.example.drevmassapp.ui.theme.Brand400
 import com.example.drevmassapp.ui.theme.Brand900
 import com.example.drevmassapp.ui.theme.CoralRed1000
 import com.example.drevmassapp.ui.theme.Dark1000
-import com.example.drevmassapp.ui.theme.Dark900
 import com.example.drevmassapp.ui.theme.Gray400
 import com.example.drevmassapp.ui.theme.Gray700
 import com.example.drevmassapp.ui.theme.Gray800
@@ -86,12 +79,18 @@ import com.example.drevmassapp.util.Constant
 fun BasketScreen(
     viewModel: BasketViewModel,
     navigateToMakeOrder: () -> Unit,
+    onCatalogNavigate:() ->Unit,
 ) {
     SetEdgeToEdge(lightColor = Brand400, darkColor = Brand400)
 
     val basketState = viewModel.basketState.collectAsStateWithLifecycle()
     val isDialogDeleteVisibility by viewModel.isDeleteDialogVisible.collectAsStateWithLifecycle()
-    var isChecked by rememberSaveable { mutableStateOf(false) }
+    val isBonusChecked by viewModel.isBonusChecked.collectAsStateWithLifecycle()
+    val totalPrice by viewModel.totalPrice.collectAsStateWithLifecycle()
+    val basketList by viewModel.basketList.collectAsStateWithLifecycle()
+    val basketCount by viewModel.basketCount.collectAsStateWithLifecycle()
+
+    Log.d("BasketScreen", "basketCount : $basketCount")
 
     val scrollState = rememberLazyListState()
     val isScrolled by remember {
@@ -101,12 +100,8 @@ fun BasketScreen(
     }
     val currentState = basketState.value
 
-    LaunchedEffect(isChecked) {
-        if (isChecked) {
-            viewModel.getBasket("true")
-        } else {
-            viewModel.getBasket("false")
-        }
+    LaunchedEffect(Unit) {
+        viewModel.getBasket("")
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -130,10 +125,12 @@ fun BasketScreen(
                     isDialogDeleteVisibility = isDialogDeleteVisibility,
                     modifier = Modifier
                         .offset(y = (-12).dp),
-                    isChecked = isChecked,
+                    isChecked = isBonusChecked,
                     onCheckedChange = {
-                        isChecked = it
-                    }
+                        viewModel.onBonusCheckedChange(it)
+                    },
+                    totalPrice = totalPrice,
+                    onCatalogNavigate = onCatalogNavigate
                 )
             }
             item {
@@ -141,9 +138,9 @@ fun BasketScreen(
             }
         }
         if (currentState is BasketState.Success) {
-            if (currentState.basket.basket.isNotEmpty()) {
+            if (basketList.isNotEmpty()) {
                 StickyButton(
-                    totalPrice = currentState.basket.totalPrice,
+                    totalPrice = totalPrice, //Total Price
                     navigateToMakeOrder = navigateToMakeOrder
                 )
             }
@@ -166,6 +163,8 @@ fun BasketContent(
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     viewModel: BasketViewModel,
+    totalPrice: Int,
+    onCatalogNavigate: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -186,7 +185,8 @@ fun BasketContent(
                         isChecked = isChecked,
                         isDialogDeleteVisibility = isDialogDeleteVisibility,
                         viewModel = viewModel,
-                        onCheckedChange = onCheckedChange
+                        onCheckedChange = onCheckedChange,
+                        totalPrice = totalPrice
                     )
                 } else {
                     Box(
@@ -194,7 +194,9 @@ fun BasketContent(
                             .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        EmptyStateBasket()
+                        EmptyStateBasket(
+                            onCatalogNavigate = onCatalogNavigate
+                        )
                     }
                 }
             }
@@ -214,9 +216,11 @@ fun BasketContent(
             }
 
             is BasketState.Initial -> {
+
             }
 
             is BasketState.Failure -> {
+                SetEdgeToEdge(lightColor = CoralRed1000, darkColor = CoralRed1000)
             }
         }
     }
@@ -226,6 +230,7 @@ fun BasketContent(
 fun BasketContentSuccess(
     basketState: BasketState.Success,
     isChecked: Boolean,
+    totalPrice: Int,
     isDialogDeleteVisibility: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     viewModel: BasketViewModel
@@ -235,10 +240,10 @@ fun BasketContentSuccess(
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
             basketList.forEachIndexed { index, item ->
+
                 var basketCount by rememberSaveable {
                     mutableStateOf(item.count)
                 }
-
                 if (index > 0) {
                     Spacer(modifier = Modifier.height(16.dp))
                     HorizontalDivider(
@@ -252,10 +257,12 @@ fun BasketContentSuccess(
                     onDecreaseClick = {
                         viewModel.decreaseItem(basketCount, item.productId, 0)
                         basketCount--
+                        viewModel.calculateDecreasedPrice(1,item.price)
                     },
                     onIncreaseClick = {
                         viewModel.increaseItem(basketCount, item.productId, 0)
                         basketCount++
+                        viewModel.calculateIncreasedPrice(1,item.price)
                     },
                     count = basketCount
                 )
@@ -273,7 +280,11 @@ fun BasketContentSuccess(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            PriceBlock(item = basketState.basket)
+            PriceBlock(
+                item = basketState.basket,
+                totalPrice = totalPrice,
+                isBonusChecked = isChecked
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -339,7 +350,7 @@ fun StickyButton(
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "$totalPrice ₽",
+                text = "$totalPrice ₽",  // TotalPrice
                 style = typography.l15sfT600,
                 fontSize = 17.sp,
                 color = Color.White
@@ -472,7 +483,9 @@ fun PromocodeBlock(
 
 @Composable
 fun PriceBlock(
-    item: BasketResponseDto
+    item: BasketResponseDto,
+    totalPrice: Int,
+    isBonusChecked: Boolean
 ) {
     Box(
         modifier = Modifier
@@ -487,14 +500,15 @@ fun PriceBlock(
         ) {
             RowWithTextBlock(
                 textName = "${item.countProducts} товар",
-                priceText = item.basketPrice.toString() + " ₽"
+                priceText = "$totalPrice ₽"
             )
             RowWithTextBlock(
                 modifier = Modifier.padding(top = 15.dp),
                 textName = stringResource(id = R.string.pay_with_bonus),
-                priceText = if (item.usedBonus == 0) "0 ₽" else "- ${item.bonus} ₽",
+                priceText = if (isBonusChecked) "-500 ₽" else "0 ₽",
                 priceTextColor = CoralRed1000
             )
+
             Spacer(modifier = Modifier.height(12.dp))
             DashedLine()
             Spacer(modifier = Modifier.height(12.dp))
@@ -507,7 +521,7 @@ fun PriceBlock(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = item.totalPrice.toString() + " ₽",
+                    text = "$totalPrice ₽",
                     style = typography.l15sf700,
                     color = Dark1000,
                 )
@@ -541,102 +555,11 @@ fun RowWithTextBlock(
     }
 }
 
+
 @Composable
-fun BasketItem(
-    item: Basket,
-    count: Int,
-    onDecreaseClick: () -> Unit,
-    onIncreaseClick: () -> Unit
+fun EmptyStateBasket(
+    onCatalogNavigate:()->Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(76.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .width(112.dp)
-                .height(76.dp)
-                .clip(RoundedCornerShape(10.dp))
-        ) {
-            SubcomposeAsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                model = "${Constant.IMAGE_URL}${item.productImg}",
-                contentScale = ContentScale.Crop,
-                contentDescription = "item image",
-                loading = {}
-            )
-        }
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Column(modifier = Modifier.fillMaxSize()) {
-            Text(
-                text = item.productTitle,
-                style = typography.l17sfT400,
-                fontSize = 15.sp,
-                color = Dark900
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = item.price.toString() + " ₽",
-                    style = typography.l15sf700,
-                    color = Dark900
-                )
-                Spacer(modifier = Modifier.weight(1f))
-
-                Button(
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .height(32.dp),
-                    onClick = {},
-                    colors = ButtonColors(
-                        containerColor = Brand300,
-                        contentColor = Color.Transparent,
-                        disabledContentColor = Color.Transparent,
-                        disabledContainerColor = Brand300
-                    ),
-                    contentPadding = PaddingValues(5.dp),
-                    enabled = item.count == 0
-                ) {
-                    Row(
-                        modifier = Modifier.padding(),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        IconButton(onClick = { onDecreaseClick() }) {
-                            Icon(
-                                modifier = Modifier.size(14.dp),
-                                painter = painterResource(id = R.drawable.ic_minus),
-                                contentDescription = "",
-                                tint = Brand900
-                            )
-                        }
-                        Text(
-                            text = count.toString(),
-                            style = typography.l15sfT600,
-                            color = Dark900
-                        )
-                        IconButton(onClick = { onIncreaseClick() }) {
-                            Icon(
-                                modifier = Modifier.size(14.dp),
-                                painter = painterResource(id = R.drawable.ic_plus),
-                                contentDescription = "",
-                                tint = Brand900
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun EmptyStateBasket() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -670,7 +593,7 @@ fun EmptyStateBasket() {
                 .width(200.dp)
                 .height(56.dp),
             text = stringResource(id = R.string.to_catalog),
-            onButtonClick = { } //navigateToCatalog
+            onButtonClick = onCatalogNavigate //navigateToCatalog
         )
     }
 }

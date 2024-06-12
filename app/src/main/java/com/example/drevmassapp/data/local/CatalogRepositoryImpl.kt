@@ -14,23 +14,19 @@ class CatalogRepositoryImpl @Inject constructor(
 ) : CatalogRepository {
 
     override suspend fun getProducts(token: String): ProductX {
-        delay(2500L)
         return api.getProducts(getToken(token))
     }
 
     override suspend fun getFamousProducts(token: String): ProductX {
-        delay(2500L)
         return api.getFamousProducts(getToken(token))
 
     }
 
     override suspend fun getProductsPriceDown(token: String): ProductX {
-        delay(2500L)
         return api.getProductsPriceDown(getToken(token))
     }
 
     override suspend fun getProductsPriceUp(token: String): ProductX {
-        delay(2500L)
         return api.getProductsPriceUp(getToken(token))
     }
 

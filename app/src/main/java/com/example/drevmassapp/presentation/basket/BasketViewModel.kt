@@ -17,38 +17,93 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "BasketViewModel"
+
 @HiltViewModel
 class BasketViewModel @Inject constructor(
     private val getBasketUseCase: GetBasketUseCase,
     private val deleteAllBasketItemsUseCase: dagger.Lazy<DeleteAllBasketItemsUseCase>,
     private val increaseItemUseCase: dagger.Lazy<IncreaseItemUseCase>,
     private val decreaseItemUseCase: dagger.Lazy<DecreaseItemUseCase>,
-    private val sharedPreferences: SharedPreferences
+    sharedPreferences: SharedPreferences
 ) : ViewModel() {
+
 
     private val _basketState = MutableStateFlow<BasketState>(BasketState.Initial)
     val basketState = _basketState.asStateFlow()
 
+    private val _basketList = MutableStateFlow<List<Basket>>(emptyList())
+    val basketList = _basketList.asStateFlow()
+
     private val _isDeleteDialogVisible = MutableStateFlow(false)
     val isDeleteDialogVisible = _isDeleteDialogVisible.asStateFlow()
 
-    private val _deleteIconVisibility = MutableStateFlow(false)
-    val deleteIconVisibility = _deleteIconVisibility.asStateFlow()
+    private val _isBonusChecked = MutableStateFlow(false)
+    val isBonusChecked = _isBonusChecked.asStateFlow()
 
+    private val _totalPrice = MutableStateFlow(0)
+    val totalPrice = _totalPrice.asStateFlow()
+
+    private val _basketCount = MutableStateFlow(0)
+    val basketCount = _basketCount.asStateFlow()
 
     private val bearerToken = sharedPreferences.getString("accessToken", null)
 
     fun getBasket(isUsing: String) {
         _basketState.value = BasketState.Loading
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = getBasketUseCase.getBasket(token = bearerToken!!, isUsing = isUsing)
                 _basketState.value = BasketState.Success(result)
+                _totalPrice.update { result.totalPrice }
+                _basketList.update { result.basket }
+                _basketCount.update { result.countProducts }
+                Log.d(TAG, "$result")
+                Log.d(TAG, "${result.countProducts}")
+                Log.d(TAG, "Basket count: ${_basketCount.value}")
             } catch (e: Exception) {
                 _basketState.value = BasketState.Failure(e.message.toString())
-                Log.d("getBasket", e.message.toString())
+                Log.d(TAG, e.message.toString())
             }
         }
+    }
+
+    fun increaseItem(count: Int, productId: Int, userId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val result =
+                    increaseItemUseCase.get()
+                        .increaseBasketItem(bearerToken!!, count, productId, userId)
+                Log.d(TAG, "addToBasket: $result")
+            } catch (e: Exception) {
+                Log.d(TAG, "addToBasket error ${e.message.toString()}")
+            }
+        }
+    }
+
+    fun decreaseItem(count: Int, productId: Int, userId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val result =
+                    decreaseItemUseCase.get()
+                        .decreaseBasketItem(bearerToken!!, count, productId, userId)
+                Log.d(TAG, "addToBasket: $result")
+            } catch (e: Exception) {
+                Log.d(TAG, "addToBasket error ${e.message.toString()}")
+            }
+        }
+    }
+
+    fun calculateIncreasedPrice(count: Int,price: Int) {
+        val result = _totalPrice.value
+        val total = result + (count * price)
+        _totalPrice.update { total }
+    }
+
+    fun calculateDecreasedPrice(count: Int,price: Int) {
+        val result = _totalPrice.value
+        val total = result - (count * price)
+        _totalPrice.update { total }
     }
 
     fun deleteAllBasketItems() {
@@ -63,37 +118,28 @@ class BasketViewModel @Inject constructor(
         }
     }
 
-    fun increaseItem(count: Int, productId: Int, userId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val result =
-                    increaseItemUseCase.get().increaseBasketItem(bearerToken!!, count, productId, userId)
-                Log.d("ProductDetailViewModel", "addToBasket: $result")
-            } catch (e: Exception) {
-                Log.d("ProductDetailViewModel", "addToBasket error ${e.message.toString()}")
-            }
-        }
-    }
-
-    fun decreaseItem(count: Int, productId: Int, userId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val result =
-                    decreaseItemUseCase.get().decreaseBasketItem(bearerToken!!, count, productId, userId)
-                Log.d("ProductDetailViewModel", "addToBasket: $result")
-            } catch (e: Exception) {
-                Log.d("ProductDetailViewModel", "addToBasket error ${e.message.toString()}")
-            }
-        }
-    }
-
     fun changeVisibilityDeleteDialog(value: Boolean) {
         viewModelScope.launch {
-            _isDeleteDialogVisible.emit(value)
+            _isDeleteDialogVisible.update { value }
         }
     }
 
-    fun checkDeleteIconVisibility(basketList: List<Basket>) {
-        _deleteIconVisibility.value = basketList.isNotEmpty()
+    fun onBonusCheckedChange(isBonusChecked: Boolean) {
+        viewModelScope.launch {
+            _isBonusChecked.update { isBonusChecked }
+            if (isBonusChecked) {
+                decreaseTotalPrice()
+            } else {
+                increaseTotalPrice()
+            }
+        }
+    }
+
+    private fun decreaseTotalPrice() {
+        _totalPrice.update { it - 500 }
+    }
+
+    private fun increaseTotalPrice() {
+        _totalPrice.update { it + 500 }
     }
 }

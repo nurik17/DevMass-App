@@ -10,7 +10,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -32,16 +34,17 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             DrevMassAppTheme {
-                Box(modifier = Modifier) {
+                Box(modifier = Modifier.padding(bottom = 15.dp)) {
                     MainNavGraph()
                 }
-            }
-            ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { view, insets ->
-                window2(view, insets)
+                ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { view, insets ->
+                    window2(view, insets)
+                }
             }
         }
     }
 }
+
 private fun window2(view: View, windowInsets: WindowInsetsCompat): WindowInsetsCompat {
     val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 

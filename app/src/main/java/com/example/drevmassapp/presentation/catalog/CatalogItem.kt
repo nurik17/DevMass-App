@@ -48,14 +48,14 @@ fun <T> CatalogItem(
     imageExtractor: () -> String,
     priceExtractor: (T) -> String,
     titleExtractor: (T) -> String,
-    isItemInBasket: (T) -> Boolean,
+    isItemInBasket: Boolean = false,
     onItemClickListener: () -> Unit = {},
     modifier : Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .width(width)
             .wrapContentHeight()
             .clickableWithoutRipple(interactionSource) { onItemClickListener() }
@@ -97,7 +97,7 @@ fun <T> CatalogItem(
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            if (isItemInBasket(item)) {
+            if (isItemInBasket) {
                 CheckedRoundedBoxIcon()
             } else {
                 RoundedBoxIcon()

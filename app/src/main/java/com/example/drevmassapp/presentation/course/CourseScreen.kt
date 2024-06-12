@@ -48,6 +48,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.SubcomposeAsyncImage
 import com.example.drevmassapp.R
 import com.example.drevmassapp.common.SetEdgeToEdge
+import com.example.drevmassapp.common.ShimmerBox
 import com.example.drevmassapp.common.clickableWithoutRipple
 import com.example.drevmassapp.common.shimmerEffect
 import com.example.drevmassapp.data.model.CourseDtotem
@@ -309,7 +310,9 @@ fun CourseItem(
                 model = "${Constant.IMAGE_URL}${item.imageSrc}",
                 contentScale = ContentScale.Crop,
                 contentDescription = "item image",
-                loading = {}
+                loading = {
+                    ShimmerBox(height = 108.dp, width = 96.dp)
+                }
             )
             Spacer(modifier = Modifier.width(12.dp))
             Column() {

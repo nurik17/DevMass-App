@@ -36,8 +36,15 @@ class CatalogViewModel @Inject constructor(
     private val _listType = MutableLiveData<ListType>()
     val listType: LiveData<ListType> = _listType
 
+    private val _isItemInBasket = MutableStateFlow(false)
+    val isItemInBasket = _isItemInBasket.asStateFlow()
+
     private val bearerToken = sharedPreferences.getString("accessToken", null)
 
+
+    init {
+        getProducts()
+    }
 
     init {
         getProducts()
@@ -48,7 +55,7 @@ class CatalogViewModel @Inject constructor(
     private fun loadSelectedOption() {
         val defaultOption = "По популярности"
         _selectedOption.value = sharedPreferences.getString(PREF_KEY, defaultOption)
-        Log.d("loadSelectedOption",  bearerToken!!.toString())
+        Log.d("loadSelectedOption", bearerToken!!.toString())
     }
 
     fun updateSelectedOption(option: String) {
@@ -74,7 +81,11 @@ class CatalogViewModel @Inject constructor(
             try {
                 val result = getProductsUseCase.getProducts(bearerToken!!)
                 _catalogState.update { CatalogState.Products(result) }
+                /*val hasItemInBasket = result.any { product -> product.basketCount > 0 }
+                _isItemInBasket.update { hasItemInBasket }*/
+
                 Log.d("CatalogViewModel", "getProducts: $result")
+                Log.d("CatalogViewModel", "getProducts: $isItemInBasket")
             } catch (e: Exception) {
                 _catalogState.update { CatalogState.Failure(e.message.toString()) }
                 Log.d("CatalogViewModel", "getProducts error ${e.message.toString()}")

@@ -241,7 +241,7 @@ fun CourseDetailScreen(
                             viewModel.onAlertDialogChange(false)
                         },
                         showFinishDialog = isCourseFinished,
-                        isCourseFinished = alertDialogOpen
+                        isCourseFinished = isCourseStarted
                     )
                 }
             }

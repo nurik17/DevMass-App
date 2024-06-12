@@ -599,7 +599,7 @@ fun <T> RecommendBlock(
                 imageExtractor = { imageExtractor(item) },
                 priceExtractor = { priceExtractor(item) },
                 titleExtractor = { titleExtractor(item) },
-                isItemInBasket = isItemInBasket
+                isItemInBasket = false
             )
         }
     }

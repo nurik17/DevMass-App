@@ -42,7 +42,7 @@ fun MainNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = MainDestinations.SPLASH_ROUTE,
+        startDestination = MainDestinations.MainScreen_route,
         modifier = modifier,
         enterTransition = {
             EnterTransition.None
@@ -53,6 +53,19 @@ fun MainNavGraph(
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None }
     ) {
+
+        composable(route = "${MainDestinations.ProductDetailScreen_route}/{id}") { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("id")
+            val viewModel: ProductDetailViewModel = hiltViewModel()
+            ProductDetailScreen(
+                id = id,
+                viewModel = viewModel,
+                navigateBack = { navController.popBackStack() },
+                navigateToBasket = {
+                    navController.popBackStack()
+                }
+            )
+        }
 
         composable(route = MainDestinations.MainScreen_route) {
             MainScreen(
@@ -134,19 +147,7 @@ fun MainNavGraph(
             )
         }
 
-        composable(route = "${MainDestinations.ProductDetailScreen_route}/{id}") { navBackStackEntry ->
-            val id = navBackStackEntry.arguments?.getString("id")
-            val viewModel: ProductDetailViewModel = hiltViewModel()
-            ProductDetailScreen(
-                id = id,
-                viewModel = viewModel,
-                navigateBack = { navController.popBackStack() },
-                navigateToBasket = {
-                    navController.navigate(MainDestinations.MainScreen_route)
-                    navController.navigate(MainDestinations.BasketScreen_route)
-                }
-            )
-        }
+
 
         composable(route = "${MainDestinations.CourseDetailScreen_route}/{id}") { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("id")

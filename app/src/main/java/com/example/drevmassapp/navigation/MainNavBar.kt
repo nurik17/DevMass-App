@@ -7,8 +7,9 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -22,17 +23,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.drevmassapp.R
 import com.example.drevmassapp.common.clickableWithoutRipple
+import com.example.drevmassapp.presentation.basket.BasketViewModel
 import com.example.drevmassapp.ui.theme.BottomBarColor
+import com.example.drevmassapp.ui.theme.CoralRed1000
 import com.example.drevmassapp.ui.theme.Dark900
 import com.example.drevmassapp.ui.theme.Gray600
 
 @Composable
 fun MainNavBar(
-    navController: NavHostController
+    navController: NavHostController,
+    basketCount: Int,
+    viewModel: BasketViewModel = hiltViewModel()
 ) {
     val screens = listOf(
         MainNavBarScreen.Course,
@@ -44,6 +50,12 @@ fun MainNavBar(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+   /* val basketCount by viewModel.basketCount.collectAsStateWithLifecycle()
+    val basketList by viewModel.basketList.collectAsStateWithLifecycle()
+
+    Log.d("MainNavBar", "basketCount : $basketCount")
+    Log.d("MainNavBar", "basketList : $basketList")*/
+
     NavigationBar(
         containerColor = BottomBarColor
     ) {
@@ -51,7 +63,8 @@ fun MainNavBar(
             AddItem(
                 screen = screen,
                 currentRoute = currentRoute,
-                navController = navController
+                navController = navController,
+                basketItemCount = basketCount
             )
         }
     }
@@ -61,7 +74,8 @@ fun MainNavBar(
 fun RowScope.AddItem(
     screen: MainNavBarScreen,
     currentRoute: String?,
-    navController: NavHostController
+    navController: NavHostController,
+    basketItemCount: Int
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -80,20 +94,36 @@ fun RowScope.AddItem(
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                    },
                 ),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    painter = painterResource(id = screen.icon),
-                    contentDescription = ""
-                )
+                if (screen is MainNavBarScreen.Basket) {
+                    BadgedBox(
+                        badge = {
+                            Badge(
+                                containerColor = CoralRed1000,
+                                contentColor = Color.White,
+                            ) { Text(text = basketItemCount.toString()) }
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            painter = painterResource(id = screen.icon),
+                            contentDescription = ""
+                        )
+                    }
+                } else {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        painter = painterResource(id = screen.icon),
+                        contentDescription = ""
+                    )
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = screen.title,
                     fontSize = 12.sp,
-                    //fontFamily
                 )
             }
         },
@@ -136,6 +166,7 @@ sealed class MainNavBarScreen(
         "Каталог",
         icon = R.drawable.ic_catalog
     )
+
     data object Basket : MainNavBarScreen(
         MainDestinations.BasketScreen_route,
         "Корзина",

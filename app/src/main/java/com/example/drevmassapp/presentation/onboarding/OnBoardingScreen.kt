@@ -75,7 +75,7 @@ fun OnBoardingScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 25.dp)
+            .padding(vertical = 25.dp)
     ) {
         Image(
             painter = painterResource(id = backgroundImages[currentStep.value]),
