@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.drevmassapp.data.model.CourseDetailsDto
+import com.example.drevmassapp.data.model.Lesson
 import com.example.drevmassapp.domain.useCase.course.GetCourseByIdUseCase
 import com.example.drevmassapp.domain.useCase.course.GetLessonListUseCase
 import com.example.drevmassapp.domain.useCase.course.StartCourseUseCase
@@ -52,6 +53,10 @@ class CourseDetailScreenViewModel @Inject constructor(
     private val _isCourseFinished = MutableStateFlow(false)
     val isCourseFinished: StateFlow<Boolean> = _isCourseStarted
 
+    private val _lessonList = MutableStateFlow<List<Lesson>>(emptyList())
+    val lessonList = _lessonList.asStateFlow()
+
+
     private val bearerToken = sharedPreferences.getString("accessToken", null)
 
     init {
@@ -79,11 +84,16 @@ class CourseDetailScreenViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = getLessonListUseCase.getLessonsById(bearerToken!!, courseId)
+                _lessonList.update { result }
                 Log.d("CourseDetailScreenViewModel", "result: $result")
             } catch (e: Exception) {
                 Log.d("CourseDetailScreenViewModel", "getLessonListUseCase:${e.message.toString()}")
             }
         }
+    }
+
+    fun isLessonFavorite(lessonId: Int): Boolean {
+        return _lessonList.value.find { it.id == lessonId }?.isFavorite ?: false
     }
 
     fun startCourse(courseId: Int) {

@@ -40,6 +40,8 @@ fun LessonsItem(
     onLessonDetailNavigate: (Int, String) -> Unit = { _, _ -> },
     courseId: String = "",
     isHeader: Boolean = false,
+    isFavourite: () -> Boolean = { false },
+    onFavouriteChanged: (Boolean) ->Unit = {},
     headerText: String = "",
     modifier: Modifier = Modifier,
 ) {
@@ -71,7 +73,9 @@ fun LessonsItem(
             Column(modifier = Modifier.fillMaxWidth()) {
                 VideoImageBox(
                     modifier = Modifier.padding(all = 8.dp),
-                    item = item
+                    item = item,
+                    isFavourite = isFavourite,
+                    onFavouriteChanged = onFavouriteChanged,
                 )
                 RowWithLessonInfo2(
                     item = item,

@@ -43,6 +43,7 @@ import com.example.drevmassapp.common.SetEdgeToEdge
 import com.example.drevmassapp.common.shimmerEffect
 import com.example.drevmassapp.data.model.BookMarkDto
 import com.example.drevmassapp.data.model.Lesson
+import com.example.drevmassapp.presentation.course.detail.CourseDetailScreenViewModel
 import com.example.drevmassapp.presentation.course.detail.LessonsItem
 import com.example.drevmassapp.ui.theme.Brand900
 import com.example.drevmassapp.ui.theme.CoralRed1000
@@ -167,20 +168,26 @@ fun EmptyBookMarkScreenContent() {
 @Composable
 fun SuccessBookMarkScreenContent(
     listBookMark: List<Lesson>,
-    item: BookMarkDto
+    item: BookMarkDto,
+    viewModel: CourseDetailScreenViewModel = hiltViewModel(),
 ) {
     Spacer(modifier = Modifier.height(16.dp))
+
 
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        items(items = listBookMark) {
+        items(items = listBookMark) { lesson->
             LessonsItem(
                 modifier = Modifier
                     .width(350.dp),
-                item = it,
+                item = lesson,
                 isHeader = true,
-                headerText = item.courseName
+                headerText = item.courseName,
+                isFavourite = {
+                    viewModel.isLessonFavorite(lesson.id)
+                },
+                onFavouriteChanged = {}
             )
         }
     }

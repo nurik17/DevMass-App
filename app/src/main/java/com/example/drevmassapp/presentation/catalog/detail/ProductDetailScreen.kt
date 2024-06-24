@@ -42,9 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -144,7 +141,7 @@ fun ProductDetailScreen(
             )
         },
         modifier = Modifier
-            .padding(top = 10.dp),
+            .padding(top = 6.dp),
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -200,10 +197,6 @@ fun DetailScreenContent(
         viewModel.checkButtonState(item)
     }
 
-    var howToUseButtonY by remember { mutableStateOf(0f) }
-    val screenHeight =
-        with(LocalDensity.current) { LocalConfiguration.current.screenHeightDp.dp.toPx() }
-
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -241,6 +234,7 @@ fun DetailScreenContent(
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
+
                 when (buttonUiType) {
                     AddBasketButtonType.DEFAULT -> {
                         CustomButton(
@@ -280,10 +274,7 @@ fun DetailScreenContent(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 14.dp)
-                        .onGloballyPositioned { coordinates ->
-                            howToUseButtonY = coordinates.positionInParent().y
-                        },
+                        .padding(top = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
@@ -330,7 +321,6 @@ fun DetailScreenContent(
             }
         }
 
-        if (howToUseButtonY - scrollState.value <= screenHeight) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -371,7 +361,6 @@ fun DetailScreenContent(
                             }
                         )
                     }
-                }
             }
         }
     }

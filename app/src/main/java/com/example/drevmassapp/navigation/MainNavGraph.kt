@@ -42,7 +42,7 @@ fun MainNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = MainDestinations.MainScreen_route,
+        startDestination = MainDestinations.OnBoardingScreen_route,
         modifier = modifier,
         enterTransition = {
             EnterTransition.None

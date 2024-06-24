@@ -34,6 +34,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.IconToggleButtonColors
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -241,7 +242,7 @@ fun CourseDetailScreen(
                             viewModel.onAlertDialogChange(false)
                         },
                         showFinishDialog = isCourseFinished,
-                        isCourseFinished = isCourseStarted
+                        isCourseFinished = alertDialogOpen
                     )
                 }
             }
@@ -745,7 +746,9 @@ fun DayOfLessonsSheet(
 @Composable
 fun VideoImageBox(
     modifier: Modifier = Modifier,
-    item: Lesson
+    item: Lesson,
+    isFavourite: () -> Boolean = { false },
+    onFavouriteChanged: (Boolean) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -766,7 +769,8 @@ fun VideoImageBox(
         IconToggleButton(
             modifier = Modifier.align(Alignment.TopEnd),
             checked = false,
-            onCheckedChange = {}
+            onCheckedChange = onFavouriteChanged,
+            /*colors = */
         ) {
             Icon(
                 modifier = Modifier.size(20.dp),
@@ -1006,7 +1010,7 @@ fun FinishCourseDialogContent(
             color = Dark900,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(8 .dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Вы успешно прошли курс и получаете ${item.course.bonusInfo.price} бонусов.",
             style = typography.l17sfT400,

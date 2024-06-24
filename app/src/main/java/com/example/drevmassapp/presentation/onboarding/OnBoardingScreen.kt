@@ -1,5 +1,6 @@
 package com.example.drevmassapp.presentation.onboarding
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -75,7 +76,7 @@ fun OnBoardingScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 25.dp)
+            .padding(top = 25.dp)
     ) {
         Image(
             painter = painterResource(id = backgroundImages[currentStep.value]),

@@ -110,7 +110,7 @@ fun PasswordTextField(
                         IconButton(onClick = { showPasswordValue = false }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_not_glass),
-                                contentDescription = "show_password"
+                                contentDescription = "show_password",
                             )
                         }
                     } else {

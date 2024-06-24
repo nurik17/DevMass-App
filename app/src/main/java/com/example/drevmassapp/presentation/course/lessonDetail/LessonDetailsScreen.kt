@@ -196,7 +196,8 @@ fun LessonDetailScreenContent(
                     navigateToVideoPlayerScreen(item.videoSrc)
                     onLessonComplete()
                 },
-            item = item
+            item = item,
+            onFavouriteChanged = { false }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
